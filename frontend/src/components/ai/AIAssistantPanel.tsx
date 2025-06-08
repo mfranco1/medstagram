@@ -8,6 +8,7 @@ interface MIRAPanelProps {
 
 export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
   const [miraInput, setMiraInput] = useState('')
+  const [showTooltip, setShowTooltip] = useState(false)
   const handleMiraSubmit = (e: React.FormEvent | React.KeyboardEvent) => {
     e.preventDefault()
     if (miraInput.trim()) {
@@ -23,7 +24,7 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
     >
       <div className="p-4 border-b border-gray-200 flex-shrink-0 flex items-center justify-between">
         {!collapsed && (
-          <h3 className="text-lg font-semibold text-gray-900">MIRA</h3>
+          <h3 className="text-lg font-bold text-violet-600">MIRA</h3>
         )}
         <button
           className="p-1 hover:bg-gray-100 rounded transition-colors ml-auto"
@@ -43,19 +44,18 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">MIRA Suggestions</h4>
                 <p className="text-sm text-gray-600 mb-4">Based on the symptoms, consider asking about:</p>
                 <div className="space-y-2">
                   <button className="flex items-center space-x-2 w-full p-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg">
-                    <Plus className="w-4 h-4 text-gray-400" />
+                    <Plus className="w-4 h-4 text-violet-600" />
                     <span>Duration of symptoms</span>
                   </button>
                   <button className="flex items-center space-x-2 w-full p-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg">
-                    <Plus className="w-4 h-4 text-gray-400" />
+                    <Plus className="w-4 h-4 text-violet-600" />
                     <span>Related conditions</span>
                   </button>
                   <button className="flex items-center space-x-2 w-full p-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg">
-                    <Plus className="w-4 h-4 text-gray-400" />
+                    <Plus className="w-4 h-4 text-violet-600" />
                     <span>Previous treatments</span>
                   </button>
                 </div>
@@ -86,8 +86,21 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
         </>
       ) : (
         <div className="flex flex-col items-center py-4">
-          <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center">
-            <Bot className="w-4 h-4 text-violet-600" />
+          <div 
+            className="relative"
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center">
+              <Bot className="w-4 h-4 text-violet-600" />
+            </div>
+            {showTooltip && (
+              <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 w-56 p-3 bg-white rounded-lg shadow-lg border border-gray-200">
+                <div className="text-sm font-bold text-violet-600 mb-1">MIRA</div>
+                <p className="text-xs text-gray-600">Your intelligent medical assistant that helps with patient documentation, suggests relevant questions, and provides clinical insights.</p>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 rotate-45 w-2 h-2 bg-white border-r border-b border-gray-200" />
+              </div>
+            )}
           </div>
         </div>
       )}
