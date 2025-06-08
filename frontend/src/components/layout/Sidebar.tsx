@@ -53,7 +53,7 @@ function SidebarItem({ icon: Icon, label, expanded }: SidebarItemProps) {
   return (
     <a
       href="#"
-      className="flex items-center px-2 py-2 text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900 group"
+      className="flex items-center px-2 py-2 text-gray-400 rounded-md hover:bg-gray-50 hover:text-gray-600 group"
     >
       <Icon className="w-6 h-6" />
       {expanded && (
