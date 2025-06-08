@@ -21,7 +21,7 @@ export function Sidebar() {
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
-      <div className="flex flex-col space-y-6 mt-2 w-full items-center">
+        <div className="flex flex-col space-y-6 mt-2 w-full items-center">
         {sidebarItems.map((item, idx) => (
           <button
             key={item.label}
