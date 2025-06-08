@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 name: Project Structure
 description: Directory layout and file organization in a monorepo setup.

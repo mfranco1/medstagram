@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 name: Tech Stack & Dependencies
 description: Core technologies and tools used in Medstagram.

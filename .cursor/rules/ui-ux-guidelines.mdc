@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 name: UI/UX Guidelines
 description: Standards for frontend design and interaction.
