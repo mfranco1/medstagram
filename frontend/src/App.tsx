@@ -1,13 +1,5 @@
-import { useState } from 'react'
-import './App.css'
-import MedstagramEMR from './components/medstagram';
+import SoapPage from './pages/SoapPage'
 
-function App() {
-  return (
-    <div className="App">
-      <MedstagramEMR />
-    </div>
-  );
+export default function App() {
+  return <SoapPage />
 }
-
-export default App
