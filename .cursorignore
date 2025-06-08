@@ -1,0 +1,25 @@
+# Ignore large or irrelevant directories for Cursor context
+node_modules/
+dist/
+build/
+.vscode/
+.venv/
+pgdata/
+*.log
+
+# Frontend
+frontend/public/fonts/
+frontend/public/media/
+frontend/public/static/
+
+# Backend
+__pycache__/
+*.pyc
+backend/migrations/
+
+# Misc
+.env
+.env.*.local
+docker-compose.override.yml
+*.sqlite3
+coverage/
