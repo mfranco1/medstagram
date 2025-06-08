@@ -26,17 +26,15 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
         {!collapsed && (
           <h3 className="text-lg font-bold text-violet-600">MIRA</h3>
         )}
-        <button
-          className="p-1 hover:bg-gray-100 rounded transition-colors ml-auto"
-          onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? 'Expand MIRA' : 'Collapse MIRA'}
-        >
-          {collapsed ? (
-            <ChevronLeft className="w-5 h-5 text-gray-400" />
-          ) : (
+        {!collapsed && (
+          <button
+            className="p-1 hover:bg-gray-100 rounded transition-colors ml-auto"
+            onClick={() => setCollapsed(!collapsed)}
+            aria-label="Collapse MIRA"
+          >
             <ChevronRight className="w-5 h-5 text-gray-400" />
-          )}
-        </button>
+          </button>
+        )}
       </div>
       {!collapsed ? (
         <>
@@ -91,7 +89,10 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
           >
-            <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center">
+            <div 
+              className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center hover:bg-violet-200 transition-colors cursor-pointer"
+              onClick={() => setCollapsed(false)}
+            >
               <Bot className="w-4 h-4 text-violet-600" />
             </div>
             {showTooltip && (
