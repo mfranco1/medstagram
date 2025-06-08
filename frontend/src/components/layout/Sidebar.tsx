@@ -1,41 +1,64 @@
-import { User, Calendar, MapPin } from 'lucide-react'
 import { useState } from 'react'
+import {
+  Home,
+  Users,
+  Calendar,
+  BarChart,
+  Settings
+} from 'lucide-react'
 
-const sidebarItems = [
-  {
-    icon: <User className="w-5 h-5 text-violet-600" />, label: 'Profile', active: true, bg: 'bg-violet-100',
-  },
-  {
-    icon: <Calendar className="w-5 h-5 text-gray-400" />, label: 'Calendar', active: false, bg: '',
-  },
-  {
-    icon: <MapPin className="w-5 h-5 text-gray-400" />, label: 'Location', active: false, bg: '',
-  },
-]
+interface SidebarProps {
+  onExpandChange?: (expanded: boolean) => void
+}
 
-export function Sidebar() {
+export function Sidebar({ onExpandChange }: SidebarProps) {
   const [expanded, setExpanded] = useState(false)
+
+  const handleMouseEnter = () => {
+    setExpanded(true)
+    onExpandChange?.(true)
+  }
+
+  const handleMouseLeave = () => {
+    setExpanded(false)
+    onExpandChange?.(false)
+  }
+
   return (
-    <aside
-      className={`fixed top-16 left-0 bottom-0 flex flex-col items-center bg-white border-r border-gray-200 shadow-lg py-6 transition-all duration-200 ${expanded ? 'w-56' : 'w-16'} z-40`}
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => setExpanded(false)}
+    <aside 
+      className="fixed top-16 left-0 bottom-0 bg-white border-r border-gray-200 transition-all duration-200 ease-in-out z-40"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <div className="flex flex-col space-y-6 mt-2 w-full items-center overflow-y-auto">
-        {sidebarItems.map((item, idx) => (
-          <button
-            key={item.label}
-            className={`flex items-center rounded-lg transition-colors ${item.bg} ${!item.active ? 'hover:bg-gray-100 cursor-pointer' : ''} ${expanded ? 'w-full px-4 justify-start' : 'w-8 justify-center'}`}
-          >
-            {item.icon}
-            {expanded && (
-              <span className="ml-3 text-base font-medium text-gray-800 transition-opacity duration-200 whitespace-nowrap">
-                {item.label}
-              </span>
-            )}
-          </button>
-        ))}
+      <div className={`flex flex-col h-full ${expanded ? 'w-64' : 'w-16'}`}>
+        <nav className="flex-1 px-2 py-4 space-y-1">
+          <SidebarItem icon={Home} label="Dashboard" expanded={expanded} />
+          <SidebarItem icon={Users} label="Patients" expanded={expanded} />
+          <SidebarItem icon={Calendar} label="Schedule" expanded={expanded} />
+          <SidebarItem icon={BarChart} label="Analytics" expanded={expanded} />
+          <SidebarItem icon={Settings} label="Settings" expanded={expanded} />
+        </nav>
       </div>
     </aside>
+  )
+}
+
+interface SidebarItemProps {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
+  label: string
+  expanded: boolean
+}
+
+function SidebarItem({ icon: Icon, label, expanded }: SidebarItemProps) {
+  return (
+    <a
+      href="#"
+      className="flex items-center px-2 py-2 text-gray-600 rounded-md hover:bg-gray-50 hover:text-gray-900 group"
+    >
+      <Icon className="w-6 h-6" />
+      {expanded && (
+        <span className="ml-3 text-sm font-medium">{label}</span>
+      )}
+    </a>
   )
 } 
