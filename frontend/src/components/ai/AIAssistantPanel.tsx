@@ -1,18 +1,18 @@
 import { ChevronLeft, ChevronRight, Plus, Send, Bot } from 'lucide-react'
 import { useState } from 'react'
 
-interface AIAssistantPanelProps {
+interface MIRAPanelProps {
   collapsed: boolean
   setCollapsed: (collapsed: boolean) => void
 }
 
-export function AIAssistantPanel({ collapsed, setCollapsed }: AIAssistantPanelProps) {
-  const [aiInput, setAiInput] = useState('')
-  const handleAiSubmit = (e: React.FormEvent | React.KeyboardEvent) => {
+export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
+  const [miraInput, setMiraInput] = useState('')
+  const handleMiraSubmit = (e: React.FormEvent | React.KeyboardEvent) => {
     e.preventDefault()
-    if (aiInput.trim()) {
-      // AI interaction logic would go here
-      setAiInput('')
+    if (miraInput.trim()) {
+      // MIRA interaction logic would go here
+      setMiraInput('')
     }
   }
 
@@ -23,12 +23,12 @@ export function AIAssistantPanel({ collapsed, setCollapsed }: AIAssistantPanelPr
     >
       <div className="p-4 border-b border-gray-200 flex-shrink-0 flex items-center justify-between">
         {!collapsed && (
-          <h3 className="text-lg font-semibold text-gray-900">AI Assistant</h3>
+          <h3 className="text-lg font-semibold text-gray-900">MIRA</h3>
         )}
         <button
           className="p-1 hover:bg-gray-100 rounded transition-colors ml-auto"
           onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? 'Expand AI Assistant' : 'Collapse AI Assistant'}
+          aria-label={collapsed ? 'Expand MIRA' : 'Collapse MIRA'}
         >
           {collapsed ? (
             <ChevronLeft className="w-5 h-5 text-gray-400" />
@@ -43,7 +43,7 @@ export function AIAssistantPanel({ collapsed, setCollapsed }: AIAssistantPanelPr
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">AI Suggestions</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-3">MIRA Suggestions</h4>
                 <p className="text-sm text-gray-600 mb-4">Based on the symptoms, consider asking about:</p>
                 <div className="space-y-2">
                   <button className="flex items-center space-x-2 w-full p-2 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg">
@@ -62,17 +62,17 @@ export function AIAssistantPanel({ collapsed, setCollapsed }: AIAssistantPanelPr
               </div>
             </div>
           </div>
-          {/* Fixed AI Input at bottom */}
+          {/* Fixed MIRA Input at bottom */}
           <div className="p-4 border-t border-gray-200 flex-shrink-0">
-            <form className="flex space-x-2" onSubmit={handleAiSubmit}>
+            <form className="flex space-x-2" onSubmit={handleMiraSubmit}>
               <input
                 type="text"
                 className="flex-1 p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
-                placeholder="Ask AI assistant..."
-                value={aiInput}
-                onChange={e => setAiInput(e.target.value)}
+                placeholder="Ask MIRA..."
+                value={miraInput}
+                onChange={e => setMiraInput(e.target.value)}
                 onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.shiftKey) handleAiSubmit(e)
+                  if (e.key === 'Enter' && !e.shiftKey) handleMiraSubmit(e)
                 }}
               />
               <button
