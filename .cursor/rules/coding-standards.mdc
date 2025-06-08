@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+name: Coding Standards
+description: Best practices for writing consistent and clean code.
+
+---
+
+Frontend:
+- Use ESLint + Prettier with project-specific configs
+- Always use explicit TypeScript types where practical
+- Prefer functional components and hooks
+- Avoid prop drilling — use context/state management
+- Separate logic and UI as much as possible
+
+Backend:
+- Use ruff for linting and black for formatting
+- Use async/await throughout
+- Keep endpoints small and focused
+- Validate all inputs with Pydantic
+- Organize logic using service and repository layers
+
+General:
+- Write self-documenting code before adding comments
+- Commit often and with intent (follow Git rules)
+- Refactor early — not just when it's broken

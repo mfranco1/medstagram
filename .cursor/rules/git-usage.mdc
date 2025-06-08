@@ -1,0 +1,25 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+name: Git Usage Guidelines
+description: Branching, commit, and PR rules for collaboration.
+
+---
+
+Branching:
+- Features: `feature/<short-name>`
+- Fixes: `fix/<short-description>`
+- Hotfixes: `hotfix/<urgent-fix>`
+
+Commits:
+- Use Conventional Commits (e.g., `feat: add patient search`)
+- Keep commits small and logically grouped
+- Use `--no-verify` sparingly
+
+PRs:
+- Always squash and merge
+- Write meaningful PR titles and descriptions
+- Include screenshots or logs when UI/UX is affected
+- Ensure tests pass before requesting review

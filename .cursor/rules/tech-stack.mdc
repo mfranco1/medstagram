@@ -1,0 +1,26 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+name: Tech Stack & Dependencies
+description: Core technologies and tools used in Medstagram.
+
+---
+
+Frontend:
+- Framework: React
+- Language: TypeScript
+- Styling: TailwindCSS
+- State Management: Zustand
+
+Backend:
+- Framework: FastAPI
+- Language: Python 3.11+
+- Database: PostgreSQL
+- ORM: SQLModel
+
+Tooling:
+- Linting: ESLint + Prettier (frontend), ruff + black (backend)
+- Package Managers: npm (frontend), poetry (backend)
+- Future integrations: TBD (AI, APIs, health data sources)

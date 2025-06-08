@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+name: UI/UX Guidelines
+description: Standards for frontend design and interaction.
+
+---
+
+General:
+- Desktop-first, but fully responsive (mobile friendly)
+- Stripe-style: clean, minimal, professional
+- Consistent layout spacing and readable font hierarchy
+- Use Tailwind utility classes for styling
+- Animate with Framer Motion where applicable
+
+Best Practices:
+- Use skeletons or spinners for async loading
+- Display clear, actionable error messages
+- Avoid modals inside modals
+- Use system-level feedback for saves, deletes, etc.
+- Prioritize accessibility (`aria-*`, keyboard nav)
+
+Typography & Spacing:
+- Base font size: 16px
+- Heading scale: 2xl > xl > lg > base
+- Padding/margin: multiples of 4 (4px, 8px, 16px, etc.)

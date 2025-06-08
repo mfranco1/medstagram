@@ -1,0 +1,25 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+name: Testing Strategy
+description: Guidelines for writing and organizing tests.
+
+---
+
+Frontend:
+- Unit Testing: React Testing Library
+- Coverage Tool: Vitest + coverage provider
+- Mocking: MSW (for API mocking)
+- Linting: ESLint + TypeScript strict mode
+
+Backend:
+- Unit Testing: pytest
+- Validation Testing: Pydantic schema unit tests
+- API Testing: HTTPX + pytest fixtures
+- Mocks: Use unittest.mock or pytest-mock for external APIs
+
+Coverage Goals:
+- Minimum: 70% (core modules)
+- Target: 90%+ (for all new features)

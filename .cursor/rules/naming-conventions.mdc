@@ -1,0 +1,22 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+name: Naming Conventions
+description: Naming style rules for frontend and backend.
+
+---
+
+Frontend:
+- Components: PascalCase (e.g., `PatientForm.tsx`)
+- Functions/variables: camelCase
+- Hooks: `use` prefix, camelCase (e.g., `usePatientData`)
+- Constants: UPPER_SNAKE_CASE
+- CSS classes: Tailwind utility-based
+
+Backend:
+- Python files, functions, variables: snake_case
+- Pydantic and ORM models: PascalCase
+- Database tables: snake_case (plural, e.g., `patient_records`)
+- API endpoints: kebab-case (e.g., `/api/patient-lookup`)

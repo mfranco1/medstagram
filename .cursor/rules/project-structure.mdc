@@ -1,0 +1,33 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+name: Project Structure
+description: Directory layout and file organization in a monorepo setup.
+
+---
+
+Architecture Pattern:
+- Clean Architecture + modular monorepo (can evolve as needed)
+
+Frontend Structure:
+frontend/
+┣ src/
+┃ ┣ components/ # Reusable UI components
+┃ ┣ pages/ # Route-based views
+┃ ┣ features/ # Domain-specific logic
+┃ ┣ hooks/ # Shared custom React hooks
+┃ ┣ lib/ # Utilities and helpers
+┃ ┣ assets/ # Images, icons, fonts
+┗ index.tsx
+
+Backend Structure:
+backend/
+┣ app/
+┃ ┣ api/ # Route endpoints
+┃ ┣ core/ # Config, startup, security
+┃ ┣ models/ # SQLModel classes
+┃ ┣ schemas/ # Pydantic schemas
+┣ tests/ # Pytest-based unit tests
+┗ main.py
