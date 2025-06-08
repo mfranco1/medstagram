@@ -13,7 +13,7 @@ export function MainLayout({ children }: MainLayoutProps) {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="flex pt-16">
-        <Sidebar />
+        <div className="w-16" /> {/* Spacer for fixed sidebar */}
         <div className="flex-1 flex overflow-hidden">
           <main className="flex-1 p-8 overflow-y-auto">
             {children}
@@ -21,6 +21,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <AIAssistantPanel collapsed={aiCollapsed} setCollapsed={setAiCollapsed} />
         </div>
       </div>
+      <Sidebar />
     </div>
   )
 } 

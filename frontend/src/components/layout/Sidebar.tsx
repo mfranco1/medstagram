@@ -17,11 +17,11 @@ export function Sidebar() {
   const [expanded, setExpanded] = useState(false)
   return (
     <aside
-      className={`group flex flex-col items-center bg-white border-r border-gray-200 shadow-lg py-6 h-screen transition-all duration-200 ${expanded ? 'w-56' : 'w-16'} z-20`}
+      className={`fixed top-16 left-0 bottom-0 flex flex-col items-center bg-white border-r border-gray-200 shadow-lg py-6 transition-all duration-200 ${expanded ? 'w-56' : 'w-16'} z-40`}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
-        <div className="flex flex-col space-y-6 mt-2 w-full items-center">
+      <div className="flex flex-col space-y-6 mt-2 w-full items-center overflow-y-auto">
         {sidebarItems.map((item, idx) => (
           <button
             key={item.label}
