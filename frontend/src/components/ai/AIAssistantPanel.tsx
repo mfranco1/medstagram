@@ -18,7 +18,7 @@ export function AIAssistantPanel({ collapsed, setCollapsed }: AIAssistantPanelPr
 
   return (
     <aside
-      className={`relative transition-all duration-200 bg-white border-l shadow-sm flex flex-col ${collapsed ? 'w-14 px-2' : 'w-80 px-6'}`}
+      className={`fixed top-16 right-0 bottom-0 transition-all duration-200 bg-white border-l shadow-sm flex flex-col ${collapsed ? 'w-14 px-2' : 'w-80 px-6'} z-40`}
       style={{ minWidth: collapsed ? '56px' : '320px', maxWidth: collapsed ? '56px' : '320px' }}
     >
       <div className="p-4 border-b border-gray-200 flex-shrink-0 flex items-center justify-between">

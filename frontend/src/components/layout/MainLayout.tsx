@@ -14,14 +14,15 @@ export function MainLayout({ children }: MainLayoutProps) {
       <Header />
       <div className="flex pt-16">
         <div className="w-16" /> {/* Spacer for fixed sidebar */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex">
           <main className="flex-1 p-8 overflow-y-auto">
             {children}
           </main>
-          <AIAssistantPanel collapsed={aiCollapsed} setCollapsed={setAiCollapsed} />
+          <div className={aiCollapsed ? 'w-14' : 'w-80'} /> {/* Spacer for fixed AI panel */}
         </div>
       </div>
       <Sidebar />
+      <AIAssistantPanel collapsed={aiCollapsed} setCollapsed={setAiCollapsed} />
     </div>
   )
 } 
