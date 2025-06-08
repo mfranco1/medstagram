@@ -48,55 +48,47 @@ export function PatientInfoCard({ activeTab, setActiveTab }: PatientInfoCardProp
         </button>
       </div>
       {/* Patient Info Grid */}
-      <div className="grid grid-cols-2 gap-6 text-sm">
-        <div className="space-y-4">
-          <div className="flex items-center space-x-3">
-            <Calendar className="w-4 h-4 text-gray-400" />
-            <div>
-              <span className="text-gray-500">Date of Birth</span>
-              <p className="font-medium text-gray-900">January 1, 1980</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <User className="w-4 h-4 text-gray-400" />
-            <div>
-              <span className="text-gray-500">Civil Status</span>
-              <p className="font-medium text-gray-900">Married</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            <MapPin className="w-4 h-4 text-gray-400" />
-            <div>
-              <span className="text-gray-500">Nationality</span>
-              <p className="font-medium text-gray-900">Filipino</p>
-            </div>
+      <div className="grid grid-cols-3 gap-x-8 gap-y-4 text-sm">
+        <div className="flex items-center space-x-3">
+          <Calendar className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Date of Birth</span>
+            <p className="font-medium text-gray-900">January 1, 1980</p>
           </div>
         </div>
-        <div className="space-y-4">
-          <div>
-            <div className="flex items-center space-x-3">
-              <Church className="w-4 h-4 text-gray-400" />
-              <div>
-                <span className="text-gray-500">Religion</span>
-                <p className="font-medium text-gray-900">Roman Catholic</p>
-              </div>
-            </div>
+        <div className="flex items-center space-x-3">
+          <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Civil Status</span>
+            <p className="font-medium text-gray-900">Married</p>
           </div>
-          <div>
-            <div className="flex items-center space-x-3">
-              <Home className="w-4 h-4 text-gray-400" />
-              <div>
-                <span className="text-gray-500">Address</span>
-                <p className="font-medium text-gray-900">123 P Faura St.,<br />Manila City</p>
-              </div>
-            </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Nationality</span>
+            <p className="font-medium text-gray-900">Filipino</p>
           </div>
-          <div className="flex items-center space-x-3">
-            <Phone className="w-4 h-4 text-gray-400" />
-            <div>
-              <span className="text-gray-500">Philhealth</span>
-              <p className="font-medium text-gray-900">12-345678901-2</p>
-            </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Church className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Religion</span>
+            <p className="font-medium text-gray-900">Roman Catholic</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Home className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Address</span>
+            <p className="font-medium text-gray-900">123 P Faura St., Manila City</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Philhealth</span>
+            <p className="font-medium text-gray-900">12-345678901-2</p>
           </div>
         </div>
       </div>
