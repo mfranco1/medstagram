@@ -11,6 +11,31 @@ interface SidebarProps {
   onExpandChange?: (expanded: boolean) => void
 }
 
+// Dummy user data - this will be replaced with real data later
+const currentUser = {
+  name: 'Dr. Marty Franco',
+  role: 'Doctor',
+  initials: 'MF'
+}
+
+function UserProfile({ expanded }: { expanded: boolean }) {
+  return (
+    <div className="flex items-center px-2 py-4 border-t border-gray-200">
+      <div className="flex items-center">
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-violet-600 text-white text-sm font-medium">
+          {currentUser.initials}
+        </div>
+        {expanded && (
+          <div className="ml-3">
+            <p className="text-sm font-medium text-gray-700">{currentUser.name}</p>
+            <p className="text-xs text-gray-500">{currentUser.role}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export function Sidebar({ onExpandChange }: SidebarProps) {
   const [expanded, setExpanded] = useState(false)
 
@@ -38,6 +63,7 @@ export function Sidebar({ onExpandChange }: SidebarProps) {
           <SidebarItem icon={BarChart} label="Analytics" expanded={expanded} />
           <SidebarItem icon={Settings} label="Settings" expanded={expanded} />
         </nav>
+        <UserProfile expanded={expanded} />
       </div>
     </aside>
   )
