@@ -11,7 +11,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/soap" element={<SoapPage />} />
+        <Route path="/soap/:patientId" element={<SoapPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/patients" element={<PatientsPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

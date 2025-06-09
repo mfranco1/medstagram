@@ -1,9 +1,22 @@
 import { useState } from 'react'
 import { MainLayout } from '../components/layout/MainLayout'
 import { Search, Plus, MoreVertical, ChevronDown } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+
+export interface Patient {
+  id: number
+  name: string
+  age: number
+  gender: string
+  caseNumber: string
+  dateAdmitted: string
+  location: string
+  status: string
+  diagnosis: string
+}
 
 // Mock data - will be replaced with API calls later
-const mockPatients = [
+export const mockPatients: Patient[] = [
   {
     id: 1,
     name: 'Restituto Arapipap',
@@ -180,6 +193,7 @@ export default function PatientsPage() {
   const [locationFilter, setLocationFilter] = useState('')
   const [sortField, setSortField] = useState<keyof typeof mockPatients[0]>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const navigate = useNavigate()
 
   const handleSort = (field: keyof typeof mockPatients[0]) => {
     if (field === sortField) {
@@ -188,6 +202,10 @@ export default function PatientsPage() {
       setSortField(field)
       setSortDirection('asc')
     }
+  }
+
+  const handlePatientClick = (patientId: number) => {
+    navigate(`/soap/${patientId}`)
   }
 
   const filteredPatients = mockPatients
@@ -373,7 +391,12 @@ export default function PatientsPage() {
                   {filteredPatients.map((patient) => (
                     <tr key={patient.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{patient.name}</div>
+                        <button
+                          onClick={() => handlePatientClick(patient.id)}
+                          className="text-sm font-medium text-violet-600 hover:text-violet-900 focus:outline-none focus:underline"
+                        >
+                          {patient.name}
+                        </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500">{patient.age}</div>
@@ -382,7 +405,12 @@ export default function PatientsPage() {
                         <div className="text-sm text-gray-500">{patient.gender}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{patient.caseNumber}</div>
+                        <button
+                          onClick={() => handlePatientClick(patient.id)}
+                          className="text-sm font-medium text-violet-600 hover:text-violet-900 focus:outline-none focus:underline"
+                        >
+                          {patient.caseNumber}
+                        </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500">{patient.dateAdmitted}</div>
