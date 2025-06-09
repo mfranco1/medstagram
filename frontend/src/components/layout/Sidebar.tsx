@@ -4,7 +4,9 @@ import {
   Users,
   Calendar,
   BarChart,
-  Settings
+  Settings,
+  LogOut,
+  MessageSquare
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -13,7 +15,7 @@ interface SidebarProps {
 
 // Dummy user data - this will be replaced with real data later
 const currentUser = {
-  name: 'Dr. Marty Franco',
+  name: 'Marty Franco',
   role: 'Doctor',
   initials: 'MF'
 }
@@ -60,10 +62,14 @@ export function Sidebar({ onExpandChange }: SidebarProps) {
           <SidebarItem icon={Home} label="Dashboard" expanded={expanded} />
           <SidebarItem icon={Users} label="Patients" expanded={expanded} />
           <SidebarItem icon={Calendar} label="Schedule" expanded={expanded} />
+          <SidebarItem icon={MessageSquare} label="Messages" expanded={expanded} />
           <SidebarItem icon={BarChart} label="Analytics" expanded={expanded} />
           <SidebarItem icon={Settings} label="Settings" expanded={expanded} />
+          <SidebarItem icon={LogOut} label="Logout" expanded={expanded} />
         </nav>
-        <UserProfile expanded={expanded} />
+        <div className="flex flex-col border-t border-gray-200">
+          <UserProfile expanded={expanded} />
+        </div>
       </div>
     </aside>
   )
