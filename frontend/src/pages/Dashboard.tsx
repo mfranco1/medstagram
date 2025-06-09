@@ -38,6 +38,11 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => (

@@ -11,7 +11,7 @@ const mockPatients = [
     gender: 'Male',
     caseNumber: '123456',
     dateAdmitted: '2024-03-15',
-    location: 'Ward 9',
+    location: 'Ward 3',
     status: 'Active Admission',
     diagnosis: 'Acute Respiratory Failure, Type 1, secondary to Community Acquired Pneumonia, High Risk'
   },
@@ -22,7 +22,7 @@ const mockPatients = [
     gender: 'Female',
     caseNumber: '123457',
     dateAdmitted: '2024-03-10',
-    location: 'Ward 11',
+    location: 'Ward 3',
     status: 'Active Admission',
     diagnosis: 'Acute Respiratory Failure'
   },
@@ -33,9 +33,9 @@ const mockPatients = [
     gender: 'Male',
     caseNumber: '123458',
     dateAdmitted: '2024-03-05',
-    location: 'Ward 8',
+    location: 'Ward 4',
     status: 'Inactive',
-    diagnosis: 'Septic Shock'
+    diagnosis: 'Septic Shock, secondary to A. baumani bacteremia'
   },
   {
     id: 4,
@@ -44,7 +44,7 @@ const mockPatients = [
     gender: 'Female',
     caseNumber: '123459',
     dateAdmitted: '2024-03-18',
-    location: 'Ward 9',
+    location: 'Ward 4',
     status: 'Active Admission',
     diagnosis: 'Systemic Lupus Erythematosus'
   },
@@ -55,9 +55,119 @@ const mockPatients = [
     gender: 'Male',
     caseNumber: '123460',
     dateAdmitted: '2024-03-12',
-    location: 'Ward 11',
+    location: 'Ward 1',
     status: 'Active Admission',
     diagnosis: 'Acute CVD Infarct'
+  },
+  {
+    id: 6,
+    name: 'Sarah Chen',
+    age: 35,
+    gender: 'Female',
+    caseNumber: '123461',
+    dateAdmitted: '2024-04-20',
+    location: 'Ward 1',
+    status: 'Active Admission',
+    diagnosis: 'Acute Pancreatitis'
+  },
+  {
+    id: 7,
+    name: 'James Rodriguez',
+    age: 62,
+    gender: 'Male',
+    caseNumber: '123462',
+    dateAdmitted: '2024-03-17',
+    location: 'Ward 1',
+    status: 'Active Admission',
+    diagnosis: 'Congestive Heart Failure, HFrEF, NYHA III, not in acute decompensation'
+  },
+  {
+    id: 8,
+    name: 'Maria Garcia',
+    age: 28,
+    gender: 'Female',
+    caseNumber: '123463',
+    dateAdmitted: '2024-03-14',
+    location: 'Ward 2',
+    status: 'Inactive',
+    diagnosis: 'Acute Appendicitis'
+  },
+  {
+    id: 9,
+    name: 'David Kim',
+    age: 47,
+    gender: 'Male',
+    caseNumber: '123464',
+    dateAdmitted: '2024-03-19',
+    location: 'Ward 2',
+    status: 'Active Admission',
+    diagnosis: 'Acute Kidney Injury on top of Chronic Kidney Disease, stage V, from DMKD/HTKD, not in uremia'
+  },
+  {
+    id: 10,
+    name: 'Lisa Patel',
+    age: 39,
+    gender: 'Female',
+    caseNumber: '123465',
+    dateAdmitted: '2024-03-16',
+    location: 'Ward 2',
+    status: 'Active Admission',
+    diagnosis: 'Acute Cholecystitis secondary to Choledocholithiasis, not in cholangitis'
+  },
+  {
+    id: 11,
+    name: 'Thomas Anderson',
+    age: 52,
+    gender: 'Male',
+    caseNumber: '123466',
+    dateAdmitted: '2024-03-13',
+    location: 'Ward 4',
+    status: 'Inactive',
+    diagnosis: 'Acute Coronary Syndrome'
+  },
+  {
+    id: 12,
+    name: 'Sophie Williams',
+    age: 31,
+    gender: 'Female',
+    caseNumber: '123467',
+    dateAdmitted: '2024-03-21',
+    location: 'Ward 3',
+    status: 'Active Admission',
+    diagnosis: 'Acute Complicated Pyelonephritis'
+  },
+  {
+    id: 13,
+    name: 'Carlos Martinez',
+    age: 44,
+    gender: 'Male',
+    caseNumber: '123468',
+    dateAdmitted: '2024-03-22',
+    location: 'Ward 4',
+    status: 'Active Admission',
+    diagnosis: 'COPD in acute exacerbation'
+  },
+  {
+    id: 14,
+    name: 'Emma Thompson',
+    age: 36,
+    gender: 'Female',
+    caseNumber: '123469',
+    dateAdmitted: '2024-03-23',
+    location: 'Ward 3',
+    status: 'Active Admission',
+    diagnosis: 'Colorectal Adenocarcinoma, stage IV'
+  },
+  {
+    id: 15,
+    name: 'Daniel Lee',
+    age: 49,
+    gender: 'Male',
+    caseNumber: '123470',
+    dateAdmitted: '2024-03-24',
+    location: 'Ward 3',
+    status: 'Active Admission',
+    diagnosis: 'Chronic Liver Disease, Childs-Pugh C, from cons 1) Chronic Hepatitis B, 2) MAFLD, 3) Alcoholic Liver Disease, less likely'
   }
 ]
 
