@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import SoapPage from './pages/SoapPage'
 import SignupPage from './pages/SignupPage'
+import Dashboard from './pages/Dashboard'
 
 export default function App() {
   return (
@@ -10,7 +11,8 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/soap" element={<SoapPage />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   )

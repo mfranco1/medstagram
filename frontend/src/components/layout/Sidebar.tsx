@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   Home,
   Users,
@@ -39,6 +39,43 @@ function UserProfile({ expanded }: { expanded: boolean }) {
   )
 }
 
+interface SidebarItemProps {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
+  label: string
+  expanded: boolean
+  onClick?: () => void
+  to?: string
+}
+
+function SidebarItem({ icon: Icon, label, expanded, onClick, to }: SidebarItemProps) {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const isActive = to ? location.pathname === to : false
+
+  const handleClick = () => {
+    if (to) {
+      navigate(to)
+    }
+    onClick?.()
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`w-full flex items-center px-2 py-2 rounded-md group transition-colors ${
+        isActive 
+          ? 'bg-violet-50 text-violet-600' 
+          : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'
+      }`}
+    >
+      <Icon className="w-6 h-6" />
+      {expanded && (
+        <span className="ml-3 text-sm font-medium">{label}</span>
+      )}
+    </button>
+  )
+}
+
 export function Sidebar({ onExpandChange }: SidebarProps) {
   const [expanded, setExpanded] = useState(false)
   const navigate = useNavigate()
@@ -74,12 +111,12 @@ export function Sidebar({ onExpandChange }: SidebarProps) {
     >
       <div className={`flex flex-col h-full ${expanded ? 'w-64' : 'w-16'}`}>
         <nav className="flex-1 px-2 py-4 space-y-1">
-          <SidebarItem icon={Home} label="Dashboard" expanded={expanded} />
-          <SidebarItem icon={Users} label="Patients" expanded={expanded} />
-          <SidebarItem icon={Calendar} label="Schedule" expanded={expanded} />
-          <SidebarItem icon={MessageSquare} label="Messages" expanded={expanded} />
-          <SidebarItem icon={BarChart} label="Analytics" expanded={expanded} />
-          <SidebarItem icon={Settings} label="Settings" expanded={expanded} />
+          <SidebarItem icon={Home} label="Dashboard" expanded={expanded} to="/dashboard" />
+          <SidebarItem icon={Users} label="Patients" expanded={expanded} to="/patients" />
+          <SidebarItem icon={Calendar} label="Schedule" expanded={expanded} to="/schedule" />
+          <SidebarItem icon={MessageSquare} label="Messages" expanded={expanded} to="/messages" />
+          <SidebarItem icon={BarChart} label="Analytics" expanded={expanded} to="/analytics" />
+          <SidebarItem icon={Settings} label="Settings" expanded={expanded} to="/settings" />
           <SidebarItem 
             icon={LogOut} 
             label="Logout" 
@@ -92,26 +129,5 @@ export function Sidebar({ onExpandChange }: SidebarProps) {
         </div>
       </div>
     </aside>
-  )
-}
-
-interface SidebarItemProps {
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
-  label: string
-  expanded: boolean
-  onClick?: () => void
-}
-
-function SidebarItem({ icon: Icon, label, expanded, onClick }: SidebarItemProps) {
-  return (
-    <button
-      onClick={onClick}
-      className="w-full flex items-center px-2 py-2 text-gray-400 rounded-md hover:bg-gray-50 hover:text-gray-600 group"
-    >
-      <Icon className="w-6 h-6" />
-      {expanded && (
-        <span className="ml-3 text-sm font-medium">{label}</span>
-      )}
-    </button>
   )
 } 
