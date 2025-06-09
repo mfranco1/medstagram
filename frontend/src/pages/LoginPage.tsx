@@ -32,11 +32,18 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-violet-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Medstagram</h1>
+          <div className="flex items-center justify-center space-x-5">
+            <img
+              src="/medstagram_small.png"
+              alt="Medstagram Logo"
+              className="h-12 w-12 rounded-lg"
+            />
+            <h1 className="text-3xl font-bold text-gray-900">medstagram</h1>
+          </div>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-4">
+        <form className="mt-8 space-y-8" onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email Address
