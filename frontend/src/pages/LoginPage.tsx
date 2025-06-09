@@ -31,7 +31,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        <div className="text-center">
+        <div className="text-center pb-8 pt-4">
           <div className="flex items-center justify-center space-x-5">
             <img
               src="/medstagram_small.png"
@@ -42,8 +42,8 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <form className="mt-8 space-y-8" onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-6">
+        <form className="space-y-10" onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-10">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email Address
@@ -52,7 +52,7 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 {...register('email')}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-violet-500 focus:border-violet-500"
+                className="mt-1 text-sm block w-full px-3 py-2 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:border-gray-500 transition-colors duration-200"
                 placeholder="Enter your email"
               />
               {errors.email && (
@@ -68,7 +68,7 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 {...register('password')}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-violet-500 focus:border-violet-500"
+                className="mt-1 text-sm block w-full px-3 py-2 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:border-gray-500 transition-colors duration-200"
                 placeholder="Enter your password"
               />
               {errors.password && (
@@ -128,8 +128,8 @@ export default function LoginPage() {
               type="button"
               className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:ring-violet-500 focus:outline-none focus:ring-2 focus:ring-offset-2"
             >
-              <span className="sr-only">Sign in with Microsoft</span>
-              Microsoft
+              <span className="sr-only">Sign in with Apple</span>
+              Apple
             </button>
           </div>
         </div>
