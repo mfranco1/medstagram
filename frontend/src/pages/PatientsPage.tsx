@@ -13,6 +13,12 @@ export interface Patient {
   location: string
   status: string
   diagnosis: string
+  dateOfBirth: string
+  civilStatus: string
+  nationality: string
+  religion: string
+  address: string
+  philhealth: string
 }
 
 // Mock data - will be replaced with API calls later
@@ -26,7 +32,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-15',
     location: 'Ward 3',
     status: 'Active Admission',
-    diagnosis: 'Acute Respiratory Failure, Type 1, secondary to Community Acquired Pneumonia, High Risk'
+    diagnosis: 'Acute Respiratory Failure, Type 1, secondary to Community Acquired Pneumonia, High Risk',
+    dateOfBirth: '1979-05-15',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '123 P Faura St., Manila City',
+    philhealth: '12-345678901-2'
   },
   {
     id: 2,
@@ -37,7 +49,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-10',
     location: 'Ward 3',
     status: 'Active Admission',
-    diagnosis: 'Acute Respiratory Failure'
+    diagnosis: 'Acute Respiratory Failure',
+    dateOfBirth: '1992-08-23',
+    civilStatus: 'Single',
+    nationality: 'Filipino',
+    religion: 'Protestant',
+    address: '456 Taft Ave., Manila City',
+    philhealth: '12-345678901-3'
   },
   {
     id: 3,
@@ -48,7 +66,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-05',
     location: 'Ward 4',
     status: 'Inactive',
-    diagnosis: 'Septic Shock, secondary to A. baumani bacteremia'
+    diagnosis: 'Septic Shock, secondary to A. baumani bacteremia',
+    dateOfBirth: '1966-03-10',
+    civilStatus: 'Widowed',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '789 Roxas Blvd., Manila City',
+    philhealth: '12-345678901-4'
   },
   {
     id: 4,
@@ -59,7 +83,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-18',
     location: 'Ward 4',
     status: 'Active Admission',
-    diagnosis: 'Systemic Lupus Erythematosus'
+    diagnosis: 'Systemic Lupus Erythematosus',
+    dateOfBirth: '1995-11-30',
+    civilStatus: 'Single',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '321 Rizal Ave., Manila City',
+    philhealth: '12-345678901-5'
   },
   {
     id: 5,
@@ -70,7 +100,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-12',
     location: 'Ward 1',
     status: 'Active Admission',
-    diagnosis: 'Acute CVD Infarct'
+    diagnosis: 'Acute CVD Infarct',
+    dateOfBirth: '1983-07-15',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '654 España Blvd., Manila City',
+    philhealth: '12-345678901-6'
   },
   {
     id: 6,
@@ -81,7 +117,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-04-20',
     location: 'Ward 1',
     status: 'Active Admission',
-    diagnosis: 'Acute Pancreatitis'
+    diagnosis: 'Acute Pancreatitis',
+    dateOfBirth: '1989-04-12',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Buddhist',
+    address: '987 Quezon Ave., Manila City',
+    philhealth: '12-345678901-7'
   },
   {
     id: 7,
@@ -92,7 +134,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-17',
     location: 'Ward 1',
     status: 'Active Admission',
-    diagnosis: 'Congestive Heart Failure, HFrEF, NYHA III, not in acute decompensation'
+    diagnosis: 'Congestive Heart Failure, HFrEF, NYHA III, not in acute decompensation',
+    dateOfBirth: '1962-09-25',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '147 Quirino Ave., Manila City',
+    philhealth: '12-345678901-8'
   },
   {
     id: 8,
@@ -103,7 +151,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-14',
     location: 'Ward 2',
     status: 'Inactive',
-    diagnosis: 'Acute Appendicitis'
+    diagnosis: 'Acute Appendicitis',
+    dateOfBirth: '1996-02-18',
+    civilStatus: 'Single',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '258 Sampaloc St., Manila City',
+    philhealth: '12-345678901-9'
   },
   {
     id: 9,
@@ -114,7 +168,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-19',
     location: 'Ward 2',
     status: 'Active Admission',
-    diagnosis: 'Acute Kidney Injury on top of Chronic Kidney Disease, stage V, from DMKD/HTKD, not in uremia'
+    diagnosis: 'Acute Kidney Injury on top of Chronic Kidney Disease, stage V, from DMKD/HTKD, not in uremia',
+    dateOfBirth: '1977-12-05',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Protestant',
+    address: '369 Malate St., Manila City',
+    philhealth: '12-345678901-0'
   },
   {
     id: 10,
@@ -125,7 +185,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-16',
     location: 'Ward 2',
     status: 'Active Admission',
-    diagnosis: 'Acute Cholecystitis secondary to Choledocholithiasis, not in cholangitis'
+    diagnosis: 'Acute Cholecystitis secondary to Choledocholithiasis, not in cholangitis',
+    dateOfBirth: '1985-06-20',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Hindu',
+    address: '741 Ermita St., Manila City',
+    philhealth: '12-345678901-1'
   },
   {
     id: 11,
@@ -136,7 +202,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-13',
     location: 'Ward 4',
     status: 'Inactive',
-    diagnosis: 'Acute Coronary Syndrome'
+    diagnosis: 'Acute Coronary Syndrome',
+    dateOfBirth: '1972-01-15',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '852 Paco St., Manila City',
+    philhealth: '12-345678901-2'
   },
   {
     id: 12,
@@ -147,7 +219,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-21',
     location: 'Ward 3',
     status: 'Active Admission',
-    diagnosis: 'Acute Complicated Pyelonephritis'
+    diagnosis: 'Acute Complicated Pyelonephritis',
+    dateOfBirth: '1993-03-28',
+    civilStatus: 'Single',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '963 Pandacan St., Manila City',
+    philhealth: '12-345678901-3'
   },
   {
     id: 13,
@@ -158,7 +236,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-22',
     location: 'Ward 4',
     status: 'Active Admission',
-    diagnosis: 'COPD in acute exacerbation'
+    diagnosis: 'COPD in acute exacerbation',
+    dateOfBirth: '1980-08-10',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Roman Catholic',
+    address: '159 Santa Ana St., Manila City',
+    philhealth: '12-345678901-4'
   },
   {
     id: 14,
@@ -169,7 +253,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-23',
     location: 'Ward 3',
     status: 'Active Admission',
-    diagnosis: 'Colorectal Adenocarcinoma, stage IV'
+    diagnosis: 'Colorectal Adenocarcinoma, stage IV',
+    dateOfBirth: '1988-11-15',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Protestant',
+    address: '357 San Andres St., Manila City',
+    philhealth: '12-345678901-5'
   },
   {
     id: 15,
@@ -180,7 +270,13 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-03-24',
     location: 'Ward 3',
     status: 'Active Admission',
-    diagnosis: 'Chronic Liver Disease, Childs-Pugh C, from cons 1) Chronic Hepatitis B, 2) MAFLD, 3) Alcoholic Liver Disease, less likely'
+    diagnosis: 'Chronic Liver Disease, Childs-Pugh C, from cons 1) Chronic Hepatitis B, 2) MAFLD, 3) Alcoholic Liver Disease, less likely',
+    dateOfBirth: '1975-04-22',
+    civilStatus: 'Married',
+    nationality: 'Filipino',
+    religion: 'Buddhist',
+    address: '486 San Miguel St., Manila City',
+    philhealth: '12-345678901-6'
   }
 ]
 

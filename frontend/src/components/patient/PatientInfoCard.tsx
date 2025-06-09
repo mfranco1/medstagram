@@ -1,4 +1,4 @@
-import { Calendar, User, MapPin, Church, Home, Phone } from 'lucide-react'
+import { Calendar, User, MapPin, Church, Home, Phone, Heart, FileText } from 'lucide-react'
 import type { Patient } from '../../pages/PatientsPage'
 
 interface PatientInfoCardProps {
@@ -62,19 +62,61 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient }: PatientInf
         <div className="flex items-center space-x-3">
           <Calendar className="w-4 h-4 text-gray-400 flex-shrink-0" />
           <div className="min-w-0">
+            <span className="text-gray-500">Date of Birth</span>
+            <p className="font-medium text-gray-900">{patient.dateOfBirth}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Civil Status</span>
+            <p className="font-medium text-gray-900">{patient.civilStatus}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Nationality</span>
+            <p className="font-medium text-gray-900">{patient.nationality}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Church className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Religion</span>
+            <p className="font-medium text-gray-900">{patient.religion}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Home className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Address</span>
+            <p className="font-medium text-gray-900">{patient.address}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
+            <span className="text-gray-500">Philhealth</span>
+            <p className="font-medium text-gray-900">{patient.philhealth}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Heart className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <div className="min-w-0">
             <span className="text-gray-500">Date Admitted</span>
             <p className="font-medium text-gray-900">{patient.dateAdmitted}</p>
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
           <div className="min-w-0">
             <span className="text-gray-500">Location</span>
             <p className="font-medium text-gray-900">{patient.location}</p>
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
           <div className="min-w-0">
             <span className="text-gray-500">Diagnosis</span>
             <p className="font-medium text-gray-900">{patient.diagnosis}</p>
