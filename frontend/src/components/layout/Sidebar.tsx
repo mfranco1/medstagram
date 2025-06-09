@@ -29,12 +29,14 @@ function UserProfile({ expanded }: { expanded: boolean }) {
           {currentUser.initials}
         </div>
       </a>
-      {expanded && (
-        <div className="ml-3">
-          <span className="text-sm font-medium text-gray-700">{currentUser.name}</span>
-          <p className="text-xs text-gray-500">{currentUser.role}</p>
-        </div>
-      )}
+      <div 
+        className={`ml-3 overflow-hidden transition-all duration-200 ease-in-out ${
+          expanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 w-0'
+        }`}
+      >
+        <span className="text-sm font-medium text-gray-700 whitespace-nowrap">{currentUser.name}</span>
+        <p className="text-xs text-gray-500 whitespace-nowrap">{currentUser.role}</p>
+      </div>
     </div>
   )
 }
@@ -68,9 +70,9 @@ function SidebarItem({ icon: Icon, label, expanded, onClick, to }: SidebarItemPr
           : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'
       }`}
     >
-      <Icon className="w-6 h-6" />
+      <Icon className="w-6 h-6 flex-shrink-0" />
       {expanded && (
-        <span className="ml-3 text-sm font-medium">{label}</span>
+        <span className="ml-3 text-sm font-medium transition-opacity duration-200 ease-in-out">{label}</span>
       )}
     </button>
   )
@@ -106,10 +108,11 @@ export function Sidebar({ onExpandChange }: SidebarProps) {
   return (
     <aside 
       className="fixed top-16 left-0 bottom-0 bg-white border-r border-gray-200 transition-all duration-200 ease-in-out z-40"
+      style={{ width: expanded ? '256px' : '64px', minWidth: expanded ? '256px' : '64px', maxWidth: expanded ? '256px' : '64px' }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={`flex flex-col h-full ${expanded ? 'w-64' : 'w-16'}`}>
+      <div className="flex flex-col h-full">
         <nav className="flex-1 px-2 py-4 space-y-1">
           <SidebarItem icon={Home} label="Dashboard" expanded={expanded} to="/dashboard" />
           <SidebarItem icon={Users} label="Patients" expanded={expanded} to="/patients" />
