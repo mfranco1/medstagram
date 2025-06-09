@@ -1,5 +1,6 @@
-import { ChevronLeft, ChevronRight, Plus, Send, Bot } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Send } from 'lucide-react'
 import { useState } from 'react'
+import miraIcon from '../../assets/mira_icon.png'
 
 interface MIRAPanelProps {
   collapsed: boolean
@@ -90,10 +91,10 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
             onMouseLeave={() => setShowTooltip(false)}
           >
             <div 
-              className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center hover:bg-violet-200 transition-colors cursor-pointer"
+              className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center hover:bg-violet-500 transition-colors cursor-pointer"
               onClick={() => setCollapsed(false)}
             >
-              <Bot className="w-4 h-4 text-violet-600" />
+              <img src={miraIcon} alt="MIRA" className="w-5 h-5" />
             </div>
             {showTooltip && (
               <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 w-56 p-3 bg-white rounded-lg shadow-lg border border-gray-200">
