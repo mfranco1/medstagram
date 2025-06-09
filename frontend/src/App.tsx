@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage'
 import SoapPage from './pages/SoapPage'
 import SignupPage from './pages/SignupPage'
 import Dashboard from './pages/Dashboard'
+import PatientsPage from './pages/PatientsPage'
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/soap" element={<SoapPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/patients" element={<PatientsPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
