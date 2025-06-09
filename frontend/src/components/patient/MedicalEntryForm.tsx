@@ -58,7 +58,7 @@ export function MedicalEntryForm({ formData, setFormData }: MedicalEntryFormProp
           </button>
           {!collapsedSections.chiefComplaint && (
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-none"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
               rows={3}
               placeholder="Enter chief complaint..."
               value={formData.chiefComplaint}
@@ -76,7 +76,7 @@ export function MedicalEntryForm({ formData, setFormData }: MedicalEntryFormProp
           </button>
           {!collapsedSections.subjective && (
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-none"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
               rows={3}
               placeholder="Enter subjective findings..."
               value={formData.subjective}
@@ -94,7 +94,7 @@ export function MedicalEntryForm({ formData, setFormData }: MedicalEntryFormProp
           </button>
           {!collapsedSections.objective && (
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-none"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
               rows={3}
               placeholder="Enter objective findings..."
               value={formData.objective}
@@ -112,7 +112,7 @@ export function MedicalEntryForm({ formData, setFormData }: MedicalEntryFormProp
           </button>
           {!collapsedSections.assessment && (
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-none"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
               rows={3}
               placeholder="Enter assessment..."
               value={formData.assessment}
@@ -130,7 +130,7 @@ export function MedicalEntryForm({ formData, setFormData }: MedicalEntryFormProp
           </button>
           {!collapsedSections.plan && (
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-none"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
               rows={3}
               placeholder="Enter plan..."
               value={formData.plan}
