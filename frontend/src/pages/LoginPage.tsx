@@ -30,8 +30,8 @@ export default function LoginPage() {
       console.log('Login data:', data);
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      // Navigate to SOAP page after successful login
-      navigate('/soap');
+      // Navigate to dashboard after successful login
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
