@@ -25,7 +25,10 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
     >
       <div className="p-4 border-b border-gray-200 flex-shrink-0 flex items-center justify-between">
         {!collapsed && (
-          <h3 className="text-lg font-bold text-violet-600">MIRA</h3>
+          <div className="flex items-center space-x-3">
+            <img src={miraIcon} alt="MIRA" className="w-6 h-6 rounded-lg" />
+            <h3 className="text-lg font-bold text-gray-900">MIRA</h3>
+          </div>
         )}
         {!collapsed && (
           <button
@@ -94,7 +97,7 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
               className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center hover:bg-violet-500 transition-colors cursor-pointer"
               onClick={() => setCollapsed(false)}
             >
-              <img src={miraIcon} alt="MIRA" className="w-5 h-5" />
+              <img src={miraIcon} alt="MIRA" className="w-5 h-5 rounded-lg" />
             </div>
             {showTooltip && (
               <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 w-56 p-3 bg-white rounded-lg shadow-lg border border-gray-200">
