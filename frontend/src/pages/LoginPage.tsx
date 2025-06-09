@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router-dom';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -12,6 +13,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   
   const {
     register,
@@ -23,9 +25,18 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    // TODO: Implement actual login logic
-    console.log('Login data:', data);
-    setIsLoading(false);
+    try {
+      // TODO: Implement actual login logic
+      console.log('Login data:', data);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Navigate to SOAP page after successful login
+      navigate('/soap');
+    } catch (error) {
+      console.error('Login failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
