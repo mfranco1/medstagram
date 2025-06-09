@@ -21,17 +21,17 @@ const currentUser = {
 function UserProfile({ expanded }: { expanded: boolean }) {
   return (
     <div className="flex items-center px-2 py-4 border-t border-gray-200">
-      <div className="flex items-center">
+      <a href="#" className="flex items-center px-2 py-2 text-gray-400 rounded-md group">
         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-violet-600 text-white text-sm font-medium">
           {currentUser.initials}
         </div>
-        {expanded && (
-          <div className="ml-3">
-            <p className="text-sm font-medium text-gray-700">{currentUser.name}</p>
-            <p className="text-xs text-gray-500">{currentUser.role}</p>
-          </div>
-        )}
-      </div>
+      </a>
+      {expanded && (
+        <div className="ml-3">
+          <span className="text-sm font-medium text-gray-700">{currentUser.name}</span>
+          <p className="text-xs text-gray-500">{currentUser.role}</p>
+        </div>
+      )}
     </div>
   )
 }
