@@ -1,5 +1,5 @@
-import SoapPage from './pages/SoapPage'
+import LoginPage from './pages/LoginPage'
 
 export default function App() {
-  return <SoapPage />
+  return <LoginPage />
 }
