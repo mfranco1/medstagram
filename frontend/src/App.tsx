@@ -5,6 +5,7 @@ import SignupPage from './pages/SignupPage'
 import Dashboard from './pages/Dashboard'
 import PatientsPage from './pages/PatientsPage'
 import SettingsPage from './pages/SettingsPage'
+import MessagesPage from './pages/MessagesPage'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/soap/:patientId" element={<SoapPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/patients" element={<PatientsPage />} />
+        <Route path="/messages" element={<MessagesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
