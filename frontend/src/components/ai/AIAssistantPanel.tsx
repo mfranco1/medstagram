@@ -69,7 +69,7 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
             <form className="flex space-x-2" onSubmit={handleMiraSubmit}>
               <input
                 type="text"
-                className="flex-1 p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                className="flex-1 p-2 text-sm border border-gray-300 rounded-lg focus:outline-none"
                 placeholder="Ask MIRA..."
                 value={miraInput}
                 onChange={e => setMiraInput(e.target.value)}

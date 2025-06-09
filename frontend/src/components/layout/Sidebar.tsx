@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Home,
   Users,
@@ -40,6 +41,7 @@ function UserProfile({ expanded }: { expanded: boolean }) {
 
 export function Sidebar({ onExpandChange }: SidebarProps) {
   const [expanded, setExpanded] = useState(false)
+  const navigate = useNavigate()
 
   const handleMouseEnter = () => {
     setExpanded(true)
@@ -49,6 +51,19 @@ export function Sidebar({ onExpandChange }: SidebarProps) {
   const handleMouseLeave = () => {
     setExpanded(false)
     onExpandChange?.(false)
+  }
+
+  const handleLogout = async () => {
+    try {
+      // TODO: Implement actual logout logic (e.g., clear tokens, call logout API)
+      console.log('Logging out...')
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 500))
+      // Navigate to login page
+      navigate('/login')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
   }
 
   return (
@@ -65,7 +80,12 @@ export function Sidebar({ onExpandChange }: SidebarProps) {
           <SidebarItem icon={MessageSquare} label="Messages" expanded={expanded} />
           <SidebarItem icon={BarChart} label="Analytics" expanded={expanded} />
           <SidebarItem icon={Settings} label="Settings" expanded={expanded} />
-          <SidebarItem icon={LogOut} label="Logout" expanded={expanded} />
+          <SidebarItem 
+            icon={LogOut} 
+            label="Logout" 
+            expanded={expanded} 
+            onClick={handleLogout}
+          />
         </nav>
         <div className="flex flex-col border-t border-gray-200">
           <UserProfile expanded={expanded} />
@@ -79,18 +99,19 @@ interface SidebarItemProps {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
   label: string
   expanded: boolean
+  onClick?: () => void
 }
 
-function SidebarItem({ icon: Icon, label, expanded }: SidebarItemProps) {
+function SidebarItem({ icon: Icon, label, expanded, onClick }: SidebarItemProps) {
   return (
-    <a
-      href="#"
-      className="flex items-center px-2 py-2 text-gray-400 rounded-md hover:bg-gray-50 hover:text-gray-600 group"
+    <button
+      onClick={onClick}
+      className="w-full flex items-center px-2 py-2 text-gray-400 rounded-md hover:bg-gray-50 hover:text-gray-600 group"
     >
       <Icon className="w-6 h-6" />
       {expanded && (
         <span className="ml-3 text-sm font-medium">{label}</span>
       )}
-    </a>
+    </button>
   )
 } 
