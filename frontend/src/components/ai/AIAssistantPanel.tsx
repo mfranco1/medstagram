@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Plus, Send } from 'lucide-react'
+import { ChevronRight, Plus, Send } from 'lucide-react'
 import { useState } from 'react'
 import miraIcon from '../../assets/mira_icon.png'
 

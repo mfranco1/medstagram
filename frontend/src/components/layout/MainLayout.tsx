@@ -9,7 +9,7 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
-  const [miraCollapsed, setMiraCollapsed] = useState(false)
+  const [miraCollapsed, setMiraCollapsed] = useState(true)
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
