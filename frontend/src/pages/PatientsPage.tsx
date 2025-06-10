@@ -309,6 +309,7 @@ export default function PatientsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [locationFilter, setLocationFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [serviceFilter, setServiceFilter] = useState('')
   const [sortField, setSortField] = useState<keyof Patient>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [isNewPatientModalOpen, setIsNewPatientModalOpen] = useState(false)
@@ -334,7 +335,8 @@ export default function PatientsPage() {
       patient.caseNumber.includes(searchQuery)
     const matchesLocation = !locationFilter || patient.location === locationFilter
     const matchesStatus = !statusFilter || patient.status === statusFilter
-    return matchesSearch && matchesLocation && matchesStatus
+    const matchesService = !serviceFilter || patient.primaryService === serviceFilter
+    return matchesSearch && matchesLocation && matchesStatus && matchesService
   })
 
   const sortedPatients = [...filteredPatients].sort((a, b) => {
@@ -410,14 +412,14 @@ export default function PatientsPage() {
         </div>
 
         {/* Search and Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
             </div>
             <input
               type="text"
-              placeholder="Search name, diagnosis, or case number..."
+              placeholder="Name, diagnosis, or CN..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
@@ -449,6 +451,20 @@ export default function PatientsPage() {
                 }))
               ]}
               placeholder="Select status"
+            />
+          </div>
+          <div>
+            <Select
+              value={serviceFilter}
+              onChange={setServiceFilter}
+              options={[
+                { value: '', label: 'All Services' },
+                ...PRIMARY_SERVICES.map(service => ({
+                  value: service,
+                  label: service
+                }))
+              ]}
+              placeholder="Select service"
             />
           </div>
         </div>
