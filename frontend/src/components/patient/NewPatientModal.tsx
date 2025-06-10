@@ -76,6 +76,7 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                   required
                   error={errors.dateOfBirth}
                   disabled={isLoading}
+                  maxDate={new Date().toISOString().split('T')[0]}
                 />
               </FormSection>
 
