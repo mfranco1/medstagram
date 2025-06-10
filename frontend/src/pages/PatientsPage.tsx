@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { MainLayout } from '../components/layout/MainLayout'
 import { Search, Plus, MoreVertical, ChevronDown } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { NewPatientModal } from '../components/patient/NewPatientModal'
+import { Toast, type ToastType } from '../components/ui/Toast'
 
 export interface Patient {
   id: number
@@ -284,14 +286,17 @@ export const mockPatients: Patient[] = [
 const locations = Array.from(new Set(mockPatients.map(patient => patient.location))).sort()
 
 export default function PatientsPage() {
+  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [caseNumberFilter, setCaseNumberFilter] = useState('')
   const [locationFilter, setLocationFilter] = useState('')
-  const [sortField, setSortField] = useState<keyof typeof mockPatients[0]>('name')
+  const [sortField, setSortField] = useState<keyof Patient>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
-  const navigate = useNavigate()
+  const [isNewPatientModalOpen, setIsNewPatientModalOpen] = useState(false)
+  const [patients, setPatients] = useState<Patient[]>(mockPatients)
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
 
-  const handleSort = (field: keyof typeof mockPatients[0]) => {
+  const handleSort = (field: keyof Patient) => {
     if (field === sortField) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
@@ -304,25 +309,40 @@ export default function PatientsPage() {
     navigate(`/soap/${patientId}`)
   }
 
-  const filteredPatients = mockPatients
-    .filter(patient => {
-      const matchesSearch = patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        patient.diagnosis.toLowerCase().includes(searchQuery.toLowerCase())
-      
-      const matchesCaseNumber = caseNumberFilter === '' || 
-        patient.caseNumber.includes(caseNumberFilter)
-      
-      const matchesLocation = locationFilter === '' || 
-        patient.location === locationFilter
+  const filteredPatients = patients.filter(patient => {
+    const matchesSearch = patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      patient.diagnosis.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      patient.caseNumber.includes(searchQuery)
+    const matchesCaseNumber = !caseNumberFilter || patient.caseNumber.includes(caseNumberFilter)
+    const matchesLocation = !locationFilter || patient.location === locationFilter
+    return matchesSearch && matchesCaseNumber && matchesLocation
+  })
 
-      return matchesSearch && matchesCaseNumber && matchesLocation
+  const sortedPatients = [...filteredPatients].sort((a, b) => {
+    const aValue = a[sortField]
+    const bValue = b[sortField]
+    const modifier = sortDirection === 'asc' ? 1 : -1
+
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return aValue.localeCompare(bValue) * modifier
+    }
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return (aValue - bValue) * modifier
+    }
+    return 0
+  })
+
+  const handleAddPatient = (newPatient: Omit<Patient, 'id'>) => {
+    const patient: Patient = {
+      ...newPatient,
+      id: Math.max(...patients.map(p => p.id)) + 1
+    }
+    setPatients([...patients, patient])
+    setToast({
+      message: `Patient ${patient.name} has been added successfully`,
+      type: 'success'
     })
-    .sort((a, b) => {
-      const aValue = a[sortField]
-      const bValue = b[sortField]
-      const modifier = sortDirection === 'asc' ? 1 : -1
-      return aValue < bValue ? -1 * modifier : aValue > bValue ? 1 * modifier : 0
-    })
+  }
 
   return (
     <MainLayout>
@@ -330,8 +350,11 @@ export default function PatientsPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-gray-900">Patients</h1>
-          <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500">
-            <Plus className="h-5 w-5 mr-2" />
+          <button
+            onClick={() => setIsNewPatientModalOpen(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+          >
+            <Plus className="h-4 w-4 mr-2" />
             New Patient
           </button>
         </div>
@@ -484,7 +507,7 @@ export default function PatientsPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredPatients.map((patient) => (
+                  {sortedPatients.map((patient) => (
                     <tr key={patient.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
@@ -541,6 +564,20 @@ export default function PatientsPage() {
           </div>
         </div>
       </div>
+
+      <NewPatientModal
+        isOpen={isNewPatientModalOpen}
+        onClose={() => setIsNewPatientModalOpen(false)}
+        onSave={handleAddPatient}
+      />
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </MainLayout>
   )
 } 
