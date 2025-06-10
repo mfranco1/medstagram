@@ -54,212 +54,217 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">New Patient</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-500"
-              disabled={isLoading}
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Progress Steps */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              {STEPS.map((step, index) => {
-                const Icon = step.icon
-                const isActive = currentStep === step.id
-                const isCompleted = STEPS.findIndex(s => s.id === currentStep) > index
-                
-                return (
-                  <div key={step.id} className="flex items-center">
-                    <div
-                      className={`flex items-center justify-center w-10 h-10 rounded-full ${
-                        isActive
-                          ? 'bg-violet-100 text-violet-600'
-                          : isCompleted
-                          ? 'bg-violet-600 text-white'
-                          : 'bg-gray-100 text-gray-400'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <div className="ml-3">
-                      <p className={`text-sm font-medium ${
-                        isActive ? 'text-violet-600' : 'text-gray-500'
-                      }`}>
-                        {step.title}
-                      </p>
-                    </div>
-                    {index < STEPS.length - 1 && (
-                      <div className="w-24 h-0.5 mx-4 bg-gray-200">
-                        <div
-                          className={`h-full bg-violet-600 transition-all duration-300 ${
-                            isCompleted ? 'w-full' : 'w-0'
-                          }`}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg w-full max-w-4xl h-[80vh] flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          <div className="p-6 flex-1 overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">New Patient</h2>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-500"
+                disabled={isLoading}
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Basic Information Step */}
-            {currentStep === 'basic' && (
-              <div className="space-y-6">
-                <FormSection title="Basic Information">
-                  <FormField
-                    label="Full Name"
-                    value={formData.name}
-                    onChange={(value) => handleChange('name', value)}
-                    required
-                    disabled={isLoading}
-                  />
-                  <div>
-                    <FormField
-                      label="Age"
-                      value={formData.dateOfBirth ? formatAge(calculateAge(formData.dateOfBirth)) : '0 days'}
-                      onChange={() => {}}
-                      disabled
-                    />
-                    <p className="mt-1 text-xs text-gray-500">Calculated from date of birth</p>
-                  </div>
-                  <FormField
-                    label="Gender"
-                    value={formData.gender}
-                    onChange={(value) => handleChange('gender', value)}
-                    required
-                    options={GENDERS.map(gender => ({ value: gender, label: gender }))}
-                    disabled={isLoading}
-                  />
-                  <FormField
-                    label="Date of Birth"
-                    type="date"
-                    value={formData.dateOfBirth}
-                    onChange={(value) => handleChange('dateOfBirth', value)}
-                    required
-                    error={errors.dateOfBirth}
-                    disabled={isLoading}
-                    maxDate={new Date().toISOString().split('T')[0]}
-                  />
-                </FormSection>
+            {/* Progress Steps */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between">
+                {STEPS.map((step, index) => {
+                  const Icon = step.icon
+                  const isActive = currentStep === step.id
+                  const isCompleted = STEPS.findIndex(s => s.id === currentStep) > index
+                  
+                  return (
+                    <div key={step.id} className="flex items-center">
+                      <div
+                        className={`flex items-center justify-center w-10 h-10 rounded-full ${
+                          isActive
+                            ? 'bg-violet-100 text-violet-600'
+                            : isCompleted
+                            ? 'bg-violet-600 text-white'
+                            : 'bg-gray-100 text-gray-400'
+                        }`}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="ml-3">
+                        <p className={`text-sm font-medium ${
+                          isActive ? 'text-violet-600' : 'text-gray-500'
+                        }`}>
+                          {step.title}
+                        </p>
+                      </div>
+                      {index < STEPS.length - 1 && (
+                        <div className="w-24 h-0.5 mx-4 bg-gray-200">
+                          <div
+                            className={`h-full bg-violet-600 transition-all duration-300 ${
+                              isCompleted ? 'w-full' : 'w-0'
+                            }`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
-            )}
+            </div>
 
-            {/* Personal Information Step */}
-            {currentStep === 'personal' && (
-              <div className="space-y-6">
-                <FormSection title="Personal Information">
-                  <FormField
-                    label="Civil Status"
-                    value={formData.civilStatus}
-                    onChange={(value) => handleChange('civilStatus', value)}
-                    required
-                    options={CIVIL_STATUSES.map(status => ({ value: status, label: status }))}
-                    disabled={isLoading}
-                  />
-                  <FormField
-                    label="Nationality"
-                    value={formData.nationality}
-                    onChange={(value) => handleChange('nationality', value)}
-                    required
-                    disabled={isLoading}
-                  />
-                  <FormField
-                    label="Religion"
-                    value={formData.religion}
-                    onChange={(value) => handleChange('religion', value)}
-                    required
-                    disabled={isLoading}
-                  />
-                  <FormField
-                    label="PhilHealth Number"
-                    value={formData.philhealth}
-                    onChange={(value) => handleChange('philhealth', value)}
-                    required
-                    disabled={isLoading}
-                  />
-                  <div className="col-span-2">
+            <div className="space-y-6">
+              {/* Basic Information Step */}
+              {currentStep === 'basic' && (
+                <div className="space-y-6">
+                  <FormSection title="Basic Information">
                     <FormField
-                      label="Address"
-                      value={formData.address}
-                      onChange={(value) => handleChange('address', value)}
+                      label="Full Name"
+                      value={formData.name}
+                      onChange={(value) => handleChange('name', value)}
                       required
                       disabled={isLoading}
                     />
-                  </div>
-                </FormSection>
-              </div>
-            )}
-
-            {/* Medical Information Step */}
-            {currentStep === 'medical' && (
-              <div className="space-y-6">
-                <FormSection title="Medical Information">
-                  <FormField
-                    label="Case Number"
-                    value={formData.caseNumber}
-                    onChange={(value) => handleChange('caseNumber', value)}
-                    required
-                    error={errors.caseNumber}
-                    placeholder="6-digit number"
-                    disabled={isLoading}
-                  />
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Date Admitted
-                      <span className="text-red-500 ml-1">*</span>
-                    </label>
-                    <DatePicker
-                      value={formData.dateAdmitted}
-                      onChange={(value) => handleChange('dateAdmitted', value)}
+                    <div>
+                      <FormField
+                        label="Age"
+                        value={formData.dateOfBirth ? formatAge(calculateAge(formData.dateOfBirth)) : '0 days'}
+                        onChange={() => {}}
+                        disabled
+                      />
+                      <p className="mt-1 text-xs text-gray-500">Calculated from date of birth</p>
+                    </div>
+                    <FormField
+                      label="Gender"
+                      value={formData.gender}
+                      onChange={(value) => handleChange('gender', value)}
                       required
+                      options={GENDERS.map(gender => ({ value: gender, label: gender }))}
+                      disabled={isLoading}
+                    />
+                    <FormField
+                      label="Date of Birth"
+                      type="date"
+                      value={formData.dateOfBirth}
+                      onChange={(value) => handleChange('dateOfBirth', value)}
+                      required
+                      error={errors.dateOfBirth}
                       disabled={isLoading}
                       maxDate={new Date().toISOString().split('T')[0]}
                     />
-                  </div>
-                  <FormField
-                    label="Location"
-                    value={formData.location}
-                    onChange={(value) => handleChange('location', value)}
-                    required
-                    placeholder="e.g., Ward 9"
-                    disabled={isLoading}
-                  />
-                  <FormField
-                    label="Status"
-                    value={formData.status}
-                    onChange={(value) => handleChange('status', value)}
-                    required
-                    options={PATIENT_STATUSES.map(status => ({ value: status, label: status }))}
-                    disabled={isLoading}
-                  />
-                  <div className="col-span-2">
+                  </FormSection>
+                </div>
+              )}
+
+              {/* Personal Information Step */}
+              {currentStep === 'personal' && (
+                <div className="space-y-6">
+                  <FormSection title="Personal Information">
                     <FormField
-                      label="Diagnosis"
-                      type="textarea"
-                      value={formData.diagnosis}
-                      onChange={(value) => handleChange('diagnosis', value)}
+                      label="Civil Status"
+                      value={formData.civilStatus}
+                      onChange={(value) => handleChange('civilStatus', value)}
                       required
-                      rows={3}
+                      options={CIVIL_STATUSES.map(status => ({ value: status, label: status }))}
                       disabled={isLoading}
                     />
-                  </div>
-                </FormSection>
-              </div>
-            )}
+                    <FormField
+                      label="Nationality"
+                      value={formData.nationality}
+                      onChange={(value) => handleChange('nationality', value)}
+                      required
+                      disabled={isLoading}
+                    />
+                    <FormField
+                      label="Religion"
+                      value={formData.religion}
+                      onChange={(value) => handleChange('religion', value)}
+                      required
+                      disabled={isLoading}
+                    />
+                    <FormField
+                      label="PhilHealth Number"
+                      value={formData.philhealth}
+                      onChange={(value) => handleChange('philhealth', value)}
+                      required
+                      disabled={isLoading}
+                    />
+                    <div className="col-span-2">
+                      <FormField
+                        label="Address"
+                        value={formData.address}
+                        onChange={(value) => handleChange('address', value)}
+                        required
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </FormSection>
+                </div>
+              )}
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-between pt-4 border-t">
+              {/* Medical Information Step */}
+              {currentStep === 'medical' && (
+                <div className="space-y-6">
+                  <FormSection title="Medical Information">
+                    <FormField
+                      label="Case Number"
+                      value={formData.caseNumber}
+                      onChange={(value) => handleChange('caseNumber', value)}
+                      required
+                      error={errors.caseNumber}
+                      placeholder="6-digit number"
+                      disabled={isLoading}
+                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Date Admitted
+                        <span className="text-red-500 ml-1">*</span>
+                      </label>
+                      <DatePicker
+                        value={formData.dateAdmitted}
+                        onChange={(value) => handleChange('dateAdmitted', value)}
+                        required
+                        disabled={isLoading}
+                        maxDate={new Date().toISOString().split('T')[0]}
+                      />
+                    </div>
+                    <FormField
+                      label="Location"
+                      value={formData.location}
+                      onChange={(value) => handleChange('location', value)}
+                      required
+                      placeholder="e.g., Ward 9"
+                      disabled={isLoading}
+                    />
+                    <FormField
+                      label="Status"
+                      value={formData.status}
+                      onChange={(value) => handleChange('status', value)}
+                      required
+                      options={PATIENT_STATUSES.map(status => ({ value: status, label: status }))}
+                      disabled={isLoading}
+                    />
+                    <div className="col-span-2">
+                      <FormField
+                        label="Diagnosis"
+                        type="textarea"
+                        value={formData.diagnosis}
+                        onChange={(value) => handleChange('diagnosis', value)}
+                        required
+                        rows={3}
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </FormSection>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Navigation Buttons - Fixed at bottom */}
+          <div className="p-6 border-t bg-white">
+            <div className="flex justify-between">
               <div className="flex space-x-3">
                 <button
                   type="button"
@@ -313,8 +318,8 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                 )}
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   )
