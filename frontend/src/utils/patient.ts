@@ -31,12 +31,15 @@ export function calculateAge(dateOfBirth: string): AgeDetails {
 }
 
 export function formatAge(age: AgeDetails): string {
-  const parts = []
-  if (age.years > 0) parts.push(`${age.years} year${age.years !== 1 ? 's' : ''}`)
-  if (age.months > 0) parts.push(`${age.months} month${age.months !== 1 ? 's' : ''}`)
-  if (age.days > 0) parts.push(`${age.days} day${age.days !== 1 ? 's' : ''}`)
+  if (age.years > 0) {
+    return `${age.years} year${age.years !== 1 ? 's' : ''}`
+  }
   
-  return parts.join(', ') || '0 days'
+  if (age.months > 0) {
+    return `${age.months} month${age.months !== 1 ? 's' : ''}`
+  }
+  
+  return `${age.days} day${age.days !== 1 ? 's' : ''}`
 }
 
 export function getInitials(name: string): string {

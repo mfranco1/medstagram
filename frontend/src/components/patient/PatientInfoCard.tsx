@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../pages/PatientsPage'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
+import { calculateAge, formatAge } from '../../utils/patient'
 
 interface PatientInfoCardProps {
   activeTab: 'general' | 'medical'
@@ -47,6 +48,8 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
     }
   }
 
+  const ageDisplay = formatAge(calculateAge(patient.dateOfBirth))
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
       <div className="flex items-center justify-between mb-6">
@@ -60,7 +63,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
             <h2 className="text-xl font-semibold text-gray-900">{patient.name}</h2>
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-500">
-                {patient.gender} • {patient.age} years • CN: {patient.caseNumber}
+                {patient.gender} • {ageDisplay} • CN: {patient.caseNumber}
               </span>
               <span className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(patient.status)}`}>
                 {patient.status}
