@@ -1,4 +1,5 @@
 import { type ChangeEvent } from 'react'
+import { DatePicker } from './date-picker/DatePicker'
 
 interface FormFieldProps {
   label: string
@@ -34,6 +35,18 @@ export function FormField({
   } ${className}`
 
   const renderInput = () => {
+    if (type === 'date') {
+      return (
+        <DatePicker
+          value={value as string}
+          onChange={onChange}
+          required={required}
+          disabled={disabled}
+          error={error}
+        />
+      )
+    }
+
     if (type === 'textarea') {
       return (
         <textarea
@@ -83,7 +96,7 @@ export function FormField({
     <div>
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       {renderInput()}
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {error && type !== 'date' && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
   )
 } 
