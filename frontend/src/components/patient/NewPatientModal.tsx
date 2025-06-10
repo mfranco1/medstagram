@@ -1,6 +1,10 @@
 import { X } from 'lucide-react'
-import { useState } from 'react'
 import { mockPatients, type Patient } from '../../pages/PatientsPage'
+import { FormField } from '../ui/FormField'
+import { FormSection } from '../ui/FormSection'
+import { usePatientForm } from '../../hooks/usePatientForm'
+import { GENDERS, CIVIL_STATUSES, PATIENT_STATUSES } from '../../constants/patient'
+import { formatAge, calculateAge } from '../../utils/patient'
 
 interface NewPatientModalProps {
   isOpen: boolean
@@ -8,152 +12,12 @@ interface NewPatientModalProps {
   onSave: (patient: Omit<Patient, 'id'>) => void
 }
 
-interface AgeDetails {
-  years: number
-  months: number
-  days: number
-}
-
 export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    age: 0,
-    gender: 'Male',
-    diagnosis: '',
-    status: 'Active Admission',
-    caseNumber: '',
-    dateAdmitted: new Date().toISOString().split('T')[0],
-    location: '',
-    dateOfBirth: '',
-    civilStatus: 'Single',
-    nationality: 'Filipino',
-    religion: '',
-    address: '',
-    philhealth: ''
+  const existingCaseNumbers = mockPatients.map(p => p.caseNumber)
+  const { formData, errors, handleChange, handleSubmit } = usePatientForm({
+    existingCaseNumbers,
+    onSubmit: onSave
   })
-
-  const [errors, setErrors] = useState<{ dateOfBirth?: string; caseNumber?: string }>({})
-
-  const validateCaseNumber = (value: string) => {
-    if (!value) {
-      setErrors(prev => ({ ...prev, caseNumber: 'Case number is required' }))
-      return false
-    }
-    if (value.length > 6) {
-      setErrors(prev => ({ ...prev, caseNumber: 'Case number must be 6 digits or less' }))
-      return false
-    }
-    if (!/^\d+$/.test(value)) {
-      setErrors(prev => ({ ...prev, caseNumber: 'Case number must contain only digits' }))
-      return false
-    }
-    if (mockPatients.some((p: Patient) => p.caseNumber === value.padStart(6, '0'))) {
-      setErrors(prev => ({ ...prev, caseNumber: 'Case number already exists' }))
-      return false
-    }
-    setErrors(prev => ({ ...prev, caseNumber: undefined }))
-    return true
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    // Validate date of birth
-    const dateOfBirthError = validateDateOfBirth(formData.dateOfBirth)
-    if (dateOfBirthError) {
-      setErrors(prev => ({ ...prev, dateOfBirth: dateOfBirthError }))
-      return
-    }
-
-    // Validate case number
-    if (!validateCaseNumber(formData.caseNumber)) {
-      return
-    }
-
-    // If all validations pass, save the patient
-    onSave({
-      ...formData,
-      age: calculateDetailedAge(formData.dateOfBirth).years, // Use the detailed age calculation
-      caseNumber: formData.caseNumber.padStart(6, '0')
-    })
-    onClose()
-  }
-
-  // Function to calculate detailed age from date of birth
-  const calculateDetailedAge = (dateOfBirth: string): AgeDetails => {
-    if (!dateOfBirth) return { years: 0, months: 0, days: 0 }
-    
-    const today = new Date()
-    const birthDate = new Date(dateOfBirth)
-    
-    let years = today.getFullYear() - birthDate.getFullYear()
-    let months = today.getMonth() - birthDate.getMonth()
-    let days = today.getDate() - birthDate.getDate()
-    
-    // Adjust for negative months or days
-    if (days < 0) {
-      months--
-      // Get the last day of the previous month
-      const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0)
-      days += lastMonth.getDate()
-    }
-    
-    if (months < 0) {
-      years--
-      months += 12
-    }
-    
-    return { years, months, days }
-  }
-
-  // Function to format age details into a readable string
-  const formatAge = (age: AgeDetails): string => {
-    const parts = []
-    if (age.years > 0) parts.push(`${age.years} year${age.years !== 1 ? 's' : ''}`)
-    if (age.months > 0) parts.push(`${age.months} month${age.months !== 1 ? 's' : ''}`)
-    if (age.days > 0) parts.push(`${age.days} day${age.days !== 1 ? 's' : ''}`)
-    
-    return parts.join(', ') || '0 days'
-  }
-
-  // Validate date of birth
-  const validateDateOfBirth = (dateOfBirth: string) => {
-    const today = new Date()
-    const birthDate = new Date(dateOfBirth)
-    
-    if (birthDate > today) {
-      return 'Date of birth cannot be in the future'
-    }
-    
-    // Optional: Add maximum age validation (e.g., 150 years)
-    const maxAge = 150
-    const age = calculateDetailedAge(dateOfBirth)
-    if (age.years > maxAge) {
-      return `Age cannot be greater than ${maxAge} years`
-    }
-    
-    return ''
-  }
-
-  // Update age whenever date of birth changes
-  const handleDateOfBirthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDateOfBirth = e.target.value
-    const error = validateDateOfBirth(newDateOfBirth)
-    
-    setErrors(prev => ({
-      ...prev,
-      dateOfBirth: error
-    }))
-
-    if (!error) {
-      const ageDetails = calculateDetailedAge(newDateOfBirth)
-      setFormData(prev => ({
-        ...prev,
-        dateOfBirth: newDateOfBirth,
-        age: ageDetails.years // Keep the years for backward compatibility
-      }))
-    }
-  }
 
   if (!isOpen) return null
 
@@ -174,189 +38,119 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               {/* Basic Information */}
-              <div className="col-span-2">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Basic Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Age</label>
-                    <div className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500">
-                      {formData.dateOfBirth ? formatAge(calculateDetailedAge(formData.dateOfBirth)) : '0 days'}
-                    </div>
-                    <p className="mt-1 text-xs text-gray-500">Calculated from date of birth</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Gender</label>
-                    <select
-                      required
-                      value={formData.gender}
-                      onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    >
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
-                    <input
-                      type="date"
-                      required
-                      value={formData.dateOfBirth}
-                      onChange={handleDateOfBirthChange}
-                      max={new Date().toISOString().split('T')[0]}
-                      className={`mt-1 block w-full rounded-md border ${
-                        errors.dateOfBirth ? 'border-red-300' : 'border-gray-300'
-                      } px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500`}
-                    />
-                    {errors.dateOfBirth && (
-                      <p className="mt-1 text-xs text-red-600">{errors.dateOfBirth}</p>
-                    )}
-                  </div>
+              <FormSection title="Basic Information">
+                <FormField
+                  label="Full Name"
+                  value={formData.name}
+                  onChange={(value) => handleChange('name', value)}
+                  required
+                />
+                <div>
+                  <FormField
+                    label="Age"
+                    value={formData.dateOfBirth ? formatAge(calculateAge(formData.dateOfBirth)) : '0 days'}
+                    onChange={() => {}}
+                    disabled
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Calculated from date of birth</p>
                 </div>
-              </div>
+                <FormField
+                  label="Gender"
+                  value={formData.gender}
+                  onChange={(value) => handleChange('gender', value)}
+                  required
+                  options={GENDERS.map(gender => ({ value: gender, label: gender }))}
+                />
+                <FormField
+                  label="Date of Birth"
+                  type="date"
+                  value={formData.dateOfBirth}
+                  onChange={(value) => handleChange('dateOfBirth', value)}
+                  required
+                  error={errors.dateOfBirth}
+                  // max={new Date().toISOString().split('T')[0]} // Add this to FormField if needed in the future
+                />
+              </FormSection>
 
               {/* Personal Information */}
-              <div className="col-span-2">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Personal Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Civil Status</label>
-                    <select
-                      required
-                      value={formData.civilStatus}
-                      onChange={(e) => setFormData({ ...formData, civilStatus: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    >
-                      <option value="">Select status</option>
-                      <option value="Single">Single</option>
-                      <option value="Married">Married</option>
-                      <option value="Widowed">Widowed</option>
-                      <option value="Separated">Separated</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Nationality</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.nationality}
-                      onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Religion</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.religion}
-                      onChange={(e) => setFormData({ ...formData, religion: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">PhilHealth Number</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.philhealth}
-                      onChange={(e) => setFormData({ ...formData, philhealth: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Address</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.address}
-                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    />
-                  </div>
+              <FormSection title="Personal Information">
+                <FormField
+                  label="Civil Status"
+                  value={formData.civilStatus}
+                  onChange={(value) => handleChange('civilStatus', value)}
+                  required
+                  options={CIVIL_STATUSES.map(status => ({ value: status, label: status }))}
+                />
+                <FormField
+                  label="Nationality"
+                  value={formData.nationality}
+                  onChange={(value) => handleChange('nationality', value)}
+                  required
+                />
+                <FormField
+                  label="Religion"
+                  value={formData.religion}
+                  onChange={(value) => handleChange('religion', value)}
+                  required
+                />
+                <FormField
+                  label="PhilHealth Number"
+                  value={formData.philhealth}
+                  onChange={(value) => handleChange('philhealth', value)}
+                  required
+                />
+                <div className="col-span-2">
+                  <FormField
+                    label="Address"
+                    value={formData.address}
+                    onChange={(value) => handleChange('address', value)}
+                    required
+                  />
                 </div>
-              </div>
+              </FormSection>
 
               {/* Medical Information */}
-              <div className="col-span-2">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Medical Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Case Number</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.caseNumber}
-                      onChange={(e) => {
-                        setFormData({ ...formData, caseNumber: e.target.value })
-                        validateCaseNumber(e.target.value)
-                      }}
-                      className={`mt-1 block w-full rounded-md border ${
-                        errors.caseNumber ? 'border-red-300' : 'border-gray-300'
-                      } px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500`}
-                      placeholder="6-digit number"
-                    />
-                    {errors.caseNumber && (
-                      <p className="mt-1 text-sm text-red-600">{errors.caseNumber}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Date Admitted</label>
-                    <input
-                      type="date"
-                      required
-                      value={formData.dateAdmitted}
-                      onChange={(e) => setFormData({ ...formData, dateAdmitted: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Location</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                      placeholder="e.g., Ward 9"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Status</label>
-                    <select
-                      required
-                      value={formData.status}
-                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    >
-                      <option value="Active Admission">Active Admission</option>
-                      <option value="Discharged">Discharged</option>
-                      <option value="Transferred">Transferred</option>
-                    </select>
-                  </div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Diagnosis</label>
-                    <textarea
-                      required
-                      value={formData.diagnosis}
-                      onChange={(e) => setFormData({ ...formData, diagnosis: e.target.value })}
-                      rows={3}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                    />
-                  </div>
+              <FormSection title="Medical Information">
+                <FormField
+                  label="Case Number"
+                  value={formData.caseNumber}
+                  onChange={(value) => handleChange('caseNumber', value)}
+                  required
+                  error={errors.caseNumber}
+                  placeholder="6-digit number"
+                />
+                <FormField
+                  label="Date Admitted"
+                  type="date"
+                  value={formData.dateAdmitted}
+                  onChange={(value) => handleChange('dateAdmitted', value)}
+                  required
+                />
+                <FormField
+                  label="Location"
+                  value={formData.location}
+                  onChange={(value) => handleChange('location', value)}
+                  required
+                  placeholder="e.g., Ward 9"
+                />
+                <FormField
+                  label="Status"
+                  value={formData.status}
+                  onChange={(value) => handleChange('status', value)}
+                  required
+                  options={PATIENT_STATUSES.map(status => ({ value: status, label: status }))}
+                />
+                <div className="col-span-2">
+                  <FormField
+                    label="Diagnosis"
+                    type="textarea"
+                    value={formData.diagnosis}
+                    onChange={(value) => handleChange('diagnosis', value)}
+                    required
+                    rows={3}
+                  />
                 </div>
-              </div>
+              </FormSection>
             </div>
 
             <div className="flex justify-end space-x-3 pt-4 border-t">
