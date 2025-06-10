@@ -32,14 +32,14 @@ export function calculateAge(dateOfBirth: string): AgeDetails {
 
 export function formatAge(age: AgeDetails): string {
   if (age.years > 0) {
-    return `${age.years} year${age.years !== 1 ? 's' : ''}`
+    return `${age.years}`
   }
   
   if (age.months > 0) {
-    return `${age.months} month${age.months !== 1 ? 's' : ''}`
+    return `${age.months}m`
   }
   
-  return `${age.days} day${age.days !== 1 ? 's' : ''}`
+  return `${age.days}d`
 }
 
 export function getInitials(name: string): string {
