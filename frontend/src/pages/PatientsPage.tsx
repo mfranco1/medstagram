@@ -4,6 +4,7 @@ import { Search, Plus, MoreVertical, ChevronDown } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { NewPatientModal } from '../components/patient/NewPatientModal'
 import { Toast, type ToastType } from '../components/ui/Toast'
+import { Select } from '../components/ui/Select'
 
 export interface Patient {
   id: number
@@ -389,18 +390,18 @@ export default function PatientsPage() {
             />
           </div>
           <div>
-            <select
+            <Select
               value={locationFilter}
-              onChange={(e) => setLocationFilter(e.target.value)}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
-            >
-              <option value="">All Locations</option>
-              {locations.map(location => (
-                <option key={location} value={location}>
-                  {location}
-                </option>
-              ))}
-            </select>
+              onChange={setLocationFilter}
+              options={[
+                { value: '', label: 'All Locations' },
+                ...locations.map(location => ({
+                  value: location,
+                  label: location
+                }))
+              ]}
+              placeholder="Select location"
+            />
           </div>
         </div>
 
