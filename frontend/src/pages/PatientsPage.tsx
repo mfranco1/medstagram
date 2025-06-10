@@ -288,7 +288,6 @@ const locations = Array.from(new Set(mockPatients.map(patient => patient.locatio
 export default function PatientsPage() {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
-  const [caseNumberFilter, setCaseNumberFilter] = useState('')
   const [locationFilter, setLocationFilter] = useState('')
   const [sortField, setSortField] = useState<keyof Patient>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
@@ -313,9 +312,8 @@ export default function PatientsPage() {
     const matchesSearch = patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       patient.diagnosis.toLowerCase().includes(searchQuery.toLowerCase()) ||
       patient.caseNumber.includes(searchQuery)
-    const matchesCaseNumber = !caseNumberFilter || patient.caseNumber.includes(caseNumberFilter)
     const matchesLocation = !locationFilter || patient.location === locationFilter
-    return matchesSearch && matchesCaseNumber && matchesLocation
+    return matchesSearch && matchesLocation
   })
 
   const sortedPatients = [...filteredPatients].sort((a, b) => {
@@ -384,19 +382,10 @@ export default function PatientsPage() {
             </div>
             <input
               type="text"
-              placeholder="Search name or diagnosis..."
+              placeholder="Search name, diagnosis, or case number..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
-            />
-          </div>
-          <div>
-            <input
-              type="text"
-              placeholder="Filter by case number..."
-              value={caseNumberFilter}
-              onChange={(e) => setCaseNumberFilter(e.target.value)}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
             />
           </div>
           <div>
