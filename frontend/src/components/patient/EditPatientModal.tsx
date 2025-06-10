@@ -4,7 +4,7 @@ import type { Patient } from '../../pages/PatientsPage'
 import { FormField } from '../ui/FormField'
 import { FormSection } from '../ui/FormSection'
 import { usePatientForm } from '../../hooks/usePatientForm'
-import { GENDERS, CIVIL_STATUSES, PATIENT_STATUSES } from '../../constants/patient'
+import { GENDERS, CIVIL_STATUSES, PATIENT_STATUSES, PRIMARY_SERVICES } from '../../constants/patient'
 import { formatAge, calculateAge } from '../../utils/patient'
 import { DatePicker } from '../ui/date-picker/DatePicker'
 
@@ -253,6 +253,15 @@ export function EditPatientModal({ isOpen, onClose, onSave, patient }: EditPatie
                       placeholder="e.g., Ward 9"
                       disabled={isLoading}
                       error={errors.location}
+                    />
+                    <FormField
+                      label="Primary Service"
+                      value={formData.primaryService}
+                      onChange={(value) => handleChange('primaryService', value)}
+                      required
+                      options={PRIMARY_SERVICES.map(service => ({ value: service, label: service }))}
+                      disabled={isLoading}
+                      error={errors.primaryService}
                     />
                     <FormField
                       label="Status"
