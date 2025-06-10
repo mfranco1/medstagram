@@ -6,6 +6,7 @@ import { NewPatientModal } from '../components/patient/NewPatientModal'
 import { Toast, type ToastType } from '../components/ui/Toast'
 import { Select } from '../components/ui/Select'
 import { STATUS_COLORS, PATIENT_STATUSES } from '../constants/patient'
+import { calculateAge, formatAge } from '../utils/patient'
 
 export interface Patient {
   id: number
@@ -166,14 +167,14 @@ export const mockPatients: Patient[] = [
   {
     id: 9,
     name: 'David Kim',
-    age: 47,
+    age: 0,
     gender: 'Male',
     caseNumber: '123464',
     dateAdmitted: '2024-03-19',
     location: 'Ward 2',
     status: 'Active Admission',
     diagnosis: 'Acute Kidney Injury on top of Chronic Kidney Disease, stage V, from DMKD/HTKD, not in uremia',
-    dateOfBirth: '1977-12-05',
+    dateOfBirth: '2025-06-01',
     civilStatus: 'Married',
     nationality: 'Filipino',
     religion: 'Protestant',
@@ -268,14 +269,14 @@ export const mockPatients: Patient[] = [
   {
     id: 15,
     name: 'Daniel Lee',
-    age: 49,
+    age: 0,
     gender: 'Male',
     caseNumber: '123470',
     dateAdmitted: '2024-03-24',
     location: 'Ward 3',
     status: 'Active Admission',
     diagnosis: 'Chronic Liver Disease, Childs-Pugh C, from cons 1) Chronic Hepatitis B, 2) MAFLD, 3) Alcoholic Liver Disease, less likely',
-    dateOfBirth: '1975-04-22',
+    dateOfBirth: '2024-12-25',
     civilStatus: 'Married',
     nationality: 'Filipino',
     religion: 'Buddhist',
@@ -542,7 +543,9 @@ export default function PatientsPage() {
                         </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{patient.age}</div>
+                        <div className="text-sm text-gray-500">
+                          {formatAge(calculateAge(patient.dateOfBirth))}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500">{patient.gender}</div>
