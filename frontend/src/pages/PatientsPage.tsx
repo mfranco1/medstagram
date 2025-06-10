@@ -334,7 +334,7 @@ export default function PatientsPage() {
 
   const handleAddPatient = (newPatient: Omit<Patient, 'id'>) => {
     // Check if case number already exists
-    const caseNumberExists = patients.some(
+    const caseNumberExists = mockPatients.some(
       patient => patient.caseNumber === newPatient.caseNumber.padStart(6, '0')
     )
 
@@ -348,9 +348,13 @@ export default function PatientsPage() {
 
     const patient: Patient = {
       ...newPatient,
-      id: Math.max(...patients.map(p => p.id)) + 1
+      id: Math.max(...mockPatients.map(p => p.id)) + 1
     }
-    setPatients([...patients, patient])
+    
+    // Add to both local state and mockPatients array
+    mockPatients.push(patient)
+    setPatients([...mockPatients])
+    
     setToast({
       message: `Patient ${patient.name} has been added successfully`,
       type: 'success'
