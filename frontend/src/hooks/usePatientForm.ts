@@ -6,7 +6,7 @@ import { calculateAge, validateDateOfBirth, validateCaseNumber } from '../utils/
 interface UsePatientFormProps {
   initialData?: Partial<Patient>
   existingCaseNumbers?: string[]
-  onSubmit: (data: Omit<Patient, 'id'>) => void
+  onSubmit: (data: Omit<Patient, 'id'>) => Promise<void>
 }
 
 export function usePatientForm({ initialData, existingCaseNumbers = [], onSubmit }: UsePatientFormProps) {
@@ -15,6 +15,7 @@ export function usePatientForm({ initialData, existingCaseNumbers = [], onSubmit
     ...initialData
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (field: keyof Omit<Patient, 'id'>, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -44,7 +45,7 @@ export function usePatientForm({ initialData, existingCaseNumbers = [], onSubmit
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     // Validate all fields
@@ -87,12 +88,21 @@ export function usePatientForm({ initialData, existingCaseNumbers = [], onSubmit
       caseNumber: formData.caseNumber.padStart(6, '0')
     }
 
-    onSubmit(formattedData)
+    try {
+      setIsLoading(true)
+      await onSubmit(formattedData)
+    } catch (error) {
+      // Handle error if needed
+      console.error('Error submitting form:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return {
     formData,
     errors,
+    isLoading,
     handleChange,
     handleSubmit
   }
