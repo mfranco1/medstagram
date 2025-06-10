@@ -1,5 +1,6 @@
 import { type ChangeEvent } from 'react'
 import { DatePicker } from './date-picker/DatePicker'
+import { Select } from './Select'
 
 interface FormFieldProps {
   label: string
@@ -66,19 +67,15 @@ export function FormField({
 
     if (options) {
       return (
-        <select
+        <Select
+          value={value as string}
+          onChange={onChange}
+          options={options}
           required={required}
           disabled={disabled}
-          value={value}
-          onChange={(e: ChangeEvent<HTMLSelectElement>) => onChange(e.target.value)}
-          className={baseInputClasses}
-        >
-          {options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          error={error}
+          placeholder={placeholder}
+        />
       )
     }
 
