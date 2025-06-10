@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { NewPatientModal } from '../components/patient/NewPatientModal'
 import { Toast, type ToastType } from '../components/ui/Toast'
 import { Select } from '../components/ui/Select'
-import { STATUS_COLORS } from '../constants/patient'
+import { STATUS_COLORS, PATIENT_STATUSES } from '../constants/patient'
 
 export interface Patient {
   id: number
@@ -291,6 +291,7 @@ export default function PatientsPage() {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [locationFilter, setLocationFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
   const [sortField, setSortField] = useState<keyof Patient>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [isNewPatientModalOpen, setIsNewPatientModalOpen] = useState(false)
@@ -315,7 +316,8 @@ export default function PatientsPage() {
       patient.diagnosis.toLowerCase().includes(searchQuery.toLowerCase()) ||
       patient.caseNumber.includes(searchQuery)
     const matchesLocation = !locationFilter || patient.location === locationFilter
-    return matchesSearch && matchesLocation
+    const matchesStatus = !statusFilter || patient.status === statusFilter
+    return matchesSearch && matchesLocation && matchesStatus
   })
 
   const sortedPatients = [...filteredPatients].sort((a, b) => {
@@ -377,7 +379,7 @@ export default function PatientsPage() {
         </div>
 
         {/* Search and Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
@@ -402,6 +404,20 @@ export default function PatientsPage() {
                 }))
               ]}
               placeholder="Select location"
+            />
+          </div>
+          <div>
+            <Select
+              value={statusFilter}
+              onChange={setStatusFilter}
+              options={[
+                { value: '', label: 'All Statuses' },
+                ...PATIENT_STATUSES.map(status => ({
+                  value: status,
+                  label: status
+                }))
+              ]}
+              placeholder="Select status"
             />
           </div>
         </div>
