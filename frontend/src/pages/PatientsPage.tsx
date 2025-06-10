@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { NewPatientModal } from '../components/patient/NewPatientModal'
 import { Toast, type ToastType } from '../components/ui/Toast'
 import { Select } from '../components/ui/Select'
+import { STATUS_COLORS } from '../constants/patient'
 
 export interface Patient {
   id: number
@@ -68,7 +69,7 @@ export const mockPatients: Patient[] = [
     caseNumber: '123458',
     dateAdmitted: '2024-03-05',
     location: 'Ward 4',
-    status: 'Inactive',
+    status: 'Discharged',
     diagnosis: 'Septic Shock, secondary to A. baumani bacteremia',
     dateOfBirth: '1966-03-10',
     civilStatus: 'Widowed',
@@ -153,7 +154,7 @@ export const mockPatients: Patient[] = [
     caseNumber: '123463',
     dateAdmitted: '2024-03-14',
     location: 'Ward 2',
-    status: 'Inactive',
+    status: 'Discharged',
     diagnosis: 'Acute Appendicitis',
     dateOfBirth: '1996-02-18',
     civilStatus: 'Single',
@@ -204,7 +205,7 @@ export const mockPatients: Patient[] = [
     caseNumber: '123466',
     dateAdmitted: '2024-03-13',
     location: 'Ward 4',
-    status: 'Inactive',
+    status: 'Discharged',
     diagnosis: 'Acute Coronary Syndrome',
     dateOfBirth: '1972-01-15',
     civilStatus: 'Married',
@@ -545,11 +546,7 @@ export default function PatientsPage() {
                         <div className="text-sm text-gray-500">{patient.location}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          patient.status === 'Active Admission' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${STATUS_COLORS[patient.status as keyof typeof STATUS_COLORS]}`}>
                           {patient.status}
                         </span>
                       </td>
