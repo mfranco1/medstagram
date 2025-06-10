@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { MainLayout } from '../components/layout/MainLayout'
 import { PatientInfoCard } from '../components/patient/PatientInfoCard'
-import { MedicalEntryForm } from '../components/patient/MedicalEntryForm.tsx'
-import { mockPatients } from './PatientsPage'
+import { MedicalEntryForm } from '../components/patient/MedicalEntryForm'
+import { mockPatients, type Patient } from './PatientsPage'
 import { Toast, type ToastType } from '../components/ui/Toast'
 
 export default function SoapPage() {
@@ -52,6 +52,17 @@ export default function SoapPage() {
     }
   }
 
+  const handleEditPatient = (updatedPatient: Patient) => {
+    const index = mockPatients.findIndex(p => p.id === updatedPatient.id)
+    if (index !== -1) {
+      mockPatients[index] = updatedPatient
+      setToast({
+        message: 'Patient information has been updated successfully',
+        type: 'success'
+      })
+    }
+  }
+
   return (
     <MainLayout>
       <div className="p-6">
@@ -60,6 +71,7 @@ export default function SoapPage() {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onDelete={handleDeletePatient}
+          onEdit={handleEditPatient}
         />
         <MedicalEntryForm formData={formData} setFormData={setFormData} />
 

@@ -1,20 +1,23 @@
-import { Calendar, User, MapPin, Church, Home, Phone, Heart, FileText, MoreVertical, Trash2 } from 'lucide-react'
+import { Calendar, User, MapPin, Church, Home, Phone, Heart, FileText, MoreVertical, Trash2, Edit2 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../pages/PatientsPage'
 import { ConfirmModal } from '../ui/ConfirmModal'
+import { EditPatientModal } from './EditPatientModal'
 
 interface PatientInfoCardProps {
   activeTab: 'general' | 'medical'
   setActiveTab: (tab: 'general' | 'medical') => void
   patient: Patient
   onDelete?: (patientId: number) => void
+  onEdit?: (patient: Patient) => void
 }
 
-export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete }: PatientInfoCardProps) {
+export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, onEdit }: PatientInfoCardProps) {
   const navigate = useNavigate()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
   const getInitials = (name: string) => {
     return name
@@ -75,6 +78,16 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete }: 
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
               <div className="py-1">
+                <button
+                  onClick={() => {
+                    setIsDropdownOpen(false)
+                    setIsEditModalOpen(true)
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Edit Patient
+                </button>
                 <button
                   onClick={() => {
                     setIsDropdownOpen(false)
@@ -188,6 +201,13 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete }: 
         message={`Are you sure you want to delete ${patient.name}? This action cannot be undone.`}
         confirmText="Delete"
         type="danger"
+      />
+
+      <EditPatientModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={onEdit || (() => {})}
+        patient={patient}
       />
     </div>
   )

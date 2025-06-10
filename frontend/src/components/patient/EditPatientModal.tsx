@@ -1,158 +1,26 @@
 import { X } from 'lucide-react'
-import { useState } from 'react'
-import { mockPatients, type Patient } from '../../pages/PatientsPage'
+import { useState, useEffect } from 'react'
+import type { Patient } from '../../pages/PatientsPage'
 
-interface NewPatientModalProps {
+interface EditPatientModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (patient: Omit<Patient, 'id'>) => void
+  onSave: (patient: Patient) => void
+  patient: Patient
 }
 
-interface AgeDetails {
-  years: number
-  months: number
-  days: number
-}
+export function EditPatientModal({ isOpen, onClose, onSave, patient }: EditPatientModalProps) {
+  const [formData, setFormData] = useState<Patient>(patient)
 
-export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProps) {
-  const [formData, setFormData] = useState({
-    name: '',
-    age: 0,
-    gender: 'Male',
-    diagnosis: '',
-    status: 'Active Admission',
-    caseNumber: '',
-    dateAdmitted: new Date().toISOString().split('T')[0],
-    location: '',
-    dateOfBirth: '',
-    civilStatus: 'Single',
-    nationality: 'Filipino',
-    religion: '',
-    address: '',
-    philhealth: ''
-  })
-
-  const [errors, setErrors] = useState<{ dateOfBirth?: string; caseNumber?: string }>({})
-
-  const validateCaseNumber = (value: string) => {
-    if (!value) {
-      setErrors(prev => ({ ...prev, caseNumber: 'Case number is required' }))
-      return false
-    }
-    if (value.length > 6) {
-      setErrors(prev => ({ ...prev, caseNumber: 'Case number must be 6 digits or less' }))
-      return false
-    }
-    if (!/^\d+$/.test(value)) {
-      setErrors(prev => ({ ...prev, caseNumber: 'Case number must contain only digits' }))
-      return false
-    }
-    if (mockPatients.some((p: Patient) => p.caseNumber === value.padStart(6, '0'))) {
-      setErrors(prev => ({ ...prev, caseNumber: 'Case number already exists' }))
-      return false
-    }
-    setErrors(prev => ({ ...prev, caseNumber: undefined }))
-    return true
-  }
+  // Update form data when patient prop changes
+  useEffect(() => {
+    setFormData(patient)
+  }, [patient])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // Validate date of birth
-    const dateOfBirthError = validateDateOfBirth(formData.dateOfBirth)
-    if (dateOfBirthError) {
-      setErrors(prev => ({ ...prev, dateOfBirth: dateOfBirthError }))
-      return
-    }
-
-    // Validate case number
-    if (!validateCaseNumber(formData.caseNumber)) {
-      return
-    }
-
-    // If all validations pass, save the patient
-    onSave({
-      ...formData,
-      age: calculateDetailedAge(formData.dateOfBirth).years, // Use the detailed age calculation
-      caseNumber: formData.caseNumber.padStart(6, '0')
-    })
+    onSave(formData)
     onClose()
-  }
-
-  // Function to calculate detailed age from date of birth
-  const calculateDetailedAge = (dateOfBirth: string): AgeDetails => {
-    if (!dateOfBirth) return { years: 0, months: 0, days: 0 }
-    
-    const today = new Date()
-    const birthDate = new Date(dateOfBirth)
-    
-    let years = today.getFullYear() - birthDate.getFullYear()
-    let months = today.getMonth() - birthDate.getMonth()
-    let days = today.getDate() - birthDate.getDate()
-    
-    // Adjust for negative months or days
-    if (days < 0) {
-      months--
-      // Get the last day of the previous month
-      const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0)
-      days += lastMonth.getDate()
-    }
-    
-    if (months < 0) {
-      years--
-      months += 12
-    }
-    
-    return { years, months, days }
-  }
-
-  // Function to format age details into a readable string
-  const formatAge = (age: AgeDetails): string => {
-    const parts = []
-    if (age.years > 0) parts.push(`${age.years} year${age.years !== 1 ? 's' : ''}`)
-    if (age.months > 0) parts.push(`${age.months} month${age.months !== 1 ? 's' : ''}`)
-    if (age.days > 0) parts.push(`${age.days} day${age.days !== 1 ? 's' : ''}`)
-    
-    return parts.join(', ') || '0 days'
-  }
-
-  // Validate date of birth
-  const validateDateOfBirth = (dateOfBirth: string) => {
-    const today = new Date()
-    const birthDate = new Date(dateOfBirth)
-    
-    if (birthDate > today) {
-      return 'Date of birth cannot be in the future'
-    }
-    
-    // Optional: Add maximum age validation (e.g., 150 years)
-    const maxAge = 150
-    const age = calculateDetailedAge(dateOfBirth)
-    if (age.years > maxAge) {
-      return `Age cannot be greater than ${maxAge} years`
-    }
-    
-    return ''
-  }
-
-  // Update age whenever date of birth changes
-  const handleDateOfBirthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDateOfBirth = e.target.value
-    const error = validateDateOfBirth(newDateOfBirth)
-    
-    setErrors(prev => ({
-      ...prev,
-      dateOfBirth: error
-    }))
-
-    if (!error) {
-      const ageDetails = calculateDetailedAge(newDateOfBirth)
-      setFormData(prev => ({
-        ...prev,
-        dateOfBirth: newDateOfBirth,
-        age: ageDetails.years // Keep the years for backward compatibility
-      }))
-    }
   }
 
   if (!isOpen) return null
@@ -162,7 +30,7 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
       <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">New Patient</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Edit Patient</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-500"
@@ -189,10 +57,13 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Age</label>
-                    <div className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500">
-                      {formData.dateOfBirth ? formatAge(calculateDetailedAge(formData.dateOfBirth)) : '0 days'}
-                    </div>
-                    <p className="mt-1 text-xs text-gray-500">Calculated from date of birth</p>
+                    <input
+                      type="number"
+                      value={formData.age}
+                      disabled
+                      className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">Age is calculated from date of birth</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Gender</label>
@@ -211,17 +82,10 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                     <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
                     <input
                       type="date"
-                      required
                       value={formData.dateOfBirth}
-                      onChange={handleDateOfBirthChange}
-                      max={new Date().toISOString().split('T')[0]}
-                      className={`mt-1 block w-full rounded-md border ${
-                        errors.dateOfBirth ? 'border-red-300' : 'border-gray-300'
-                      } px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500`}
+                      disabled
+                      className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500"
                     />
-                    {errors.dateOfBirth && (
-                      <p className="mt-1 text-xs text-red-600">{errors.dateOfBirth}</p>
-                    )}
                   </div>
                 </div>
               </div>
@@ -238,7 +102,6 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                       onChange={(e) => setFormData({ ...formData, civilStatus: e.target.value })}
                       className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
                     >
-                      <option value="">Select status</option>
                       <option value="Single">Single</option>
                       <option value="Married">Married</option>
                       <option value="Widowed">Widowed</option>
@@ -296,20 +159,10 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                     <label className="block text-sm font-medium text-gray-700">Case Number</label>
                     <input
                       type="text"
-                      required
                       value={formData.caseNumber}
-                      onChange={(e) => {
-                        setFormData({ ...formData, caseNumber: e.target.value })
-                        validateCaseNumber(e.target.value)
-                      }}
-                      className={`mt-1 block w-full rounded-md border ${
-                        errors.caseNumber ? 'border-red-300' : 'border-gray-300'
-                      } px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500`}
-                      placeholder="6-digit number"
+                      disabled
+                      className="mt-1 block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500"
                     />
-                    {errors.caseNumber && (
-                      <p className="mt-1 text-sm text-red-600">{errors.caseNumber}</p>
-                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Date Admitted</label>
@@ -371,7 +224,7 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                 type="submit"
                 className="px-4 py-2 text-sm font-medium text-white bg-violet-600 border border-transparent rounded-md hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
               >
-                Save
+                Save Changes
               </button>
             </div>
           </form>
