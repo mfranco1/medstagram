@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
+import { Select } from '../components/ui/Select';
 
 const signupSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -17,6 +18,7 @@ const signupSchema = z.object({
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
+type Role = SignupFormData['role'];
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,10 +27,14 @@ export default function SignupPage() {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
+
+  const roleValue = watch('role');
 
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
@@ -147,20 +153,21 @@ export default function SignupPage() {
               <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                 Role
               </label>
-              <select
-                id="role"
-                {...register('role')}
-                className="mt-1 text-sm block w-full px-3 py-2 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:border-gray-500 transition-colors duration-200"
-              >
-                <option value="">Select your role</option>
-                <option value="doctor">Doctor</option>
-                <option value="nurse">Nurse</option>
-                <option value="admin">Administrator</option>
-                <option value="patient">Patient</option>
-              </select>
-              {errors.role && (
-                <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>
-              )}
+              <div className="mt-1">
+                <Select
+                  value={roleValue}
+                  onChange={(value) => setValue('role', value as Role)}
+                  options={[
+                    { value: 'doctor', label: 'Doctor' },
+                    { value: 'nurse', label: 'Nurse' },
+                    { value: 'admin', label: 'Administrator' },
+                    { value: 'patient', label: 'Patient' },
+                  ]}
+                  placeholder="Select your role"
+                  error={errors.role?.message}
+                  required
+                />
+              </div>
             </div>
           </div>
 

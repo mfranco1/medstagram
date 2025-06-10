@@ -32,6 +32,7 @@ export function Select({
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Handle outside clicks
   useEffect(() => {
@@ -131,13 +132,14 @@ export function Select({
         </button>
 
         {isOpen && (
-          <div className="
-            absolute z-50 w-full mt-1
-            bg-white rounded-md shadow-lg
-            border border-gray-200
-            max-h-60 overflow-auto
-            animate-slide-up
-          ">
+          <div
+            ref={dropdownRef}
+            className={`absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200 py-1 text-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${
+              isOpen
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 -translate-y-1 pointer-events-none'
+            } transition-all duration-150 ease-out`}
+          >
             <ul
               role="listbox"
               className="py-1"
