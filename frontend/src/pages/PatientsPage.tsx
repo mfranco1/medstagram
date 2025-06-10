@@ -546,6 +546,18 @@ export default function PatientsPage() {
                     </th>
                     <th 
                       scope="col" 
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer whitespace-nowrap"
+                      onClick={() => handleSort('primaryService')}
+                    >
+                      <div className="flex items-center space-x-1">
+                        <span>Service</span>
+                        {sortField === 'primaryService' && (
+                          <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                        )}
+                      </div>
+                    </th>
+                    <th 
+                      scope="col" 
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                       onClick={() => handleSort('diagnosis')}
                     >
@@ -599,8 +611,13 @@ export default function PatientsPage() {
                           {patient.status}
                         </span>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">
+                          {patient.primaryService}
+                        </div>
+                      </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500 max-w-xs truncate" title={patient.diagnosis}>
+                        <div className="text-sm text-gray-500 max-w-[200px] truncate" title={patient.diagnosis}>
                           {patient.diagnosis}
                         </div>
                       </td>
