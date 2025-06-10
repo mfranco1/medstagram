@@ -55,7 +55,7 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg w-full max-w-4xl h-[80vh] flex flex-col">
+      <div className="bg-white rounded-2xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
         <form onSubmit={handleSubmit} className="flex flex-col h-full">
           {/* Fixed Header */}
           <div className="p-6 border-b">
