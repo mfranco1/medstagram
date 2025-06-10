@@ -1,20 +1,56 @@
-import { Calendar, User, MapPin, Church, Home, Phone, Heart, FileText } from 'lucide-react'
+import { Calendar, User, MapPin, Church, Home, Phone, Heart, FileText, MoreVertical, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../pages/PatientsPage'
+import { ConfirmModal } from '../ui/ConfirmModal'
 
 interface PatientInfoCardProps {
   activeTab: 'general' | 'medical'
   setActiveTab: (tab: 'general' | 'medical') => void
   patient: Patient
+  onDelete?: (patientId: number) => void
 }
 
-export function PatientInfoCard({ activeTab, setActiveTab, patient }: PatientInfoCardProps) {
+export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete }: PatientInfoCardProps) {
+  const navigate = useNavigate()
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Active Admission':
+        return 'bg-green-100 text-green-800'
+      case 'Discharged':
+        return 'bg-gray-100 text-gray-800'
+      case 'Transferred':
+        return 'bg-blue-100 text-blue-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(patient.id)
+      navigate('/patients')
+    }
+  }
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center">
             <span className="text-lg font-semibold text-violet-600">
-              {patient.name.split(' ').map(n => n[0]).join('')}
+              {getInitials(patient.name)}
             </span>
           </div>
           <div>
@@ -23,15 +59,35 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient }: PatientInf
               <span className="text-sm text-gray-500">
                 {patient.gender} • {patient.age} years • CN: {patient.caseNumber}
               </span>
-              <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                patient.status === 'Active Admission' 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
+              <span className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(patient.status)}`}>
                 {patient.status}
               </span>
             </div>
           </div>
+        </div>
+        <div className="relative">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="p-2 text-gray-400 hover:text-gray-500 focus:outline-none"
+          >
+            <MoreVertical className="w-5 h-5" />
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    setIsDropdownOpen(false)
+                    setIsDeleteModalOpen(true)
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Patient
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {/* Tabs */}
@@ -123,6 +179,16 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient }: PatientInf
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Delete Patient"
+        message={`Are you sure you want to delete ${patient.name}? This action cannot be undone.`}
+        confirmText="Delete"
+        type="danger"
+      />
     </div>
   )
 } 
