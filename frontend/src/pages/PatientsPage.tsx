@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { NewPatientModal } from '../components/patient/NewPatientModal'
 import { Toast, type ToastType } from '../components/ui/Toast'
 import { Select } from '../components/ui/Select'
-import { STATUS_COLORS, PATIENT_STATUSES } from '../constants/patient'
+import { STATUS_COLORS, PATIENT_STATUSES, PRIMARY_SERVICES } from '../constants/patient'
 import { calculateAge, formatAge } from '../utils/patient'
 
 export interface Patient {
@@ -24,6 +24,7 @@ export interface Patient {
   religion: string
   address: string
   philhealth: string
+  primaryService: typeof PRIMARY_SERVICES[number]
 }
 
 // Mock data - will be replaced with API calls later
@@ -43,7 +44,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '123 P Faura St., Manila City',
-    philhealth: '12-345678901-2'
+    philhealth: '12-345678901-2',
+    primaryService: 'Pulmonology'
   },
   {
     id: 2,
@@ -60,7 +62,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Protestant',
     address: '456 Taft Ave., Manila City',
-    philhealth: '12-345678901-3'
+    philhealth: '12-345678901-3',
+    primaryService: 'Pulmonology'
   },
   {
     id: 3,
@@ -77,7 +80,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '789 Roxas Blvd., Manila City',
-    philhealth: '12-345678901-4'
+    philhealth: '12-345678901-4',
+    primaryService: 'Internal Medicine'
   },
   {
     id: 4,
@@ -94,7 +98,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '321 Rizal Ave., Manila City',
-    philhealth: '12-345678901-5'
+    philhealth: '12-345678901-5',
+    primaryService: 'Internal Medicine'
   },
   {
     id: 5,
@@ -111,7 +116,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '654 España Blvd., Manila City',
-    philhealth: '12-345678901-6'
+    philhealth: '12-345678901-6',
+    primaryService: 'Cardiology'
   },
   {
     id: 6,
@@ -128,7 +134,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Buddhist',
     address: '987 Quezon Ave., Manila City',
-    philhealth: '12-345678901-7'
+    philhealth: '12-345678901-7',
+    primaryService: 'Gastroenterology'
   },
   {
     id: 7,
@@ -145,7 +152,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '147 Quirino Ave., Manila City',
-    philhealth: '12-345678901-8'
+    philhealth: '12-345678901-8',
+    primaryService: 'Cardiology'
   },
   {
     id: 8,
@@ -162,7 +170,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '258 Sampaloc St., Manila City',
-    philhealth: '12-345678901-9'
+    philhealth: '12-345678901-9',
+    primaryService: 'Surgery'
   },
   {
     id: 9,
@@ -179,7 +188,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Protestant',
     address: '369 Malate St., Manila City',
-    philhealth: '12-345678901-0'
+    philhealth: '12-345678901-0',
+    primaryService: 'Nephrology'
   },
   {
     id: 10,
@@ -196,7 +206,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Hindu',
     address: '741 Ermita St., Manila City',
-    philhealth: '12-345678901-1'
+    philhealth: '12-345678901-1',
+    primaryService: 'Surgery'
   },
   {
     id: 11,
@@ -213,7 +224,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '852 Paco St., Manila City',
-    philhealth: '12-345678901-2'
+    philhealth: '12-345678901-2',
+    primaryService: 'Cardiology'
   },
   {
     id: 12,
@@ -230,7 +242,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '963 Pandacan St., Manila City',
-    philhealth: '12-345678901-3'
+    philhealth: '12-345678901-3',
+    primaryService: 'Urology'
   },
   {
     id: 13,
@@ -247,7 +260,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Roman Catholic',
     address: '159 Santa Ana St., Manila City',
-    philhealth: '12-345678901-4'
+    philhealth: '12-345678901-4',
+    primaryService: 'Pulmonology'
   },
   {
     id: 14,
@@ -264,7 +278,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Protestant',
     address: '357 San Andres St., Manila City',
-    philhealth: '12-345678901-5'
+    philhealth: '12-345678901-5',
+    primaryService: 'Oncology'
   },
   {
     id: 15,
@@ -281,7 +296,8 @@ export const mockPatients: Patient[] = [
     nationality: 'Filipino',
     religion: 'Buddhist',
     address: '486 San Miguel St., Manila City',
-    philhealth: '12-345678901-6'
+    philhealth: '12-345678901-6',
+    primaryService: 'Gastroenterology'
   }
 ]
 
