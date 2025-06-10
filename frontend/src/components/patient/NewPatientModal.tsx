@@ -57,8 +57,8 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg w-full max-w-4xl h-[80vh] flex flex-col">
         <form onSubmit={handleSubmit} className="flex flex-col h-full">
-          <div className="p-6 flex-1 overflow-y-auto">
-            {/* Header */}
+          {/* Fixed Header */}
+          <div className="p-6 border-b">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-900">New Patient</h2>
               <button
@@ -72,7 +72,7 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
             </div>
 
             {/* Progress Steps */}
-            <div className="mb-8">
+            <div>
               <div className="flex items-center justify-between">
                 {STEPS.map((step, index) => {
                   const Icon = step.icon
@@ -113,7 +113,10 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                 })}
               </div>
             </div>
+          </div>
 
+          {/* Scrollable Content */}
+          <div className="p-6 flex-1 overflow-y-auto">
             <div className="space-y-6">
               {/* Basic Information Step */}
               {currentStep === 'basic' && (
@@ -262,7 +265,7 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
             </div>
           </div>
 
-          {/* Navigation Buttons - Fixed at bottom */}
+          {/* Fixed Navigation Buttons */}
           <div className="p-6 border-t bg-white">
             <div className="flex justify-between">
               <div className="flex space-x-3">
