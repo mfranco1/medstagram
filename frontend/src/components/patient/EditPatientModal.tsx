@@ -16,7 +16,10 @@ interface EditPatientModalProps {
 export function EditPatientModal({ isOpen, onClose, onSave, patient }: EditPatientModalProps) {
   const { formData, errors, handleChange, handleSubmit } = usePatientForm({
     initialData: patient,
-    onSubmit: (data) => onSave({ ...data, id: patient.id })
+    onSubmit: (data) => {
+      onSave({ ...data, id: patient.id })
+      onClose()
+    }
   })
 
   if (!isOpen) return null

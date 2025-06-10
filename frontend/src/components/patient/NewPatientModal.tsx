@@ -16,7 +16,10 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
   const existingCaseNumbers = mockPatients.map(p => p.caseNumber)
   const { formData, errors, handleChange, handleSubmit } = usePatientForm({
     existingCaseNumbers,
-    onSubmit: onSave
+    onSubmit: (data) => {
+      onSave(data)
+      onClose()
+    }
   })
 
   if (!isOpen) return null
