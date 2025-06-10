@@ -12,7 +12,7 @@ interface PatientInfoCardProps {
   setActiveTab: (tab: 'general' | 'medical') => void
   patient: Patient
   onDelete?: (patientId: number) => void
-  onEdit?: (patient: Patient) => void
+  onEdit?: (patient: Patient) => Promise<void>
 }
 
 export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, onEdit }: PatientInfoCardProps) {

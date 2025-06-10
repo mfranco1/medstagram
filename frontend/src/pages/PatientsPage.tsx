@@ -16,7 +16,7 @@ export interface Patient {
   caseNumber: string
   dateAdmitted: string
   location: string
-  status: string
+  status: typeof PATIENT_STATUSES[number]
   diagnosis: string
   dateOfBirth: string
   civilStatus: string
@@ -175,7 +175,7 @@ export const mockPatients: Patient[] = [
     status: 'Active Admission',
     diagnosis: 'Acute Kidney Injury on top of Chronic Kidney Disease, stage V, from DMKD/HTKD, not in uremia',
     dateOfBirth: '2025-06-01',
-    civilStatus: 'Married',
+    civilStatus: 'Single',
     nationality: 'Filipino',
     religion: 'Protestant',
     address: '369 Malate St., Manila City',
@@ -277,7 +277,7 @@ export const mockPatients: Patient[] = [
     status: 'Active Admission',
     diagnosis: 'Chronic Liver Disease, Childs-Pugh C, from cons 1) Chronic Hepatitis B, 2) MAFLD, 3) Alcoholic Liver Disease, less likely',
     dateOfBirth: '2024-12-25',
-    civilStatus: 'Married',
+    civilStatus: 'Single',
     nationality: 'Filipino',
     religion: 'Buddhist',
     address: '486 San Miguel St., Manila City',
@@ -335,9 +335,9 @@ export default function PatientsPage() {
     return 0
   })
 
-  const handleAddPatient = (newPatient: Omit<Patient, 'id'>) => {
+  const handleAddPatient = async (newPatient: Omit<Patient, 'id'>): Promise<void> => {
     // Check if case number already exists
-    const caseNumberExists = mockPatients.some(
+    const caseNumberExists = patients.some(
       patient => patient.caseNumber === newPatient.caseNumber.padStart(6, '0')
     )
 
@@ -351,10 +351,10 @@ export default function PatientsPage() {
 
     const patient: Patient = {
       ...newPatient,
-      id: Math.max(...mockPatients.map(p => p.id)) + 1
+      id: Math.max(...patients.map(p => p.id)) + 1
     }
     
-    // Add to both local state and mockPatients array
+    // Update both the local state and mockPatients array
     mockPatients.push(patient)
     setPatients([...mockPatients])
     
@@ -362,6 +362,20 @@ export default function PatientsPage() {
       message: `Patient ${patient.name} has been added successfully`,
       type: 'success'
     })
+  }
+
+  const handleEditPatient = async (updatedPatient: Patient): Promise<void> => {
+    // Update both the local state and mockPatients array
+    const patientIndex = mockPatients.findIndex(p => p.id === updatedPatient.id)
+    if (patientIndex !== -1) {
+      mockPatients[patientIndex] = updatedPatient
+      setPatients([...mockPatients])
+      
+      setToast({
+        message: 'Patient updated successfully',
+        type: 'success'
+      })
+    }
   }
 
   return (
