@@ -5,6 +5,7 @@ import { FormSection } from '../ui/FormSection'
 import { usePatientForm } from '../../hooks/usePatientForm'
 import { GENDERS, CIVIL_STATUSES, PATIENT_STATUSES } from '../../constants/patient'
 import { formatAge, calculateAge } from '../../utils/patient'
+import { DatePicker } from '../ui/date-picker/DatePicker'
 
 interface EditPatientModalProps {
   isOpen: boolean
@@ -126,14 +127,19 @@ export function EditPatientModal({ isOpen, onClose, onSave, patient }: EditPatie
                   onChange={() => {}}
                   disabled
                 />
-                <FormField
-                  label="Date Admitted"
-                  type="date"
-                  value={formData.dateAdmitted}
-                  onChange={(value) => handleChange('dateAdmitted', value)}
-                  required
-                  disabled={isLoading}
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Date Admitted
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <DatePicker
+                    value={formData.dateAdmitted}
+                    onChange={(value) => handleChange('dateAdmitted', value)}
+                    required
+                    disabled={isLoading}
+                    maxDate={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
                 <FormField
                   label="Location"
                   value={formData.location}

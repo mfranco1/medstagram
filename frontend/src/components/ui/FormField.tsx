@@ -13,6 +13,7 @@ interface FormFieldProps {
   className?: string
   rows?: number
   options?: { value: string; label: string }[]
+  maxDate?: string
 }
 
 export function FormField({
@@ -26,7 +27,8 @@ export function FormField({
   placeholder,
   className = '',
   rows,
-  options
+  options,
+  maxDate
 }: FormFieldProps) {
   const baseInputClasses = `mt-1 block w-full rounded-md border ${
     error ? 'border-red-300' : 'border-gray-300'
@@ -43,6 +45,7 @@ export function FormField({
           required={required}
           disabled={disabled}
           error={error}
+          maxDate={maxDate}
         />
       )
     }

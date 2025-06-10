@@ -15,7 +15,10 @@ import {
   setMonth,
   startOfWeek,
   endOfWeek,
-  addDays
+  addDays,
+  isBefore,
+  isAfter,
+  startOfDay
 } from 'date-fns'
 
 interface DatePickerProps {
@@ -48,6 +51,10 @@ export function DatePicker({
   // Parse the current value
   const selectedDate = value ? parse(value, 'yyyy-MM-dd', new Date()) : null
   const isValidDate = selectedDate && isValid(selectedDate)
+
+  // Parse min and max dates
+  const parsedMinDate = minDate ? startOfDay(parse(minDate, 'yyyy-MM-dd', new Date())) : null
+  const parsedMaxDate = maxDate ? startOfDay(parse(maxDate, 'yyyy-MM-dd', new Date())) : null
 
   // Format the display value
   const displayValue = isValidDate ? format(selectedDate, 'MMM d, yyyy') : ''
@@ -90,10 +97,20 @@ export function DatePicker({
     end: calendarEnd
   })
 
+  // Check if a date is within the allowed range
+  const isDateSelectable = (date: Date) => {
+    const dateToCheck = startOfDay(date)
+    if (parsedMinDate && isBefore(dateToCheck, parsedMinDate)) return false
+    if (parsedMaxDate && isAfter(dateToCheck, parsedMaxDate)) return false
+    return true
+  }
+
   // Handle date selection
   const handleDateSelect = (date: Date) => {
-    onChange(format(date, 'yyyy-MM-dd'))
-    setIsOpen(false)
+    if (isDateSelectable(date)) {
+      onChange(format(date, 'yyyy-MM-dd'))
+      setIsOpen(false)
+    }
   }
 
   // Handle month navigation
@@ -119,10 +136,12 @@ export function DatePicker({
 
   // Handle today button
   const handleToday = () => {
-    const today = new Date()
-    onChange(format(today, 'yyyy-MM-dd'))
-    setCurrentMonth(today)
-    setIsOpen(false)
+    const today = startOfDay(new Date())
+    if (isDateSelectable(today)) {
+      onChange(format(today, 'yyyy-MM-dd'))
+      setCurrentMonth(today)
+      setIsOpen(false)
+    }
   }
 
   return (
@@ -282,6 +301,7 @@ export function DatePicker({
                 const isSelected = selectedDate && isSameDay(day, selectedDate)
                 const isCurrentMonth = isSameMonth(day, currentMonth)
                 const isCurrentDay = isToday(day)
+                const isSelectable = isDateSelectable(day)
                 
                 return (
                   <button
@@ -293,12 +313,13 @@ export function DatePicker({
                       focus:outline-none focus:ring-2 focus:ring-violet-500
                       ${isSelected ? 'bg-violet-600 text-white' : ''}
                       ${!isSelected && isCurrentDay ? 'bg-violet-100 text-violet-900' : ''}
-                      ${!isSelected && !isCurrentDay && isCurrentMonth ? 'hover:bg-violet-50' : ''}
-                      ${!isCurrentMonth ? 'text-gray-400' : ''}
+                      ${!isSelected && !isCurrentDay && isCurrentMonth && isSelectable ? 'hover:bg-violet-50' : ''}
+                      ${!isCurrentMonth || !isSelectable ? 'text-gray-400' : ''}
+                      ${!isSelectable ? 'cursor-not-allowed opacity-50' : ''}
                       ${disabled ? 'cursor-not-allowed opacity-50' : ''}
                     `}
                     onClick={() => handleDateSelect(day)}
-                    disabled={disabled}
+                    disabled={disabled || !isSelectable}
                   >
                     {format(day, 'd')}
                   </button>
@@ -310,13 +331,15 @@ export function DatePicker({
           <div className="p-2 border-t border-gray-100">
             <button
               type="button"
-              className="
+              className={`
                 w-full px-3 py-1.5
                 text-sm text-violet-600
                 hover:bg-violet-50 rounded
                 focus:outline-none focus:ring-2 focus:ring-violet-500
-              "
+                ${!isDateSelectable(new Date()) ? 'opacity-50 cursor-not-allowed' : ''}
+              `}
               onClick={handleToday}
+              disabled={!isDateSelectable(new Date())}
             >
               Today
             </button>
