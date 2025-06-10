@@ -333,6 +333,19 @@ export default function PatientsPage() {
   })
 
   const handleAddPatient = (newPatient: Omit<Patient, 'id'>) => {
+    // Check if case number already exists
+    const caseNumberExists = patients.some(
+      patient => patient.caseNumber === newPatient.caseNumber.padStart(6, '0')
+    )
+
+    if (caseNumberExists) {
+      setToast({
+        message: `A patient with case number ${newPatient.caseNumber.padStart(6, '0')} already exists`,
+        type: 'error'
+      })
+      return
+    }
+
     const patient: Patient = {
       ...newPatient,
       id: Math.max(...patients.map(p => p.id)) + 1

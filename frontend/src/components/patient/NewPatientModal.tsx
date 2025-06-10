@@ -25,9 +25,32 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
     address: '',
     philhealth: ''
   })
+  const [caseNumberError, setCaseNumberError] = useState('')
+
+  const validateCaseNumber = (value: string) => {
+    if (!value) {
+      setCaseNumberError('Case number is required')
+      return false
+    }
+    if (!/^\d+$/.test(value)) {
+      setCaseNumberError('Case number must contain only digits')
+      return false
+    }
+    if (value.length > 6) {
+      setCaseNumberError('Case number cannot be longer than 6 digits')
+      return false
+    }
+    setCaseNumberError('')
+    return true
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!validateCaseNumber(formData.caseNumber)) {
+      return
+    }
+
     onSave({
       ...formData,
       age: parseInt(formData.age),
@@ -179,10 +202,18 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
                       type="text"
                       required
                       value={formData.caseNumber}
-                      onChange={(e) => setFormData({ ...formData, caseNumber: e.target.value })}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                      onChange={(e) => {
+                        setFormData({ ...formData, caseNumber: e.target.value })
+                        validateCaseNumber(e.target.value)
+                      }}
+                      className={`mt-1 block w-full rounded-md border ${
+                        caseNumberError ? 'border-red-300' : 'border-gray-300'
+                      } px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500`}
                       placeholder="6-digit number"
                     />
+                    {caseNumberError && (
+                      <p className="mt-1 text-sm text-red-600">{caseNumberError}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Date Admitted</label>
