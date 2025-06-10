@@ -162,6 +162,7 @@ export function DatePicker({
             w-full px-3 py-2
             border ${error ? 'border-red-500' : 'border-gray-300'}
             rounded-md
+            text-sm
             focus:outline-none focus:ring-2 focus:ring-violet-500
             disabled:bg-gray-50 disabled:text-gray-500
             ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}
