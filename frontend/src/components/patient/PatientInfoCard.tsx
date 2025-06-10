@@ -5,6 +5,7 @@ import type { Patient } from '../../pages/PatientsPage'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
 import { calculateAge, formatAge } from '../../utils/patient'
+import { STATUS_COLORS } from '../../constants/patient'
 
 interface PatientInfoCardProps {
   activeTab: 'general' | 'medical'
@@ -65,7 +66,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
               <span className="text-sm text-gray-500">
                 {patient.gender} • {ageDisplay} • CN: {patient.caseNumber}
               </span>
-              <span className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(patient.status)}`}>
+              <span className={`px-2 py-1 text-xs rounded-full font-medium ${STATUS_COLORS[patient.status]}`}>
                 {patient.status}
               </span>
             </div>
