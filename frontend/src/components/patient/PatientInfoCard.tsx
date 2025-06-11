@@ -1,12 +1,11 @@
 import { Calendar, User, MapPin, Church, Home, Phone, Clock, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind } from 'lucide-react'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../types/patient'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
 import { calculateBMI, formatBloodPressure, formatGCS } from '../../utils/patient'
 import { PatientHeader } from './PatientHeader'
 import { PatientMedicalStatus } from './PatientMedicalStatus'
+import { usePatientModals } from '../../hooks/usePatientModals'
 
 interface PatientInfoCardProps {
   activeTab: 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics' | 'therapeutics' | 'case-summary'
@@ -17,23 +16,22 @@ interface PatientInfoCardProps {
 }
 
 export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, onEdit }: PatientInfoCardProps) {
-  const navigate = useNavigate()
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete(patient.id)
-      navigate('/patients')
-    }
-  }
+  const {
+    isDeleteModalOpen,
+    isEditModalOpen,
+    openDeleteModal,
+    closeDeleteModal,
+    openEditModal,
+    closeEditModal,
+    handleDelete
+  } = usePatientModals({ patient, onDelete, onEdit })
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">
       <PatientHeader
         patient={patient}
-        onEdit={() => setIsEditModalOpen(true)}
-        onDelete={() => setIsDeleteModalOpen(true)}
+        onEdit={openEditModal}
+        onDelete={openDeleteModal}
       />
 
       <PatientMedicalStatus patient={patient} />
@@ -716,7 +714,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
 
       <ConfirmModal
         isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
+        onClose={closeDeleteModal}
         onConfirm={handleDelete}
         title="Delete Patient"
         message={`Are you sure you want to delete ${patient.name}? This action cannot be undone.`}
@@ -726,7 +724,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
 
       <EditPatientModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={closeEditModal}
         onSave={onEdit ?? (async () => {})}
         patient={patient}
       />
