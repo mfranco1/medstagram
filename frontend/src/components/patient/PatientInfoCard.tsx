@@ -9,8 +9,8 @@ import { STATUS_COLORS } from '../../constants/patient'
 import { Tooltip } from '../ui/Tooltip'
 
 interface PatientInfoCardProps {
-  activeTab: 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics'
-  setActiveTab: (tab: 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics') => void
+  activeTab: 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics' | 'therapeutics'
+  setActiveTab: (tab: 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics' | 'therapeutics') => void
   patient: Patient
   onDelete?: (patientId: number) => void
   onEdit?: (patient: Patient) => Promise<void>
@@ -252,6 +252,16 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
             }`}
           >
             Diagnostics
+          </button>
+          <button
+            onClick={() => setActiveTab('therapeutics')}
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'therapeutics'
+                ? 'border-violet-600 text-violet-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Therapeutics
           </button>
         </div>
       </div>
@@ -621,6 +631,13 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'therapeutics' && (
+          <div className="space-y-8">
+            {/* Add therapeutic content here */}
+            <p className="text-gray-500 text-sm">Therapeutic content will be added here.</p>
           </div>
         )}
 
