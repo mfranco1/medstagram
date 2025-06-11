@@ -1,5 +1,5 @@
 import { ChevronDown, MoreVertical } from 'lucide-react'
-import type { Patient } from '../../pages/PatientsPage'
+import type { Patient } from '../../types/patient'
 import { STATUS_COLORS } from '../../constants/patient'
 import { calculateAge, formatAge } from '../../utils/patient'
 

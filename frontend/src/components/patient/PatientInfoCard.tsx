@@ -1,7 +1,7 @@
-import { Calendar, User, MapPin, Church, Home, Phone, Heart, FileText, MoreVertical, Trash2, Edit2, AlertCircle, Stethoscope, Clock, Building2, UserCog } from 'lucide-react'
+import { Calendar, User, MapPin, Church, Home, Phone, MoreVertical, Trash2, Edit2, Stethoscope, Clock, Building2, UserCog } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { Patient } from '../../pages/PatientsPage'
+import type { Patient } from '../../types/patient'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
 import { calculateAge, formatAge } from '../../utils/patient'
@@ -27,19 +27,6 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
       .map(word => word[0])
       .join('')
       .toUpperCase()
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Active Admission':
-        return 'bg-green-100 text-green-800'
-      case 'Discharged':
-        return 'bg-gray-100 text-gray-800'
-      case 'Transferred':
-        return 'bg-blue-100 text-blue-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
   }
 
   const handleDelete = () => {

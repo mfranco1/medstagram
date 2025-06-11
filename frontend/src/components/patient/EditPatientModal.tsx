@@ -1,6 +1,6 @@
 import { X, User, FileText, Stethoscope, ChevronRight, ChevronLeft } from 'lucide-react'
 import { useState } from 'react'
-import type { Patient } from '../../pages/PatientsPage'
+import type { Patient } from '../../types/patient'
 import { FormField } from '../ui/FormField'
 import { FormSection } from '../ui/FormSection'
 import { usePatientForm } from '../../hooks/usePatientForm'

@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { MainLayout } from '../components/layout/MainLayout'
 import { PatientInfoCard } from '../components/patient/PatientInfoCard'
 import { MedicalEntryForm } from '../components/patient/MedicalEntryForm'
-import { mockPatients, type Patient } from './PatientsPage'
+import { mockPatients } from './PatientsPage'
+import type { Patient } from '../types/patient'
 import { Toast, type ToastType } from '../components/ui/Toast'
 
 export default function SoapPage() {

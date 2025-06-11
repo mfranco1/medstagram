@@ -5,28 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import { NewPatientModal } from '../components/patient/NewPatientModal'
 import { Toast, type ToastType } from '../components/ui/Toast'
 import { Select } from '../components/ui/Select'
-import { STATUS_COLORS, PATIENT_STATUSES, PRIMARY_SERVICES } from '../constants/patient'
-import { calculateAge, formatAge } from '../utils/patient'
+import { PATIENT_STATUSES, PRIMARY_SERVICES } from '../constants/patient'
 import { PatientsTable } from '../components/patient/PatientsTable'
-
-export interface Patient {
-  id: number
-  name: string
-  age: number
-  gender: string
-  caseNumber: string
-  dateAdmitted: string
-  location: string
-  status: typeof PATIENT_STATUSES[number]
-  diagnosis: string
-  dateOfBirth: string
-  civilStatus: string
-  nationality: string
-  religion: string
-  address: string
-  philhealth: string
-  primaryService: typeof PRIMARY_SERVICES[number]
-}
+import type { Patient } from '../types/patient'
 
 // Mock data - will be replaced with API calls later
 export const mockPatients: Patient[] = [
@@ -381,20 +362,6 @@ export default function PatientsPage() {
       message: `Patient ${patient.name} has been added successfully`,
       type: 'success'
     })
-  }
-
-  const handleEditPatient = async (updatedPatient: Patient): Promise<void> => {
-    // Update both the local state and mockPatients array
-    const patientIndex = mockPatients.findIndex(p => p.id === updatedPatient.id)
-    if (patientIndex !== -1) {
-      mockPatients[patientIndex] = updatedPatient
-      setPatients([...mockPatients])
-      
-      setToast({
-        message: 'Patient updated successfully',
-        type: 'success'
-      })
-    }
   }
 
   return (
