@@ -92,4 +92,6 @@ export interface Patient {
     }
     timestamp: string
   }
-} 
+}
+
+export type PatientTab = 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics' | 'therapeutics' | 'case-summary' 

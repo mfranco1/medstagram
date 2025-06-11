@@ -1,15 +1,16 @@
 import { Calendar, User, MapPin, Church, Home, Phone, Clock, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind } from 'lucide-react'
-import type { Patient } from '../../types/patient'
+import type { Patient, PatientTab } from '../../types/patient'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
 import { calculateBMI, formatBloodPressure, formatGCS } from '../../utils/patient'
 import { PatientHeader } from './PatientHeader'
 import { PatientMedicalStatus } from './PatientMedicalStatus'
+import { PatientTabNavigation } from './PatientTabNavigation'
 import { usePatientModals } from '../../hooks/usePatientModals'
 
 interface PatientInfoCardProps {
-  activeTab: 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics' | 'therapeutics' | 'case-summary'
-  setActiveTab: (tab: 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics' | 'therapeutics' | 'case-summary') => void
+  activeTab: PatientTab
+  setActiveTab: (tab: PatientTab) => void
   patient: Patient
   onDelete?: (patientId: number) => void
   onEdit?: (patient: Patient) => Promise<void>
@@ -36,81 +37,10 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
 
       <PatientMedicalStatus patient={patient} />
 
-      {/* Tabs */}
-      <div className="px-4 pt-4">
-        <div className="flex space-x-8 border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab('general')}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'general'
-                ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            General Data
-          </button>
-          <button
-            onClick={() => setActiveTab('medical')}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'medical'
-                ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Medical Info
-          </button>
-          <button
-            onClick={() => setActiveTab('case-summary')}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'case-summary'
-                ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Case Summary
-          </button>
-          <button
-            onClick={() => setActiveTab('chart')}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'chart'
-                ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Chart
-          </button>
-          <button
-            onClick={() => setActiveTab('diagnostics')}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'diagnostics'
-                ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Diagnostics
-          </button>
-          <button
-            onClick={() => setActiveTab('therapeutics')}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'therapeutics'
-                ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Therapeutics
-          </button>
-          <button
-            onClick={() => setActiveTab('orders')}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'orders'
-                ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Orders
-          </button>
-        </div>
-      </div>
+      <PatientTabNavigation
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
       {/* Tab Content */}
       <div className="p-4">
