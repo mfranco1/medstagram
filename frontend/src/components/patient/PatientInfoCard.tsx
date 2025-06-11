@@ -1,4 +1,4 @@
-import { Calendar, User, MapPin, Church, Home, Phone, MoreVertical, Trash2, Edit2, Stethoscope, Clock, Building2, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind } from 'lucide-react'
+import { Calendar, User, MapPin, Church, Home, Phone, MoreVertical, Trash2, Edit2, Stethoscope, Clock, Building2, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind, FileText, ClipboardList } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../types/patient'
@@ -75,6 +75,18 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
     return `${gcs.total} (E${gcs.eye}V${gcs.verbal}M${gcs.motor})`
   }
 
+  const handleGenerateClinicalAbstract = () => {
+    setIsDropdownOpen(false)
+    // TODO: Implement clinical abstract generation
+    console.log('Generate clinical abstract for patient:', patient.id)
+  }
+
+  const handleGenerateDischargeSummary = () => {
+    setIsDropdownOpen(false)
+    // TODO: Implement discharge summary generation
+    console.log('Generate discharge summary for patient:', patient.id)
+  }
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">
       {/* Critical Information Header */}
@@ -112,26 +124,41 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
               <MoreVertical className="w-5 h-5" />
             </button>
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+              <div className="absolute right-0 mt-2 min-w-[240px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
                 <div className="py-1">
                   <button
                     onClick={() => {
                       setIsDropdownOpen(false)
                       setIsEditModalOpen(true)
                     }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap"
                   >
-                    <Edit2 className="w-4 h-4 mr-2" />
+                    <Edit2 className="w-4 h-4 mr-2 flex-shrink-0" />
                     Edit Patient
                   </button>
+                  <button
+                    onClick={handleGenerateClinicalAbstract}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap"
+                  >
+                    <FileText className="w-4 h-4 mr-2 flex-shrink-0" />
+                    Generate Clinical Abstract
+                  </button>
+                  <button
+                    onClick={handleGenerateDischargeSummary}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap"
+                  >
+                    <ClipboardList className="w-4 h-4 mr-2 flex-shrink-0" />
+                    Generate Discharge Summary
+                  </button>
+                  <div className="border-t border-gray-100 my-1"></div>
                   <button
                     onClick={() => {
                       setIsDropdownOpen(false)
                       setIsDeleteModalOpen(true)
                     }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 whitespace-nowrap"
                   >
-                    <Trash2 className="w-4 h-4 mr-2" />
+                    <Trash2 className="w-4 h-4 mr-2 flex-shrink-0" />
                     Delete Patient
                   </button>
                 </div>
