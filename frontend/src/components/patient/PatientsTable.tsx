@@ -19,11 +19,11 @@ export function PatientsTable({
   onPatientClick
 }: PatientsTableProps) {
   return (
-    <div className="bg-white shadow rounded-lg">
+    <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="overflow-x-auto max-h-[calc(100vh-300px)] overflow-y-auto">
         <div className="inline-block min-w-full align-middle">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 rounded-lg">
+            <thead className="bg-gray-50 sticky top-0 z-10">
               <tr>
                 <th 
                   scope="col" 
