@@ -53,7 +53,7 @@ export default function SoapPage() {
     }
   }
 
-  const handleEditPatient = (updatedPatient: Patient) => {
+  const handleEditPatient = async (updatedPatient: Patient): Promise<void> => {
     const index = mockPatients.findIndex(p => p.id === updatedPatient.id)
     if (index !== -1) {
       mockPatients[index] = updatedPatient
