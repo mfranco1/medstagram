@@ -26,6 +26,11 @@ export interface Patient {
   }
   height?: number
   weight?: number
+  attendingPhysician?: {
+    name: string
+    specialization: string
+    contactNumber: string
+  }
   lastVitals?: {
     temperature?: number
     bloodPressure?: {

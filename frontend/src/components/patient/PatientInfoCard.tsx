@@ -433,6 +433,24 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
                     </div>
                   </div>
                 </div>
+
+                {/* Attending Physician */}
+                <div className="flex items-start space-x-3 col-span-3">
+                  <UserCog className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-gray-500">Attending Physician</span>
+                    {patient.attendingPhysician ? (
+                      <div>
+                        <p className="font-medium text-gray-900">{patient.attendingPhysician.name}</p>
+                        <p className="text-sm text-gray-500">
+                          {patient.attendingPhysician.specialization} • {patient.attendingPhysician.contactNumber}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="font-medium text-gray-900">Not assigned</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
