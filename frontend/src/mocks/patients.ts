@@ -100,14 +100,14 @@ export const mockPatients: Patient[] = [
     dateAdmitted: '2024-04-20',
     location: 'Ward 1',
     status: 'Transferred',
-    diagnosis: 'Acute Pancreatitis',
+    diagnosis: 'Cervical cancer, stage IV',
     dateOfBirth: '1989-04-12',
     civilStatus: 'Married',
     nationality: 'Filipino',
     religion: 'Buddhist',
     address: '987 Quezon Ave., Manila City',
     philhealth: '12-345678901-7',
-    primaryService: 'Gastroenterology'
+    primaryService: 'Obstetrics and Gynecology'
   },
   {
     id: 7,

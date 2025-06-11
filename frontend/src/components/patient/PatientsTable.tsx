@@ -177,7 +177,7 @@ export function PatientsTable({
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-500 truncate" title={patient.primaryService}>
                       {patient.primaryService}
                     </div>
                   </td>
