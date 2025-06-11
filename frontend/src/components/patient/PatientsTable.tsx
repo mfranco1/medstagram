@@ -2,6 +2,8 @@ import { ChevronDown, MoreVertical } from 'lucide-react'
 import type { Patient } from '../../types/patient'
 import { STATUS_COLORS } from '../../constants/patient'
 import { calculateAge, formatAge } from '../../utils/patient'
+import { Tooltip } from '../ui/Tooltip'
+import { useState } from 'react'
 
 interface PatientsTableProps {
   patients: Patient[]
@@ -18,6 +20,8 @@ export function PatientsTable({
   onSort,
   onPatientClick
 }: PatientsTableProps) {
+  const [hoveredDiagnosis, setHoveredDiagnosis] = useState<number | null>(null)
+
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="overflow-x-auto max-h-[calc(100vh-300px)] overflow-y-auto max-w-[calc(100vw-180px)]">
@@ -182,9 +186,24 @@ export function PatientsTable({
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-500 max-w-[200px] truncate" title={patient.diagnosis}>
-                      {patient.diagnosis}
-                    </div>
+                    <Tooltip
+                      show={hoveredDiagnosis === patient.id}
+                      position="top"
+                      delay={750}
+                      content={
+                        <div className="text-sm text-gray-600">
+                          {patient.diagnosis}
+                        </div>
+                      }
+                    >
+                      <div 
+                        className="text-sm text-gray-500 max-w-[200px] truncate"
+                        onMouseEnter={() => setHoveredDiagnosis(patient.id)}
+                        onMouseLeave={() => setHoveredDiagnosis(null)}
+                      >
+                        {patient.diagnosis}
+                      </div>
+                    </Tooltip>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button className="text-gray-400 hover:text-gray-500">
