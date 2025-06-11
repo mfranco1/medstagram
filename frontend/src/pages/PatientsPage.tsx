@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { MainLayout } from '../components/layout/MainLayout'
-import { Search, Plus, X } from 'lucide-react'
+import { Search, Plus, X, Filter, ChevronDown } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { NewPatientModal } from '../components/patient/NewPatientModal'
 import { Toast, type ToastType } from '../components/ui/Toast'
@@ -24,6 +24,7 @@ export default function PatientsPage() {
   const [isNewPatientModalOpen, setIsNewPatientModalOpen] = useState(false)
   const [patients, setPatients] = useState<Patient[]>(mockPatients)
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
   const handleSort = (field: keyof Patient) => {
     if (field === sortField) {
@@ -37,6 +38,15 @@ export default function PatientsPage() {
   const handlePatientClick = (patientId: number) => {
     navigate(`/soap/${patientId}`)
   }
+
+  const handleResetFilters = () => {
+    setSearchQuery('')
+    setLocationFilter('')
+    setStatusFilter('')
+    setServiceFilter('')
+  }
+
+  const activeFiltersCount = [locationFilter, statusFilter, serviceFilter].filter(Boolean).length
 
   const filteredPatients = patients.filter(patient => {
     const matchesSearch = patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -91,13 +101,6 @@ export default function PatientsPage() {
     })
   }
 
-  const handleResetFilters = () => {
-    setSearchQuery('')
-    setLocationFilter('')
-    setStatusFilter('')
-    setServiceFilter('')
-  }
-
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -114,69 +117,117 @@ export default function PatientsPage() {
         </div>
 
         {/* Search and Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
+        <div className="space-y-4">
+          {/* Search Bar and Filters */}
+          <div className="flex items-center space-x-2">
+            <div className="relative w-96">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by name, diagnosis, or case number..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
             </div>
-            <input
-              type="text"
-              placeholder="Name, diagnosis, or CN..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
-            />
-          </div>
-          <div>
-            <Select
-              value={locationFilter}
-              onChange={setLocationFilter}
-              options={[
-                { value: '', label: 'All Locations' },
-                ...locations.map(location => ({
-                  value: location,
-                  label: location
-                }))
-              ]}
-              placeholder="Select location"
-            />
-          </div>
-          <div>
-            <Select
-              value={statusFilter}
-              onChange={setStatusFilter}
-              options={[
-                { value: '', label: 'All Statuses' },
-                ...PATIENT_STATUSES.map(status => ({
-                  value: status,
-                  label: status
-                }))
-              ]}
-              placeholder="Select status"
-            />
-          </div>
-          <div>
-            <Select
-              value={serviceFilter}
-              onChange={setServiceFilter}
-              options={[
-                { value: '', label: 'All Services' },
-                ...PRIMARY_SERVICES.map(service => ({
-                  value: service,
-                  label: service
-                }))
-              ]}
-              placeholder="Select service"
-            />
-          </div>
-          <div>
-            <button
-              onClick={handleResetFilters}
-              className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-            >
-              <X className="h-4 w-4 mr-2" />
-              Reset Filters
-            </button>
+
+            {/* Filters Button */}
+            <div className="relative">
+              <button
+                onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+                className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                Filters
+                {activeFiltersCount > 0 && (
+                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-violet-100 text-violet-800">
+                    {activeFiltersCount}
+                  </span>
+                )}
+                <ChevronDown className={`h-4 w-4 ml-2 transform transition-transform ${isFiltersOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Filters Dropdown */}
+              {isFiltersOpen && (
+                <div className="absolute z-20 mt-2 w-96 bg-white rounded-md shadow-lg border border-gray-200 p-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-medium text-gray-900">Filter Patients</h3>
+                    {activeFiltersCount > 0 && (
+                      <button
+                        onClick={handleResetFilters}
+                        className="inline-flex items-center px-2 py-1 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none"
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        Clear all
+                      </button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Location
+                      </label>
+                      <Select
+                        value={locationFilter}
+                        onChange={setLocationFilter}
+                        options={[
+                          { value: '', label: 'All Locations' },
+                          ...locations.map(location => ({
+                            value: location,
+                            label: location
+                          }))
+                        ]}
+                        placeholder="Select location"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Status
+                      </label>
+                      <Select
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        options={[
+                          { value: '', label: 'All Statuses' },
+                          ...PATIENT_STATUSES.map(status => ({
+                            value: status,
+                            label: status
+                          }))
+                        ]}
+                        placeholder="Select status"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Service
+                      </label>
+                      <Select
+                        value={serviceFilter}
+                        onChange={setServiceFilter}
+                        options={[
+                          { value: '', label: 'All Services' },
+                          ...PRIMARY_SERVICES.map(service => ({
+                            value: service,
+                            label: service
+                          }))
+                        ]}
+                        placeholder="Select service"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
