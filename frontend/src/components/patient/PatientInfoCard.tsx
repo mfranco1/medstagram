@@ -1,5 +1,5 @@
 import { Calendar, User, MapPin, Church, Home, Phone, MoreVertical, Trash2, Edit2, Stethoscope, Clock, Building2, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../types/patient'
 import { ConfirmModal } from '../ui/ConfirmModal'
@@ -22,6 +22,20 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [hoveredDiagnosis, setHoveredDiagnosis] = useState<number | null>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   const getInitials = (name: string) => {
     return name
@@ -90,7 +104,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
               </div>
             </div>
           </div>
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="p-2 text-gray-400 hover:text-gray-500 focus:outline-none"
