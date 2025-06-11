@@ -23,7 +23,7 @@ export function PatientsTable({
   const [hoveredDiagnosis, setHoveredDiagnosis] = useState<number | null>(null)
 
   return (
-    <div className="bg-white shadow rounded-lg overflow-hidden">
+    <div className="bg-transparent shadow rounded-lg overflow-hidden">
       <div className="overflow-x-auto max-h-[calc(100vh-300px)] overflow-y-auto max-w-[calc(100vw-180px)]">
         <div className="inline-block min-w-full align-middle">
           <table className="min-w-full divide-y divide-gray-200 rounded-lg">
@@ -190,6 +190,7 @@ export function PatientsTable({
                       show={hoveredDiagnosis === patient.id}
                       position="top"
                       delay={750}
+                      maxWidth={400}
                       content={
                         <div className="text-sm text-gray-600">
                           {patient.diagnosis}

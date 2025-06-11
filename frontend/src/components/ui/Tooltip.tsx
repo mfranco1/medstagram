@@ -7,9 +7,17 @@ interface TooltipProps {
   position?: 'top' | 'right' | 'bottom' | 'left'
   show?: boolean
   delay?: number
+  maxWidth?: number
 }
 
-export function Tooltip({ children, content, position = 'right', show = false, delay = 0 }: TooltipProps) {
+export function Tooltip({ 
+  children, 
+  content, 
+  position = 'right', 
+  show = false, 
+  delay = 0,
+  maxWidth = 300
+}: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [timeoutId, setTimeoutId] = useState<number | null>(null)
 
@@ -57,7 +65,14 @@ export function Tooltip({ children, content, position = 'right', show = false, d
       {children}
       {isVisible && (
         <div className={`absolute z-50 ${positionClasses[position]}`}>
-          <div className="w-56 p-3 bg-white rounded-lg shadow-lg border border-gray-200">
+          <div 
+            className="p-3 bg-white rounded-lg shadow-lg border border-gray-200"
+            style={{ 
+              maxWidth: `${maxWidth}px`,
+              width: 'max-content',
+              minWidth: '100px'
+            }}
+          >
             {content}
             <div className={`absolute w-2 h-2 bg-white border-r border-b border-gray-200 ${arrowPositionClasses[position]}`} />
           </div>
