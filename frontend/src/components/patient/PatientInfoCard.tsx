@@ -1,13 +1,12 @@
-import { Calendar, User, MapPin, Church, Home, Phone, MoreVertical, Trash2, Edit2, Stethoscope, Clock, Building2, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind, FileText, ClipboardList } from 'lucide-react'
+import { Calendar, User, MapPin, Church, Home, Phone, Stethoscope, Clock, Building2, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind, FileText, ClipboardList } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../types/patient'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
-import { DropdownMenu } from '../ui/DropdownMenu'
-import { calculateAge, formatAge, getInitials, calculateBMI, formatBloodPressure, formatGCS } from '../../utils/patient'
-import { STATUS_COLORS } from '../../constants/patient'
+import { calculateBMI, formatBloodPressure, formatGCS } from '../../utils/patient'
 import { Tooltip } from '../ui/Tooltip'
+import { PatientHeader } from './PatientHeader'
 
 interface PatientInfoCardProps {
   activeTab: 'general' | 'medical' | 'orders' | 'chart' | 'diagnostics' | 'therapeutics' | 'case-summary'
@@ -30,81 +29,13 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
     }
   }
 
-  const handleGenerateClinicalAbstract = () => {
-    // TODO: Implement clinical abstract generation
-    console.log('Generate clinical abstract for patient:', patient.id)
-  }
-
-  const handleGenerateDischargeSummary = () => {
-    // TODO: Implement discharge summary generation
-    console.log('Generate discharge summary for patient:', patient.id)
-  }
-
-  const ageDisplay = formatAge(calculateAge(patient.dateOfBirth))
-
-  const dropdownItems = [
-    {
-      label: 'Edit Patient',
-      icon: <Edit2 className="w-4 h-4" />,
-      onClick: () => setIsEditModalOpen(true)
-    },
-    {
-      label: 'Generate Clinical Abstract',
-      icon: <FileText className="w-4 h-4" />,
-      onClick: handleGenerateClinicalAbstract
-    },
-    {
-      label: 'Generate Discharge Summary',
-      icon: <ClipboardList className="w-4 h-4" />,
-      onClick: handleGenerateDischargeSummary
-    },
-    {
-      label: 'Delete Patient',
-      icon: <Trash2 className="w-4 h-4" />,
-      onClick: () => setIsDeleteModalOpen(true),
-      className: 'text-red-600 hover:bg-red-50'
-    }
-  ]
-
   return (
     <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">
-      {/* Critical Information Header */}
-      <div className="bg-gray-50 border-b border-gray-200 p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-14 h-14 bg-violet-100 rounded-full flex items-center justify-center">
-              <span className="text-xl font-semibold text-violet-600">
-                {getInitials(patient.name)}
-              </span>
-            </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900">{patient.name}</h2>
-              <div className="flex items-center space-x-4 mt-1">
-                <span className="text-sm font-semibold text-gray-600">
-                  CN: {patient.caseNumber}
-                </span>
-                <span className="text-sm text-gray-600">
-                  {ageDisplay}
-                </span>
-                <span className="text-sm text-gray-600">
-                  {patient.gender}
-                </span>
-                <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${STATUS_COLORS[patient.status]}`}>
-                  {patient.status}
-                </span>
-              </div>
-            </div>
-          </div>
-          <DropdownMenu
-            trigger={
-              <button className="p-2 text-gray-400 hover:text-gray-500 focus:outline-none">
-                <MoreVertical className="w-5 h-5" />
-              </button>
-            }
-            items={dropdownItems}
-          />
-        </div>
-      </div>
+      <PatientHeader
+        patient={patient}
+        onEdit={() => setIsEditModalOpen(true)}
+        onDelete={() => setIsDeleteModalOpen(true)}
+      />
 
       {/* Medical Status Section */}
       <div className="p-4 border-gray-200">
