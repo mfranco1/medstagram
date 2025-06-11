@@ -1,6 +1,7 @@
 import { ChevronRight, Plus, Send } from 'lucide-react'
 import { useState } from 'react'
 import miraIcon from '../../assets/mira_icon.png'
+import { Tooltip } from '../ui/Tooltip'
 
 interface MIRAPanelProps {
   collapsed: boolean
@@ -88,25 +89,29 @@ export function MIRAPanel({ collapsed, setCollapsed }: MIRAPanelProps) {
         </>
       ) : (
         <div className="flex flex-col items-center py-4">
-          <div 
-            className="relative"
-            onMouseEnter={() => setShowTooltip(true)}
-            onMouseLeave={() => setShowTooltip(false)}
-          >
-            <div 
-              className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center hover:bg-violet-500 transition-colors cursor-pointer"
-              onClick={() => setCollapsed(false)}
-            >
-              <img src={miraIcon} alt="MIRA" className="w-5 h-5 rounded-lg" />
-            </div>
-            {showTooltip && (
-              <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 w-56 p-3 bg-white rounded-lg shadow-lg border border-gray-200">
+          <Tooltip
+            show={showTooltip}
+            position="left"
+            content={
+              <>
                 <div className="text-sm font-bold text-violet-600 mb-1">MIRA</div>
                 <p className="text-xs text-gray-600">Your intelligent medical assistant that helps with patient documentation, suggests relevant questions, and provides clinical insights.</p>
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 rotate-45 w-2 h-2 bg-white border-r border-b border-gray-200" />
+              </>
+            }
+          >
+            <div 
+              className="relative"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <div 
+                className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center hover:bg-violet-500 transition-colors cursor-pointer"
+                onClick={() => setCollapsed(false)}
+              >
+                <img src={miraIcon} alt="MIRA" className="w-5 h-5 rounded-lg" />
               </div>
-            )}
-          </div>
+            </div>
+          </Tooltip>
         </div>
       )}
     </aside>
