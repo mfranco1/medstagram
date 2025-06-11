@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { MainLayout } from '../components/layout/MainLayout'
 import { Search, Plus, X, Filter, ChevronDown } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -25,6 +25,19 @@ export default function PatientsPage() {
   const [patients, setPatients] = useState<Patient[]>(mockPatients)
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+  const filtersRef = useRef<HTMLDivElement>(null)
+
+  // Handle click outside to close filters
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (filtersRef.current && !filtersRef.current.contains(event.target as Node)) {
+        setIsFiltersOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const handleSort = (field: keyof Patient) => {
     if (field === sortField) {
@@ -142,7 +155,7 @@ export default function PatientsPage() {
             </div>
 
             {/* Filters Button */}
-            <div className="relative">
+            <div className="relative" ref={filtersRef}>
               <button
                 onClick={() => setIsFiltersOpen(!isFiltersOpen)}
                 className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
