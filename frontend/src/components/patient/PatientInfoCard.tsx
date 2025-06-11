@@ -6,6 +6,7 @@ import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
 import { calculateAge, formatAge } from '../../utils/patient'
 import { STATUS_COLORS } from '../../constants/patient'
+import { Tooltip } from '../ui/Tooltip'
 
 interface PatientInfoCardProps {
   activeTab: 'general' | 'medical'
@@ -20,6 +21,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [hoveredDiagnosis, setHoveredDiagnosis] = useState<number | null>(null)
 
   const getInitials = (name: string) => {
     return name
@@ -39,7 +41,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
   const ageDisplay = formatAge(calculateAge(patient.dateOfBirth))
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 mb-6">
+    <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">
       {/* Critical Information Header */}
       <div className="bg-gray-50 border-b border-gray-200 p-4">
         <div className="flex items-center justify-between">
@@ -111,12 +113,25 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
             <Stethoscope className="w-5 h-5 text-violet-500 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-sm text-gray-500">Primary Diagnosis</span>
-              <p 
-                className="font-medium text-gray-900 truncate" 
-                title={patient.diagnosis || 'Not specified'}
+              <Tooltip
+                show={hoveredDiagnosis === patient.id}
+                position="bottom"
+                delay={750}
+                maxWidth={400}
+                content={
+                  <div className="text-sm text-gray-600">
+                    {patient.diagnosis || 'Not specified'}
+                  </div>
+                }
               >
-                {patient.diagnosis || 'Not specified'}
-              </p>
+                <p 
+                  className="font-medium text-gray-900 truncate max-w-[200px]"
+                  onMouseEnter={() => setHoveredDiagnosis(patient.id)}
+                  onMouseLeave={() => setHoveredDiagnosis(null)}
+                >
+                  {patient.diagnosis || 'Not specified'}
+                </p>
+              </Tooltip>
             </div>
           </div>
           <div className="flex items-center space-x-3 p-3 rounded-lg">
