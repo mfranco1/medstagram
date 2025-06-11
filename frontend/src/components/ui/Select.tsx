@@ -32,7 +32,8 @@ export function Select({
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+  const selectedItemRef = useRef<HTMLLIElement>(null)
 
   // Handle outside clicks
   useEffect(() => {
@@ -45,6 +46,30 @@ export function Select({
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  // Scroll to selected item when dropdown opens
+  useEffect(() => {
+    if (isOpen && selectedItemRef.current && listRef.current) {
+      // Use requestAnimationFrame to ensure the dropdown is fully rendered
+      requestAnimationFrame(() => {
+        const list = listRef.current
+        const selectedItem = selectedItemRef.current
+        if (!list || !selectedItem) return
+
+        const listRect = list.getBoundingClientRect()
+        const itemRect = selectedItem.getBoundingClientRect()
+        
+        // Calculate the scroll position to center the selected item
+        const scrollTop = selectedItem.offsetTop - (listRect.height / 2) + (itemRect.height / 2)
+        
+        // Smooth scroll to the calculated position
+        list.scrollTo({
+          top: scrollTop,
+          behavior: 'instant'
+        })
+      })
+    }
+  }, [isOpen])
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -133,7 +158,6 @@ export function Select({
 
         {isOpen && (
           <div
-            ref={dropdownRef}
             className={`absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200 py-1 text-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${
               isOpen
                 ? 'opacity-100 translate-y-0'
@@ -141,12 +165,14 @@ export function Select({
             } transition-all duration-150 ease-out`}
           >
             <ul
+              ref={listRef}
               role="listbox"
-              className="py-1"
+              className="py-1 max-h-[280px] overflow-y-auto"
             >
               {options.map(option => (
                 <li
                   key={option.value}
+                  ref={option.value === value ? selectedItemRef : null}
                   role="option"
                   aria-selected={option.value === value}
                   className={`
