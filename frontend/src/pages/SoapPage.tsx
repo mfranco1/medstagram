@@ -10,7 +10,7 @@ import { Toast, type ToastType } from '../components/ui/Toast'
 export default function SoapPage() {
   const { patientId } = useParams()
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState<'general' | 'medical'>('general')
+  const [activeTab, setActiveTab] = useState<'general' | 'chart' | 'critical'>('general')
   const [formData, setFormData] = useState({
     chiefComplaint: '',
     subjective: '',
