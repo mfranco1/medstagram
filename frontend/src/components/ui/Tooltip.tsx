@@ -55,8 +55,8 @@ export function Tooltip({
 
   const arrowPositionClasses = {
     top: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45',
-    right: 'left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 -rotate-45',
-    bottom: 'top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45',
+    right: 'left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 rotate-135',
+    bottom: 'top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-135',
     left: 'right-0 top-1/2 -translate-y-1/2 translate-x-1/2 -rotate-45'
   }
 

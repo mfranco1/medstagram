@@ -115,7 +115,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
               <span className="text-sm text-gray-500">Primary Diagnosis</span>
               <Tooltip
                 show={hoveredDiagnosis === patient.id}
-                position="bottom"
+                position="right"
                 delay={750}
                 maxWidth={400}
                 content={
