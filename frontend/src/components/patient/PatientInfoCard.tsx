@@ -169,6 +169,34 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
               <p className="font-medium text-gray-900">{patient.location || 'Not specified'}</p>
             </div>
           </div>
+          <div className="flex items-center space-x-3 p-3 rounded-lg">
+            <Clock className="w-5 h-5 text-violet-500 flex-shrink-0" />
+            <div className="min-w-0">
+              <span className="text-sm text-gray-500">Upcoming Procedure</span>
+              {patient.upcomingProcedure ? (
+                <div>
+                  <p className="font-medium text-gray-900 truncate">{patient.upcomingProcedure.name}</p>
+                  <div className="flex items-center space-x-2 text-xs text-gray-500">
+                    <span>{patient.upcomingProcedure.date}</span>
+                    <span>•</span>
+                    <span>{patient.upcomingProcedure.time}</span>
+                    <span>•</span>
+                    <span className="truncate">{patient.upcomingProcedure.location}</span>
+                  </div>
+                  <span className={`mt-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    patient.upcomingProcedure.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
+                    patient.upcomingProcedure.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+                    patient.upcomingProcedure.status === 'completed' ? 'bg-green-100 text-green-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {patient.upcomingProcedure.status.charAt(0).toUpperCase() + patient.upcomingProcedure.status.slice(1)}
+                  </span>
+                </div>
+              ) : (
+                <p className="font-medium text-gray-900">None scheduled</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

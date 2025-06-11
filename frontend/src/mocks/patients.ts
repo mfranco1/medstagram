@@ -269,6 +269,40 @@ export const mockPatients: Patient[] = [
     religion: 'Buddhist',
     address: '486 San Miguel St., Manila City',
     philhealth: '12-345678901-6',
-    primaryService: 'Gastroenterology'
+    primaryService: 'Gastroenterology',
+    upcomingProcedure: {
+      name: "Chest Xray PA",
+      date: "2025-9-18",
+      time: "11:30",
+      location: "Inpatient Radiology",
+      status: "scheduled"
+    },
+    attendingPhysician: {
+      name: "John Gastrostologos",
+      specialization: "Gastroenterology",
+      contactNumber: "(+63)9893438879"
+    },
+    emergencyContact: {
+      name: "Jessica Lee",
+      relationship: "Spouse",
+      phone: "(+63)9996785655"
+    },
+    lastVitals: {
+      temperature: 36.6,
+      bloodPressure: {
+        systolic: 120,
+        diastolic: 80,
+      },
+      heartRate: 92,
+      respiratoryRate: 20,
+      oxygenSaturation: 99,
+      gcs: {
+        eye: 4,
+        verbal: 5,
+        motor: 6,
+        total: 15,
+      },
+      timestamp: "2025-06-11"
+    }
   }
 ] 

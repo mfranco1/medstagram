@@ -31,6 +31,13 @@ export interface Patient {
     specialization: string
     contactNumber: string
   }
+  upcomingProcedure?: {
+    name: string
+    date: string
+    time: string
+    location: string
+    status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled'
+  }
   lastVitals?: {
     temperature?: number
     bloodPressure?: {
