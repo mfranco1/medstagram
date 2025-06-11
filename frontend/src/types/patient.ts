@@ -38,6 +38,43 @@ export interface Patient {
     location: string
     status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled'
   }
+  orders?: {
+    diagnostics?: {
+      id: string
+      name: string
+      status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
+      orderedBy: string
+      orderedAt: string
+      notes?: string
+    }[]
+    imaging?: {
+      id: string
+      name: string
+      status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
+      orderedBy: string
+      orderedAt: string
+      notes?: string
+    }[]
+    procedures?: {
+      id: string
+      name: string
+      status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
+      orderedBy: string
+      orderedAt: string
+      scheduledFor?: string
+      notes?: string
+    }[]
+    therapeutics?: {
+      id: string
+      name: string
+      status: 'pending' | 'in-progress' | 'completed' | 'cancelled'
+      orderedBy: string
+      orderedAt: string
+      frequency: string
+      duration: string
+      notes?: string
+    }[]
+  }
   lastVitals?: {
     temperature?: number
     bloodPressure?: {
