@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../types/patient'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
-import { calculateAge, formatAge } from '../../utils/patient'
+import { calculateAge, formatAge, getInitials, calculateBMI, formatVitalSign, formatBloodPressure, formatGCS } from '../../utils/patient'
 import { STATUS_COLORS } from '../../constants/patient'
 import { Tooltip } from '../ui/Tooltip'
 
@@ -37,42 +37,11 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
     }
   }, [])
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
-      .toUpperCase()
-  }
-
   const handleDelete = () => {
     if (onDelete) {
       onDelete(patient.id)
       navigate('/patients')
     }
-  }
-
-  const ageDisplay = formatAge(calculateAge(patient.dateOfBirth))
-
-  const calculateBMI = () => {
-    if (!patient.height || !patient.weight) return null
-    const heightInMeters = patient.height / 100
-    return (patient.weight / (heightInMeters * heightInMeters)).toFixed(1)
-  }
-
-  const formatVitalSign = (value: number | undefined, unit: string) => {
-    if (value === undefined) return 'Not recorded'
-    return `${value} ${unit}`
-  }
-
-  const formatBloodPressure = (bp?: { systolic: number; diastolic: number }) => {
-    if (!bp) return 'Not recorded'
-    return `${bp.systolic}/${bp.diastolic} mmHg`
-  }
-
-  const formatGCS = (gcs?: { eye: number; verbal: number | string; motor: number; total: number }) => {
-    if (!gcs) return 'Not recorded'
-    return `${gcs.total} (E${gcs.eye}V${gcs.verbal}M${gcs.motor})`
   }
 
   const handleGenerateClinicalAbstract = () => {
@@ -86,6 +55,8 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
     // TODO: Implement discharge summary generation
     console.log('Generate discharge summary for patient:', patient.id)
   }
+
+  const ageDisplay = formatAge(calculateAge(patient.dateOfBirth))
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">

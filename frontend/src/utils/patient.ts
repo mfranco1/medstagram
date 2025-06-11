@@ -82,4 +82,25 @@ export function validateCaseNumber(caseNumber: string, existingCaseNumbers: stri
     return 'Case number already exists'
   }
   return ''
+}
+
+export function calculateBMI(height?: number, weight?: number): string | null {
+  if (!height || !weight) return null
+  const heightInMeters = height / 100
+  return (weight / (heightInMeters * heightInMeters)).toFixed(1)
+}
+
+export function formatVitalSign(value: number | undefined, unit: string): string {
+  if (value === undefined) return 'Not recorded'
+  return `${value} ${unit}`
+}
+
+export function formatBloodPressure(bp?: { systolic: number; diastolic: number }): string {
+  if (!bp) return 'Not recorded'
+  return `${bp.systolic}/${bp.diastolic} mmHg`
+}
+
+export function formatGCS(gcs?: { eye: number; verbal: number | string; motor: number; total: number }): string {
+  if (!gcs) return 'Not recorded'
+  return `${gcs.total} (E${gcs.eye}V${gcs.verbal}M${gcs.motor})`
 } 
