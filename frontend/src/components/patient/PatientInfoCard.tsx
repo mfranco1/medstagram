@@ -1,4 +1,4 @@
-import { Calendar, User, MapPin, Church, Home, Phone, MoreVertical, Trash2, Edit2, Stethoscope, Clock, Building2, UserCog } from 'lucide-react'
+import { Calendar, User, MapPin, Church, Home, Phone, MoreVertical, Trash2, Edit2, Stethoscope, Clock, Building2, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../types/patient'
@@ -9,8 +9,8 @@ import { STATUS_COLORS } from '../../constants/patient'
 import { Tooltip } from '../ui/Tooltip'
 
 interface PatientInfoCardProps {
-  activeTab: 'general' | 'medical'
-  setActiveTab: (tab: 'general' | 'medical') => void
+  activeTab: 'general' | 'medical' | 'critical'
+  setActiveTab: (tab: 'general' | 'medical' | 'critical') => void
   patient: Patient
   onDelete?: (patientId: number) => void
   onEdit?: (patient: Patient) => Promise<void>
@@ -39,6 +39,27 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
   }
 
   const ageDisplay = formatAge(calculateAge(patient.dateOfBirth))
+
+  const calculateBMI = () => {
+    if (!patient.height || !patient.weight) return null
+    const heightInMeters = patient.height / 100
+    return (patient.weight / (heightInMeters * heightInMeters)).toFixed(1)
+  }
+
+  const formatVitalSign = (value: number | undefined, unit: string) => {
+    if (value === undefined) return 'Not recorded'
+    return `${value} ${unit}`
+  }
+
+  const formatBloodPressure = (bp?: { systolic: number; diastolic: number }) => {
+    if (!bp) return 'Not recorded'
+    return `${bp.systolic}/${bp.diastolic} mmHg`
+  }
+
+  const formatGCS = (gcs?: { eye: number; verbal: number | string; motor: number; total: number }) => {
+    if (!gcs) return 'Not recorded'
+    return `${gcs.total} (E${gcs.eye}V${gcs.verbal}M${gcs.motor})`
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">
@@ -181,55 +202,207 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
           >
             Medical Info
           </button>
+          <button
+            onClick={() => setActiveTab('critical')}
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'critical'
+                ? 'border-violet-600 text-violet-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Critical Info
+          </button>
         </div>
       </div>
 
-      {/* Patient Info Grid */}
+      {/* Tab Content */}
       <div className="p-4">
-        <div className="grid grid-cols-3 gap-x-8 gap-y-6 text-sm">
-          <div className="flex items-start space-x-3">
-            <Calendar className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
-            <div className="min-w-0">
-              <span className="text-gray-500">Date of Birth</span>
-              <p className="font-medium text-gray-900">{patient.dateOfBirth}</p>
+        {activeTab === 'general' && (
+          <div className="grid grid-cols-3 gap-x-8 gap-y-6 text-sm">
+            <div className="flex items-start space-x-3">
+              <Calendar className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+              <div className="min-w-0">
+                <span className="text-gray-500">Date of Birth</span>
+                <p className="font-medium text-gray-900">{patient.dateOfBirth}</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <User className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+              <div className="min-w-0">
+                <span className="text-gray-500">Civil Status</span>
+                <p className="font-medium text-gray-900">{patient.civilStatus}</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+              <div className="min-w-0">
+                <span className="text-gray-500">Nationality</span>
+                <p className="font-medium text-gray-900">{patient.nationality}</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <Church className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+              <div className="min-w-0">
+                <span className="text-gray-500">Religion</span>
+                <p className="font-medium text-gray-900">{patient.religion}</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <Home className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+              <div className="min-w-0">
+                <span className="text-gray-500">Address</span>
+                <p className="font-medium text-gray-900">{patient.address}</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <Phone className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+              <div className="min-w-0">
+                <span className="text-gray-500">Philhealth</span>
+                <p className="font-medium text-gray-900">{patient.philhealth || 'Not specified'}</p>
+              </div>
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <User className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
-            <div className="min-w-0">
-              <span className="text-gray-500">Civil Status</span>
-              <p className="font-medium text-gray-900">{patient.civilStatus}</p>
+        )}
+
+        {activeTab === 'medical' && (
+          <div className="space-y-6">
+            {/* Add medical history content here */}
+            <p className="text-gray-500">Medical history content will be added here.</p>
+          </div>
+        )}
+
+        {activeTab === 'critical' && (
+          <div className="space-y-8">
+            {/* Critical Information Section */}
+            <div>
+              <h3 className="text-sm font-medium text-gray-900 mb-4">Critical Information</h3>
+              <div className="grid grid-cols-3 gap-x-8 gap-y-6 text-sm">
+                {/* Blood Type */}
+                <div className="flex items-start space-x-3">
+                  <Droplet className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-gray-500">Blood Type</span>
+                    <p className="font-medium text-gray-900">{patient.bloodType || 'Unknown'}</p>
+                  </div>
+                </div>
+
+                {/* Allergies */}
+                <div className="flex items-start space-x-3">
+                  <AlertTriangle className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-gray-500">Allergies</span>
+                    <p className="font-medium text-gray-900">
+                      {patient.allergies?.length ? patient.allergies.join(', ') : 'Unknown'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Height & Weight */}
+                <div className="flex items-start space-x-3">
+                  <Scale className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-gray-500">Height & Weight</span>
+                    <div className="font-medium text-gray-900">
+                      {patient.height && patient.weight ? (
+                        <>
+                          <p>{patient.height} cm / {patient.weight} kg</p>
+                          <p className="text-sm text-gray-500">BMI: {calculateBMI()}</p>
+                        </>
+                      ) : (
+                        <p>Not recorded</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Emergency Contact */}
+                <div className="flex items-start space-x-3 col-span-3">
+                  <PhoneCall className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-gray-500">Emergency Contact</span>
+                    {patient.emergencyContact ? (
+                      <div>
+                        <p className="font-medium text-gray-900">{patient.emergencyContact.name}</p>
+                        <p className="text-sm text-gray-500">
+                          {patient.emergencyContact.relationship} • {patient.emergencyContact.phone}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="font-medium text-gray-900">Not recorded</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Vital Signs Section */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-gray-900">Latest Vital Signs</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="flex items-start gap-3">
+                  <Activity className="w-4 h-4 text-gray-400 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-sm text-gray-500">Heart Rate</span>
+                    <p className="font-medium text-sm text-gray-900">
+                      {patient.lastVitals?.heartRate ? `${patient.lastVitals.heartRate} bpm` : 'Not recorded'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Wind className="w-4 h-4 text-gray-400 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-sm text-gray-500">Respiratory Rate</span>
+                    <p className="font-medium text-sm text-gray-900">
+                      {patient.lastVitals?.respiratoryRate ? `${patient.lastVitals.respiratoryRate} /min` : 'Not recorded'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Heart className="w-4 h-4 text-gray-400 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-sm text-gray-500">Blood Pressure</span>
+                    <p className="font-medium text-sm text-gray-900">{formatBloodPressure(patient.lastVitals?.bloodPressure)}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Thermometer className="w-4 h-4 text-gray-400 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-sm text-gray-500">Temperature</span>
+                    <p className="font-medium text-sm text-gray-900">
+                      {patient.lastVitals?.temperature ? `${patient.lastVitals.temperature}°C` : 'Not recorded'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Droplet className="w-4 h-4 text-gray-400 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-sm text-gray-500">O₂ Saturation</span>
+                    <p className="font-medium text-sm text-gray-900">
+                      {patient.lastVitals?.oxygenSaturation ? `${patient.lastVitals.oxygenSaturation}%` : 'Not recorded'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Brain className="w-4 h-4 text-gray-400 mt-1" />
+                  <div className="min-w-0">
+                    <span className="text-sm text-gray-500">GCS</span>
+                    <p className="font-medium text-sm text-gray-900">{formatGCS(patient.lastVitals?.gcs)}</p>
+                  </div>
+                </div>
+              </div>
+              {patient.lastVitals?.timestamp && (
+                <p className="text-xs text-gray-500">
+                  Last recorded: {new Date(patient.lastVitals.timestamp).toLocaleString()}
+                </p>
+              )}
             </div>
           </div>
-          <div className="flex items-start space-x-3">
-            <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
-            <div className="min-w-0">
-              <span className="text-gray-500">Nationality</span>
-              <p className="font-medium text-gray-900">{patient.nationality}</p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <Church className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
-            <div className="min-w-0">
-              <span className="text-gray-500">Religion</span>
-              <p className="font-medium text-gray-900">{patient.religion}</p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <Home className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
-            <div className="min-w-0">
-              <span className="text-gray-500">Address</span>
-              <p className="font-medium text-gray-900">{patient.address}</p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-3">
-            <Phone className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
-            <div className="min-w-0">
-              <span className="text-gray-500">Philhealth</span>
-              <p className="font-medium text-gray-900">{patient.philhealth || 'Not specified'}</p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
       <ConfirmModal
@@ -245,7 +418,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
       <EditPatientModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        onSave={onEdit || (() => {})}
+        onSave={onEdit ?? (async () => {})}
         patient={patient}
       />
     </div>

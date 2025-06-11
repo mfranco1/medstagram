@@ -17,4 +17,30 @@ export interface Patient {
   address: string
   philhealth: string
   primaryService: typeof PRIMARY_SERVICES[number]
+  bloodType?: string
+  allergies?: string[]
+  emergencyContact?: {
+    name: string
+    relationship: string
+    phone: string
+  }
+  height?: number
+  weight?: number
+  lastVitals?: {
+    temperature?: number
+    bloodPressure?: {
+      systolic: number
+      diastolic: number
+    }
+    heartRate?: number
+    respiratoryRate?: number
+    oxygenSaturation?: number
+    gcs?: {
+      eye: number
+      verbal: number | string
+      motor: number
+      total: number
+    }
+    timestamp: string
+  }
 } 
