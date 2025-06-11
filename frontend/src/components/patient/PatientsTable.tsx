@@ -188,11 +188,11 @@ export function PatientsTable({
                   <td className="px-6 py-4">
                     <Tooltip
                       show={hoveredDiagnosis === patient.id}
-                      position="top"
+                      position="left"
                       delay={750}
                       maxWidth={400}
                       content={
-                        <div className="text-sm text-gray-600">
+                        <div className="text-xs text-gray-600">
                           {patient.diagnosis}
                         </div>
                       }

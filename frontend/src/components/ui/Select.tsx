@@ -158,7 +158,7 @@ export function Select({
 
         {isOpen && (
           <div
-            className={`absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200 py-1 text-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${
+            className={`absolute z-20 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200 py-1 text-sm ring-1 ring-black ring-opacity-5 focus:outline-none ${
               isOpen
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 -translate-y-1 pointer-events-none'
