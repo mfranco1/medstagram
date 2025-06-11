@@ -125,7 +125,7 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
             </button>
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 min-w-[240px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                <div className="py-1">
+                <div className="py-1 max-h-[250px] overflow-y-auto">
                   <button
                     onClick={() => {
                       setIsDropdownOpen(false)
