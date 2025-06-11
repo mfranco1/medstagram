@@ -1,5 +1,5 @@
 import { X, User, FileText, Stethoscope, ChevronRight, ChevronLeft } from 'lucide-react'
-import { mockPatients } from '../../pages/PatientsPage'
+import { mockPatients } from '../../mocks/patients'
 import type { Patient } from '../../types/patient'
 import { FormField } from '../ui/FormField'
 import { FormSection } from '../ui/FormSection'
