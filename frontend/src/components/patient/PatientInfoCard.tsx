@@ -271,6 +271,22 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
                 <p className="font-medium text-gray-900">{patient.philhealth || 'Not specified'}</p>
               </div>
             </div>
+            <div className="flex items-start space-x-3 col-span-3">
+              <PhoneCall className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
+              <div className="min-w-0">
+                <span className="text-gray-500">Emergency Contact</span>
+                {patient.emergencyContact ? (
+                  <div>
+                    <p className="font-medium text-gray-900">{patient.emergencyContact.name}</p>
+                    <p className="text-sm text-gray-500">
+                      {patient.emergencyContact.relationship} • {patient.emergencyContact.phone}
+                    </p>
+                  </div>
+                ) : (
+                  <p className="font-medium text-gray-900">Not recorded</p>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -415,24 +431,6 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
                         <p>Not recorded</p>
                       )}
                     </div>
-                  </div>
-                </div>
-
-                {/* Emergency Contact */}
-                <div className="flex items-start space-x-3 col-span-3">
-                  <PhoneCall className="w-4 h-4 text-gray-400 flex-shrink-0 mt-1" />
-                  <div className="min-w-0">
-                    <span className="text-gray-500">Emergency Contact</span>
-                    {patient.emergencyContact ? (
-                      <div>
-                        <p className="font-medium text-gray-900">{patient.emergencyContact.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {patient.emergencyContact.relationship} • {patient.emergencyContact.phone}
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="font-medium text-gray-900">Not recorded</p>
-                    )}
                   </div>
                 </div>
               </div>
