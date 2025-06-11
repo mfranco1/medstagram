@@ -193,16 +193,6 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
             General Data
           </button>
           <button
-            onClick={() => setActiveTab('medical')}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'medical'
-                ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            Medical Info
-          </button>
-          <button
             onClick={() => setActiveTab('critical')}
             className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'critical'
@@ -211,6 +201,16 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
             }`}
           >
             Critical Info
+          </button>
+          <button
+            onClick={() => setActiveTab('medical')}
+            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'medical'
+                ? 'border-violet-600 text-violet-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Medical Info
           </button>
         </div>
       </div>
