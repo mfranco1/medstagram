@@ -1,10 +1,11 @@
 import { Calendar, User, MapPin, Church, Home, Phone, MoreVertical, Trash2, Edit2, Stethoscope, Clock, Building2, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind, FileText, ClipboardList } from 'lucide-react'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../types/patient'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
-import { calculateAge, formatAge, getInitials, calculateBMI, formatVitalSign, formatBloodPressure, formatGCS } from '../../utils/patient'
+import { DropdownMenu } from '../ui/DropdownMenu'
+import { calculateAge, formatAge, getInitials, calculateBMI, formatBloodPressure, formatGCS } from '../../utils/patient'
 import { STATUS_COLORS } from '../../constants/patient'
 import { Tooltip } from '../ui/Tooltip'
 
@@ -18,24 +19,9 @@ interface PatientInfoCardProps {
 
 export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, onEdit }: PatientInfoCardProps) {
   const navigate = useNavigate()
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [hoveredDiagnosis, setHoveredDiagnosis] = useState<number | null>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
 
   const handleDelete = () => {
     if (onDelete) {
@@ -45,18 +31,40 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
   }
 
   const handleGenerateClinicalAbstract = () => {
-    setIsDropdownOpen(false)
     // TODO: Implement clinical abstract generation
     console.log('Generate clinical abstract for patient:', patient.id)
   }
 
   const handleGenerateDischargeSummary = () => {
-    setIsDropdownOpen(false)
     // TODO: Implement discharge summary generation
     console.log('Generate discharge summary for patient:', patient.id)
   }
 
   const ageDisplay = formatAge(calculateAge(patient.dateOfBirth))
+
+  const dropdownItems = [
+    {
+      label: 'Edit Patient',
+      icon: <Edit2 className="w-4 h-4" />,
+      onClick: () => setIsEditModalOpen(true)
+    },
+    {
+      label: 'Generate Clinical Abstract',
+      icon: <FileText className="w-4 h-4" />,
+      onClick: handleGenerateClinicalAbstract
+    },
+    {
+      label: 'Generate Discharge Summary',
+      icon: <ClipboardList className="w-4 h-4" />,
+      onClick: handleGenerateDischargeSummary
+    },
+    {
+      label: 'Delete Patient',
+      icon: <Trash2 className="w-4 h-4" />,
+      onClick: () => setIsDeleteModalOpen(true),
+      className: 'text-red-600 hover:bg-red-50'
+    }
+  ]
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 mb-6 overflow-hidden">
@@ -87,55 +95,14 @@ export function PatientInfoCard({ activeTab, setActiveTab, patient, onDelete, on
               </div>
             </div>
           </div>
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="p-2 text-gray-400 hover:text-gray-500 focus:outline-none"
-            >
-              <MoreVertical className="w-5 h-5" />
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 min-w-[240px] rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                <div className="py-1 max-h-[250px] overflow-y-auto">
-                  <button
-                    onClick={() => {
-                      setIsDropdownOpen(false)
-                      setIsEditModalOpen(true)
-                    }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap"
-                  >
-                    <Edit2 className="w-4 h-4 mr-2 flex-shrink-0" />
-                    Edit Patient
-                  </button>
-                  <button
-                    onClick={handleGenerateClinicalAbstract}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap"
-                  >
-                    <FileText className="w-4 h-4 mr-2 flex-shrink-0" />
-                    Generate Clinical Abstract
-                  </button>
-                  <button
-                    onClick={handleGenerateDischargeSummary}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 whitespace-nowrap"
-                  >
-                    <ClipboardList className="w-4 h-4 mr-2 flex-shrink-0" />
-                    Generate Discharge Summary
-                  </button>
-                  <div className="border-t border-gray-100 my-1"></div>
-                  <button
-                    onClick={() => {
-                      setIsDropdownOpen(false)
-                      setIsDeleteModalOpen(true)
-                    }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 whitespace-nowrap"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2 flex-shrink-0" />
-                    Delete Patient
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <DropdownMenu
+            trigger={
+              <button className="p-2 text-gray-400 hover:text-gray-500 focus:outline-none">
+                <MoreVertical className="w-5 h-5" />
+              </button>
+            }
+            items={dropdownItems}
+          />
         </div>
       </div>
 
