@@ -1,0 +1,7 @@
+export { GeneralDataTab } from './GeneralDataTab'
+export { MedicalInfoTab } from './MedicalInfoTab'
+export { CaseSummaryTab } from './CaseSummaryTab'
+export { ChartTab } from './ChartTab'
+export { DiagnosticsTab } from './DiagnosticsTab'
+export { TherapeuticsTab } from './TherapeuticsTab'
+export { OrdersTab } from './OrdersTab' 
