@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import { useRef, useEffect } from 'react'
 
 interface ConfirmModalProps {
   isOpen: boolean
@@ -27,11 +28,29 @@ export function ConfirmModal({
   cancelText = 'Cancel',
   type = 'danger'
 }: ConfirmModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg w-full max-w-md">
+      <div ref={modalRef} className="bg-white rounded-lg w-full max-w-md">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-medium text-gray-900">{title}</h3>
