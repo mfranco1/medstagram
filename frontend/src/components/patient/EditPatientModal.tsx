@@ -1,5 +1,5 @@
 import { X, User, FileText, Stethoscope, ChevronRight, ChevronLeft } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { Patient } from '../../types/patient'
 import { FormField } from '../ui/FormField'
 import { FormSection } from '../ui/FormSection'
@@ -25,13 +25,30 @@ const STEPS: { id: Step; title: string; icon: typeof User }[] = [
 
 export function EditPatientModal({ isOpen, onClose, onSave, patient }: EditPatientModalProps) {
   const [currentStep, setCurrentStep] = useState<Step>('basic')
+  const modalRef = useRef<HTMLDivElement>(null)
   const { formData, errors, isLoading, handleChange, handleSubmit } = usePatientForm({
     initialData: patient,
     onSubmit: async (data) => {
-      await onSave({ ...data, id: patient.id })
+      await onSave({ ...patient, ...data })
       onClose()
     }
   })
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen, onClose])
 
   if (!isOpen) return null
 
@@ -64,7 +81,7 @@ export function EditPatientModal({ isOpen, onClose, onSave, patient }: EditPatie
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-2xl h-[90vh] flex flex-col overflow-hidden">
+      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-2xl h-[90vh] flex flex-col overflow-hidden">
         <form onSubmit={handleFormSubmit} className="flex flex-col h-full">
           {/* Fixed Header */}
           <div className="p-6 border-b border-gray-200">
