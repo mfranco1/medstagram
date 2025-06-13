@@ -36,7 +36,7 @@ export function MedicalEntryForm({ formData, setFormData }: MedicalEntryFormProp
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <div className="flex space-x-8">
           <button className="pb-2 text-sm font-medium border-b-2 border-violet-600 text-violet-600">

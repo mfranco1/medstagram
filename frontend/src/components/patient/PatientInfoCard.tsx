@@ -1,8 +1,6 @@
-import { Calendar, User, MapPin, Church, Home, Phone, Clock, UserCog, Droplet, AlertTriangle, Heart, Thermometer, Activity, Scale, PhoneCall, Brain, Wind } from 'lucide-react'
 import type { Patient, PatientTab } from '../../types/patient'
 import { ConfirmModal } from '../ui/ConfirmModal'
 import { EditPatientModal } from './EditPatientModal'
-import { calculateBMI, formatBloodPressure, formatGCS } from '../../utils/patient'
 import { PatientHeader } from './PatientHeader'
 import { PatientMedicalStatus } from './PatientMedicalStatus'
 import { PatientTabNavigation } from './PatientTabNavigation'

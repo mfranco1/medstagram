@@ -2,22 +2,15 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { MainLayout } from '../components/layout/MainLayout'
 import { PatientInfoCard } from '../components/patient/PatientInfoCard'
-import { MedicalEntryForm } from '../components/patient/MedicalEntryForm'
 import { mockPatients } from '../mocks/patients'
 import type { Patient } from '../types/patient'
 import { Toast, type ToastType } from '../components/ui/Toast'
+import type { PatientTab } from '../types/patient'
 
 export default function SoapPage() {
   const { patientId } = useParams()
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState<'general' | 'chart' | 'medical' | 'diagnostics'>('general')
-  const [formData, setFormData] = useState({
-    chiefComplaint: '',
-    subjective: '',
-    objective: '',
-    assessment: '',
-    plan: '',
-  })
+  const [activeTab, setActiveTab] = useState<PatientTab>('general')
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
 
   const patient = mockPatients.find(p => p.id === Number(patientId))
@@ -74,7 +67,6 @@ export default function SoapPage() {
           onDelete={handleDeletePatient}
           onEdit={handleEditPatient}
         />
-        <MedicalEntryForm formData={formData} setFormData={setFormData} />
 
         {toast && (
           <Toast
