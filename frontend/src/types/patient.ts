@@ -1,5 +1,19 @@
 import { PATIENT_STATUSES, PRIMARY_SERVICES } from '../constants/patient'
 
+export interface ChartEntry {
+  id: string
+  timestamp: string
+  chiefComplaint: string
+  subjective: string
+  objective: string
+  assessment: string
+  plan: string
+  createdBy: {
+    name: string
+    role: string
+  }
+}
+
 export interface Patient {
   id: number
   name: string
@@ -38,6 +52,7 @@ export interface Patient {
     location: string
     status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled'
   }
+  chartEntries?: ChartEntry[]
   orders?: {
     diagnostics?: {
       id: string
