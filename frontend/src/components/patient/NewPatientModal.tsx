@@ -7,7 +7,7 @@ import { usePatientForm } from '../../hooks/usePatientForm'
 import { GENDERS, CIVIL_STATUSES, PATIENT_STATUSES, PRIMARY_SERVICES } from '../../constants/patient'
 import { formatAge, calculateAge } from '../../utils/patient'
 import { DatePicker } from '../ui/date-picker/DatePicker'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 interface NewPatientModalProps {
   isOpen: boolean
@@ -25,6 +25,7 @@ const STEPS: { id: Step; title: string; icon: typeof User }[] = [
 
 export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProps) {
   const [currentStep, setCurrentStep] = useState<Step>('basic')
+  const modalRef = useRef<HTMLDivElement>(null)
   const existingCaseNumbers = mockPatients.map(p => p.caseNumber)
   const { formData, errors, isLoading, handleChange, handleSubmit } = usePatientForm({
     existingCaseNumbers,
@@ -33,6 +34,22 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
       onClose()
     }
   })
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen, onClose])
 
   if (!isOpen) return null
 
@@ -56,7 +73,7 @@ export function NewPatientModal({ isOpen, onClose, onSave }: NewPatientModalProp
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
+      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
         <form onSubmit={handleSubmit} className="flex flex-col h-full">
           {/* Fixed Header */}
           <div className="p-6 border-b">
