@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Clock, Plus } from 'lucide-react'
 import type { Patient, ChartEntry } from '../../../types/patient'
 import { NewChartEntryModal } from '../NewChartEntryModal'
+import { mockPatients } from '../../../mocks/patients'
 
 interface ChartTabProps {
   patient: Patient
@@ -9,11 +10,39 @@ interface ChartTabProps {
 
 export function ChartTab({ patient }: ChartTabProps) {
   const [isNewEntryModalOpen, setIsNewEntryModalOpen] = useState(false)
+  const [chartEntries, setChartEntries] = useState<ChartEntry[]>(patient.chartEntries || [])
+
+  useEffect(() => {
+    setChartEntries(patient.chartEntries || [])
+  }, [patient.chartEntries])
 
   const handleSaveEntry = async (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy'>) => {
-    // TODO: Implement API call to save the entry
-    // For now, we'll just close the modal
-    console.log('Saving entry:', entry)
+    // Create a new chart entry with required fields
+    const newEntry: ChartEntry = {
+      ...entry,
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+      createdBy: {
+        name: 'Dr. Marty Franco', // TODO: Get from auth context
+        role: 'Doctor' // TODO: Get from auth context
+      }
+    }
+
+    // Find the patient in mockPatients and update their chart entries
+    const patientIndex = mockPatients.findIndex(p => p.id === patient.id)
+    if (patientIndex !== -1) {
+      const updatedPatient = {
+        ...mockPatients[patientIndex],
+        chartEntries: [
+          ...(mockPatients[patientIndex].chartEntries || []),
+          newEntry
+        ]
+      }
+      mockPatients[patientIndex] = updatedPatient
+      
+      // Update local state to trigger re-render
+      setChartEntries(prevEntries => [...prevEntries, newEntry])
+    }
   }
 
   return (
@@ -32,10 +61,10 @@ export function ChartTab({ patient }: ChartTabProps) {
 
       {/* Chart Entries List */}
       <div className="space-y-4">
-        {patient.chartEntries?.length ? (
-          patient.chartEntries
+        {chartEntries.length ? (
+          chartEntries
             .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-            .map((entry) => (
+            .map(entry => (
               <div key={entry.id} className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
