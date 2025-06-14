@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Clock, Plus } from 'lucide-react'
+import { Clock, Plus, FileText } from 'lucide-react'
 import type { Patient, ChartEntry } from '../../../types/patient'
 import { NewChartEntryModal } from '../NewChartEntryModal'
+import { QuickNoteModal } from '../QuickNoteModal'
 import { mockPatients } from '../../../mocks/patients'
 
 interface ChartTabProps {
@@ -10,6 +11,7 @@ interface ChartTabProps {
 
 export function ChartTab({ patient }: ChartTabProps) {
   const [isNewEntryModalOpen, setIsNewEntryModalOpen] = useState(false)
+  const [isQuickNoteModalOpen, setIsQuickNoteModalOpen] = useState(false)
   const [chartEntries, setChartEntries] = useState<ChartEntry[]>(patient.chartEntries || [])
 
   useEffect(() => {
@@ -45,18 +47,60 @@ export function ChartTab({ patient }: ChartTabProps) {
     }
   }
 
+  const handleSaveQuickNote = async (note: string) => {
+    // Create a new chart entry with just the note in the subjective field
+    const newEntry: ChartEntry = {
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+      chiefComplaint: '',
+      subjective: note,
+      objective: '',
+      assessment: '',
+      plan: '',
+      createdBy: {
+        name: 'Dr. Marty Franco', // TODO: Get from auth context
+        role: 'Doctor' // TODO: Get from auth context
+      }
+    }
+
+    // Find the patient in mockPatients and update their chart entries
+    const patientIndex = mockPatients.findIndex(p => p.id === patient.id)
+    if (patientIndex !== -1) {
+      const updatedPatient = {
+        ...mockPatients[patientIndex],
+        chartEntries: [
+          ...(mockPatients[patientIndex].chartEntries || []),
+          newEntry
+        ]
+      }
+      mockPatients[patientIndex] = updatedPatient
+      
+      // Update local state to trigger re-render
+      setChartEntries(prevEntries => [...prevEntries, newEntry])
+    }
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header with New Entry button */}
+      {/* Header with New Entry and Quick Note buttons */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Patient Chart</h3>
-        <button
-          onClick={() => setIsNewEntryModalOpen(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          New Entry
-        </button>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setIsQuickNoteModalOpen(true)}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Quick Note
+          </button>
+          <button
+            onClick={() => setIsNewEntryModalOpen(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            New Entry
+          </button>
+        </div>
       </div>
 
       {/* Chart Entries List */}
@@ -123,6 +167,12 @@ export function ChartTab({ patient }: ChartTabProps) {
         isOpen={isNewEntryModalOpen}
         onClose={() => setIsNewEntryModalOpen(false)}
         onSave={handleSaveEntry}
+      />
+
+      <QuickNoteModal
+        isOpen={isQuickNoteModalOpen}
+        onClose={() => setIsQuickNoteModalOpen(false)}
+        onSave={handleSaveQuickNote}
       />
     </div>
   )
