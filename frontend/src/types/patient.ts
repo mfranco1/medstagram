@@ -42,6 +42,7 @@ export interface Patient {
   height?: number
   weight?: number
   attendingPhysician?: {
+    id: string
     name: string
     specialization: string
     contactNumber: string

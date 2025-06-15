@@ -1,4 +1,5 @@
 import { UserCog, Clock, Droplet, AlertTriangle, Scale, Activity, Wind, Heart, Thermometer, Brain } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import type { Patient } from '../../../types/patient'
 import { calculateBMI, formatBloodPressure, formatGCS } from '../../../utils/patient'
 
@@ -7,6 +8,8 @@ interface MedicalInfoTabProps {
 }
 
 export function MedicalInfoTab({ patient }: MedicalInfoTabProps) {
+  const navigate = useNavigate()
+
   return (
     <div className="space-y-8">
       {/* Medical Information Section */}
@@ -19,7 +22,12 @@ export function MedicalInfoTab({ patient }: MedicalInfoTabProps) {
               <span className="text-gray-500">Attending Physician</span>
               {patient.attendingPhysician ? (
                 <div>
-                  <p className="font-medium text-gray-900">{patient.attendingPhysician.name}</p>
+                  <button
+                    onClick={() => patient.attendingPhysician && navigate(`/profile/${patient.attendingPhysician.id}`)}
+                    className="font-medium text-violet-600 hover:text-violet-900 focus:outline-none focus:underline"
+                  >
+                    {patient.attendingPhysician.name}
+                  </button>
                   <p className="text-sm text-gray-500">
                     {patient.attendingPhysician.specialization} • {patient.attendingPhysician.contactNumber}
                   </p>

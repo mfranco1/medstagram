@@ -25,7 +25,7 @@ function UserProfile({ expanded }: { expanded: boolean }) {
     <div className="flex items-center px-2 py-4 border-t border-gray-200">
       <button 
         onClick={() => navigate('/profile')}
-        className="flex items-center px-2 py-2 text-gray-400 rounded-md group hover:bg-gray-50 hover:text-gray-600 w-full"
+        className="flex items-center px-2 py-2 text-gray-400 rounded-md group hover:text-gray-600 w-full"
       >
         <div className="flex-shrink-0 w-8 h-8">
           {mockDoctor.profileImage ? (
