@@ -18,10 +18,11 @@ export function ChartTab({ patient }: ChartTabProps) {
     setChartEntries(patient.chartEntries || [])
   }, [patient.chartEntries])
 
-  const handleSaveEntry = async (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy'>) => {
+  const handleSaveEntry = async (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy' | 'type'>) => {
     // Create a new chart entry with required fields
     const newEntry: ChartEntry = {
       ...entry,
+      type: 'soap',
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
       createdBy: {
@@ -52,6 +53,7 @@ export function ChartTab({ patient }: ChartTabProps) {
     const newEntry: ChartEntry = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
+      type: 'quick_note',
       chiefComplaint: '',
       subjective: note,
       objective: '',
@@ -116,6 +118,11 @@ export function ChartTab({ patient }: ChartTabProps) {
                     <span className="text-sm text-gray-500">
                       {new Date(entry.timestamp).toLocaleString()}
                     </span>
+                    {entry.type === 'quick_note' && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-violet-100 text-violet-800">
+                        Quick Note
+                      </span>
+                    )}
                   </div>
                   <div className="text-sm text-gray-500">
                     By {entry.createdBy.name} ({entry.createdBy.role})
@@ -123,35 +130,43 @@ export function ChartTab({ patient }: ChartTabProps) {
                 </div>
 
                 <div className="space-y-4">
-                  {entry.chiefComplaint && (
+                  {entry.type === 'quick_note' ? (
                     <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-1">Chief Complaint</h4>
-                      <p className="text-sm text-gray-600">{entry.chiefComplaint}</p>
-                    </div>
-                  )}
-                  {entry.subjective && (
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-1">Subjective</h4>
                       <p className="text-sm text-gray-600">{entry.subjective}</p>
                     </div>
-                  )}
-                  {entry.objective && (
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-1">Objective</h4>
-                      <p className="text-sm text-gray-600">{entry.objective}</p>
-                    </div>
-                  )}
-                  {entry.assessment && (
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-1">Assessment</h4>
-                      <p className="text-sm text-gray-600">{entry.assessment}</p>
-                    </div>
-                  )}
-                  {entry.plan && (
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-1">Plan</h4>
-                      <p className="text-sm text-gray-600">{entry.plan}</p>
-                    </div>
+                  ) : (
+                    <>
+                      {entry.chiefComplaint && (
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-700 mb-1">Chief Complaint</h4>
+                          <p className="text-sm text-gray-600">{entry.chiefComplaint}</p>
+                        </div>
+                      )}
+                      {entry.subjective && (
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-700 mb-1">Subjective</h4>
+                          <p className="text-sm text-gray-600">{entry.subjective}</p>
+                        </div>
+                      )}
+                      {entry.objective && (
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-700 mb-1">Objective</h4>
+                          <p className="text-sm text-gray-600">{entry.objective}</p>
+                        </div>
+                      )}
+                      {entry.assessment && (
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-700 mb-1">Assessment</h4>
+                          <p className="text-sm text-gray-600">{entry.assessment}</p>
+                        </div>
+                      )}
+                      {entry.plan && (
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-700 mb-1">Plan</h4>
+                          <p className="text-sm text-gray-600">{entry.plan}</p>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

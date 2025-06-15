@@ -3,6 +3,7 @@ import { PATIENT_STATUSES, PRIMARY_SERVICES } from '../constants/patient'
 export interface ChartEntry {
   id: string
   timestamp: string
+  type: 'soap' | 'quick_note'
   chiefComplaint: string
   subjective: string
   objective: string
