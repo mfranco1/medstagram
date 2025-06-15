@@ -9,33 +9,41 @@ import {
   LogOut,
   MessageSquare
 } from 'lucide-react'
+import { mockDoctor } from '../../mocks/doctor'
 
 interface SidebarProps {
   onExpandChange?: (expanded: boolean) => void
 }
 
-// Dummy user data - this will be replaced with real data later
-const currentUser = {
-  name: 'Marty Franco',
-  role: 'Doctor',
-  initials: 'MF'
-}
-
 function UserProfile({ expanded }: { expanded: boolean }) {
+  const getInitials = (firstName: string, lastName: string) => {
+    return `${firstName[0]}${lastName[0]}`
+  }
+
   return (
     <div className="flex items-center px-2 py-4 border-t border-gray-200">
       <a href="#" className="flex items-center px-2 py-2 text-gray-400 rounded-md group">
-        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-violet-600 text-white text-sm font-medium">
-          {currentUser.initials}
-        </div>
+        {mockDoctor.profileImage ? (
+          <img 
+            src={mockDoctor.profileImage} 
+            alt={`${mockDoctor.firstName} ${mockDoctor.lastName}`}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-violet-600 text-white text-sm font-medium">
+            {getInitials(mockDoctor.firstName, mockDoctor.lastName)}
+          </div>
+        )}
       </a>
       <div 
         className={`ml-3 overflow-hidden transition-all duration-200 ease-in-out ${
           expanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 w-0'
         }`}
       >
-        <span className="text-sm font-medium text-gray-700 whitespace-nowrap">{currentUser.name}</span>
-        <p className="text-xs text-gray-500 whitespace-nowrap">{currentUser.role}</p>
+        <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
+          {mockDoctor.title} {mockDoctor.firstName} {mockDoctor.lastName}
+        </span>
+        <p className="text-xs text-gray-500 whitespace-nowrap">{mockDoctor.specialization}</p>
       </div>
     </div>
   )

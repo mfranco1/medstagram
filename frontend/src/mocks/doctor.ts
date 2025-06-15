@@ -26,9 +26,9 @@ export const mockDoctor: Doctor = {
   lastName: 'Franco',
   specialization: 'Internal Medicine',
   licenseNumber: '123456',
-  contactNumber: '+63 912 345 6789',
+  contactNumber: '(+63)912-345-6789',
   department: 'Internal Medicine',
-  profileImage: 'https://i.pravatar.cc/300?img=1',
+  profileImage: '', //'https://i.pravatar.cc/300?img=1',
   title: 'Dr.',
   biography: 'Dr. Marty Franco is a board-certified internist with over 10 years of experience in treating complex medical conditions. He specializes in preventive care and chronic disease management.',
   availability

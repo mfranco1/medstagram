@@ -1,4 +1,12 @@
 import type { Patient } from '../types/patient'
+import { mockDoctor } from './doctor'
+
+// Create a base attending physician object from mockDoctor
+const attendingPhysician = {
+  name: `${mockDoctor.title} ${mockDoctor.firstName} ${mockDoctor.lastName}`,
+  specialization: mockDoctor.specialization,
+  contactNumber: mockDoctor.contactNumber
+}
 
 export const mockPatients: Patient[] = [
   {
@@ -17,7 +25,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '123 P Faura St., Manila City',
     philhealth: '12-345678901-2',
-    primaryService: 'Pulmonology'
+    primaryService: 'Pulmonology',
+    attendingPhysician
   },
   {
     id: 2,
@@ -35,7 +44,8 @@ export const mockPatients: Patient[] = [
     religion: 'Protestant',
     address: '456 Taft Ave., Manila City',
     philhealth: '12-345678901-3',
-    primaryService: 'Pulmonology'
+    primaryService: 'Pulmonology',
+    attendingPhysician
   },
   {
     id: 3,
@@ -53,7 +63,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '789 Roxas Blvd., Manila City',
     philhealth: '12-345678901-4',
-    primaryService: 'Internal Medicine'
+    primaryService: 'Internal Medicine',
+    attendingPhysician
   },
   {
     id: 4,
@@ -71,7 +82,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '321 Rizal Ave., Manila City',
     philhealth: '12-345678901-5',
-    primaryService: 'Internal Medicine'
+    primaryService: 'Internal Medicine',
+    attendingPhysician
   },
   {
     id: 5,
@@ -89,7 +101,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '654 España Blvd., Manila City',
     philhealth: '12-345678901-6',
-    primaryService: 'Neurology'
+    primaryService: 'Neurology',
+    attendingPhysician
   },
   {
     id: 6,
@@ -107,7 +120,8 @@ export const mockPatients: Patient[] = [
     religion: 'Buddhist',
     address: '987 Quezon Ave., Manila City',
     philhealth: '12-345678901-7',
-    primaryService: 'Obstetrics and Gynecology'
+    primaryService: 'Obstetrics and Gynecology',
+    attendingPhysician
   },
   {
     id: 7,
@@ -125,7 +139,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '147 Quirino Ave., Manila City',
     philhealth: '12-345678901-8',
-    primaryService: 'Cardiology'
+    primaryService: 'Cardiology',
+    attendingPhysician
   },
   {
     id: 8,
@@ -143,7 +158,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '258 Sampaloc St., Manila City',
     philhealth: '12-345678901-9',
-    primaryService: 'Surgery'
+    primaryService: 'Surgery',
+    attendingPhysician
   },
   {
     id: 9,
@@ -161,7 +177,8 @@ export const mockPatients: Patient[] = [
     religion: 'Protestant',
     address: '369 Malate St., Manila City',
     philhealth: '12-345678901-0',
-    primaryService: 'Nephrology'
+    primaryService: 'Nephrology',
+    attendingPhysician
   },
   {
     id: 10,
@@ -179,7 +196,8 @@ export const mockPatients: Patient[] = [
     religion: 'Hindu',
     address: '741 Ermita St., Manila City',
     philhealth: '12-345678901-1',
-    primaryService: 'Surgery'
+    primaryService: 'Surgery',
+    attendingPhysician
   },
   {
     id: 11,
@@ -197,7 +215,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '852 Paco St., Manila City',
     philhealth: '12-345678901-2',
-    primaryService: 'Cardiology'
+    primaryService: 'Cardiology',
+    attendingPhysician
   },
   {
     id: 12,
@@ -215,7 +234,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '963 Pandacan St., Manila City',
     philhealth: '12-345678901-3',
-    primaryService: 'Urology'
+    primaryService: 'Urology',
+    attendingPhysician
   },
   {
     id: 13,
@@ -233,7 +253,8 @@ export const mockPatients: Patient[] = [
     religion: 'Roman Catholic',
     address: '159 Santa Ana St., Manila City',
     philhealth: '12-345678901-4',
-    primaryService: 'Pulmonology'
+    primaryService: 'Pulmonology',
+    attendingPhysician
   },
   {
     id: 14,
@@ -248,10 +269,11 @@ export const mockPatients: Patient[] = [
     dateOfBirth: '1988-11-15',
     civilStatus: 'Married',
     nationality: 'Filipino',
-    religion: 'Protestant',
+    religion: 'Roman Catholic',
     address: '357 San Andres St., Manila City',
     philhealth: '12-345678901-5',
-    primaryService: 'Oncology'
+    primaryService: 'Oncology',
+    attendingPhysician
   },
   {
     id: 15,
@@ -277,11 +299,7 @@ export const mockPatients: Patient[] = [
       location: "Inpatient Radiology",
       status: "scheduled"
     },
-    attendingPhysician: {
-      name: "John Gastrostologos",
-      specialization: "Gastroenterology",
-      contactNumber: "(+63)9893438879"
-    },
+    attendingPhysician,
     emergencyContact: {
       name: "Jessica Lee",
       relationship: "Spouse",
