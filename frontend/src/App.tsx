@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import PatientsPage from './pages/PatientsPage'
 import SettingsPage from './pages/SettingsPage'
 import MessagesPage from './pages/MessagesPage'
+import UserProfilePage from './pages/UserProfilePage'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/patients" element={<PatientsPage />} />
         <Route path="/messages" element={<MessagesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/profile" element={<UserProfilePage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
