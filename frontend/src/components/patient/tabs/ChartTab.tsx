@@ -83,11 +83,12 @@ export function ChartTab({ patient }: ChartTabProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header with New Entry and Quick Note buttons */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Patient Chart</h3>
-        <div className="flex space-x-3">
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-gray-900">Patient Chart</h3>
+          <div className="flex space-x-3">
           <button
             onClick={() => setIsQuickNoteModalOpen(true)}
             className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
@@ -102,6 +103,7 @@ export function ChartTab({ patient }: ChartTabProps) {
             <Plus className="h-4 w-4 mr-2" />
             New Entry
           </button>
+        </div>
         </div>
       </div>
 
