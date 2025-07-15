@@ -15,8 +15,9 @@ Medstagram is a modern, intelligent electronic medical record system built for h
 
 - React + TypeScript
 - TailwindCSS
-- Zustand (state management)
 - React Hook Form + Zod (form validation)
+- React Router (navigation)
+- Lucide React (icons)
 
 ### Backend
 
@@ -36,27 +37,38 @@ Medstagram is a modern, intelligent electronic medical record system built for h
 
 ## 📁 Project Structure
 
-### Frontend (React)
+### Frontend (React) - ✅ Implemented
 
+```
 frontend/
-┣ components/
-┣ pages/
-┣ features/
-┣ hooks/
-┣ lib/
-┣ assets/
-┗ index.tsx
+┣ src/
+┃ ┣ components/
+┃ ┃ ┣ ai/ # MIRA AI assistant panel
+┃ ┃ ┣ layout/ # Header, sidebar, main layout
+┃ ┃ ┣ patient/ # Patient-specific components
+┃ ┃ ┗ ui/ # Reusable UI components
+┃ ┣ pages/ # Route-based views (Dashboard, Patients, SOAP, etc.)
+┃ ┣ types/ # TypeScript type definitions
+┃ ┣ constants/ # Application constants
+┃ ┣ hooks/ # Custom React hooks
+┃ ┣ mocks/ # Mock data for development
+┃ ┣ utils/ # Utility functions
+┃ ┗ assets/ # Images and static files
+┗ package.json
+```
 
-### Backend (FastAPI)
+### Backend (FastAPI) - 🚧 Planned
 
+```
 backend/
-┣ app/
-┃ ┣ api/
-┃ ┣ core/
-┃ ┣ models/
-┃ ┣ schemas/
-┣ tests/
+┣ app/ # (Not yet implemented)
+┃ ┣ api/ # Route endpoints
+┃ ┣ core/ # Config, startup, security
+┃ ┣ models/ # SQLModel classes
+┃ ┣ schemas/ # Pydantic schemas
+┣ tests/ # Pytest-based unit tests
 ┗ main.py
+```
 
 ## ✅ Development Practices
 
