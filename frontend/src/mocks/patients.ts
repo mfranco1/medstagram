@@ -1,5 +1,6 @@
 import type { Patient } from '../types/patient'
 import { mockDoctor } from './doctor'
+import { mockPatientMedications, mockPatientAllergies } from './medications'
 
 // Create a base attending physician object from mockDoctor
 const attendingPhysician = {
@@ -27,6 +28,10 @@ export const mockPatients: Patient[] = [
     address: '123 P Faura St., Manila City',
     philhealth: '12-345678901-2',
     primaryService: 'Pulmonology',
+    weight: 70,
+    height: 175,
+    allergies: mockPatientAllergies[1],
+    medications: mockPatientMedications[1],
     attendingPhysician
   },
   {
@@ -46,6 +51,10 @@ export const mockPatients: Patient[] = [
     address: '456 Taft Ave., Manila City',
     philhealth: '12-345678901-3',
     primaryService: 'Pulmonology',
+    weight: 65,
+    height: 162,
+    allergies: mockPatientAllergies[2],
+    medications: mockPatientMedications[2],
     attendingPhysician
   },
   {
@@ -65,6 +74,10 @@ export const mockPatients: Patient[] = [
     address: '789 Roxas Blvd., Manila City',
     philhealth: '12-345678901-4',
     primaryService: 'Internal Medicine',
+    weight: 80,
+    height: 180,
+    allergies: mockPatientAllergies[3],
+    medications: mockPatientMedications[3],
     attendingPhysician
   },
   {
@@ -84,6 +97,8 @@ export const mockPatients: Patient[] = [
     address: '321 Rizal Ave., Manila City',
     philhealth: '12-345678901-5',
     primaryService: 'Internal Medicine',
+    weight: 62,
+    height: 168,
     attendingPhysician
   },
   {
@@ -103,6 +118,10 @@ export const mockPatients: Patient[] = [
     address: '654 España Blvd., Manila City',
     philhealth: '12-345678901-6',
     primaryService: 'Neurology',
+    weight: 75,
+    height: 178,
+    allergies: mockPatientAllergies[5],
+    medications: mockPatientMedications[5],
     attendingPhysician
   },
   {
@@ -122,6 +141,8 @@ export const mockPatients: Patient[] = [
     address: '987 Quezon Ave., Manila City',
     philhealth: '12-345678901-7',
     primaryService: 'Obstetrics and Gynecology',
+    weight: 55,
+    height: 158,
     attendingPhysician
   },
   {
@@ -141,6 +162,10 @@ export const mockPatients: Patient[] = [
     address: '147 Quirino Ave., Manila City',
     philhealth: '12-345678901-8',
     primaryService: 'Cardiology',
+    weight: 85,
+    height: 172,
+    allergies: mockPatientAllergies[7],
+    medications: mockPatientMedications[7],
     attendingPhysician
   },
   {
@@ -160,6 +185,8 @@ export const mockPatients: Patient[] = [
     address: '258 Sampaloc St., Manila City',
     philhealth: '12-345678901-9',
     primaryService: 'Surgery',
+    weight: 60,
+    height: 163,
     attendingPhysician
   },
   {
@@ -179,6 +206,9 @@ export const mockPatients: Patient[] = [
     address: '369 Malate St., Manila City',
     philhealth: '12-345678901-0',
     primaryService: 'Nephrology',
+    weight: 4,
+    height: 55,
+    medications: mockPatientMedications[9],
     attendingPhysician
   },
   {
@@ -198,6 +228,10 @@ export const mockPatients: Patient[] = [
     address: '741 Ermita St., Manila City',
     philhealth: '12-345678901-1',
     primaryService: 'Surgery',
+    weight: 68,
+    height: 165,
+    allergies: mockPatientAllergies[10],
+    medications: mockPatientMedications[10],
     attendingPhysician
   },
   {
@@ -217,6 +251,8 @@ export const mockPatients: Patient[] = [
     address: '852 Paco St., Manila City',
     philhealth: '12-345678901-2',
     primaryService: 'Cardiology',
+    weight: 78,
+    height: 175,
     attendingPhysician
   },
   {
@@ -236,6 +272,8 @@ export const mockPatients: Patient[] = [
     address: '963 Pandacan St., Manila City',
     philhealth: '12-345678901-3',
     primaryService: 'Urology',
+    weight: 64,
+    height: 167,
     attendingPhysician
   },
   {
@@ -255,6 +293,9 @@ export const mockPatients: Patient[] = [
     address: '159 Santa Ana St., Manila City',
     philhealth: '12-345678901-4',
     primaryService: 'Pulmonology',
+    weight: 72,
+    height: 170,
+    medications: mockPatientMedications[13],
     attendingPhysician
   },
   {
@@ -274,6 +315,9 @@ export const mockPatients: Patient[] = [
     address: '357 San Andres St., Manila City',
     philhealth: '12-345678901-5',
     primaryService: 'Oncology',
+    weight: 58,
+    height: 160,
+    medications: mockPatientMedications[14],
     attendingPhysician
   },
   {
@@ -293,6 +337,8 @@ export const mockPatients: Patient[] = [
     address: '486 San Miguel St., Manila City',
     philhealth: '12-345678901-6',
     primaryService: 'Gastroenterology',
+    weight: 3.5,
+    height: 50,
     upcomingProcedure: {
       name: "Chest Xray PA",
       date: "2025-9-18",

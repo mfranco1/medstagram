@@ -7,7 +7,7 @@
   - Create medication status and route constants
   - _Requirements: 1.1, 1.2, 2.1, 3.1, 4.1, 5.1_
 
-- [ ] 2. Create mock medication data
+- [x] 2. Create mock medication data
   - Create comprehensive mock medication database with common drugs
   - Add realistic medication data to existing mock patients
   - Include various medication statuses, dosages, and routes
