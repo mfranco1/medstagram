@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Patient } from '../pages/PatientsPage'
+import type { Patient } from '../types/patient'
 import { DEFAULT_PATIENT } from '../constants/patient'
 import { calculateAge, validateDateOfBirth, validateCaseNumber } from '../utils/patient'
 
