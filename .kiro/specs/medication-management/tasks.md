@@ -14,7 +14,7 @@
   - Add patient allergy data for testing alert functionality
   - _Requirements: 1.1, 1.2, 7.1, 8.1_
 
-- [ ] 3. Implement basic medication list component
+- [x] 3. Implement basic medication list component
   - Create MedicationList component with table structure similar to OrdersTab
   - Display current medications with name, dosage, frequency, status, and dates
   - Implement status badges with appropriate color coding
