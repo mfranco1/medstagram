@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import type { Patient, Medication } from '../../../types/patient'
 import { MedicationList } from '../MedicationList'
+import { MedicationForm } from '../MedicationForm'
 import { Plus, Search, Filter } from 'lucide-react'
 
 interface TherapeuticsTabProps {
@@ -63,8 +64,17 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
 
   const handleAddMedication = () => {
     setShowAddMedicationModal(true)
-    console.log('Add new medication')
-    // TODO: Implement add medication modal
+  }
+
+  const handleSaveMedication = (medicationData: Omit<Medication, 'id' | 'createdAt' | 'updatedAt'>) => {
+    console.log('Save medication:', medicationData)
+    // TODO: In a real app, this would call an API to save the medication
+    // For now, we'll just close the modal
+    setShowAddMedicationModal(false)
+  }
+
+  const handleCancelMedication = () => {
+    setShowAddMedicationModal(false)
   }
 
   // Get medication counts for filter badges
@@ -236,6 +246,14 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
           </div>
         )}
       </div>
+
+      {/* Medication Form Modal */}
+      <MedicationForm
+        isOpen={showAddMedicationModal}
+        patient={patient}
+        onSave={handleSaveMedication}
+        onCancel={handleCancelMedication}
+      />
     </div>
   )
 } 

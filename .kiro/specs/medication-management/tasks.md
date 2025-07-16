@@ -30,7 +30,7 @@
   - Add search functionality for medication names
   - _Requirements: 1.1, 1.2, 6.3, 8.1, 8.2_
 
-- [ ] 5. Create medication form modal component
+- [x] 5. Create medication form modal component
   - Build MedicationForm modal component with React Hook Form and Zod validation
   - Implement medication name input with autocomplete from mock database
   - Add dosage amount and unit selection fields
