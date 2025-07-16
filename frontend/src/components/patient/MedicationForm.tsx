@@ -9,25 +9,91 @@ import { FormSection } from '../ui/FormSection'
 import { FormField } from '../ui/FormField'
 import { TimePicker } from '../ui/time-picker/TimePicker'
 
-// Zod validation schema
+// Enhanced Zod validation schema with comprehensive validation rules
 const medicationSchema = z.object({
-  name: z.string().min(1, 'Medication name is required'),
-  genericName: z.string().optional(),
-  dosageAmount: z.number().min(0.01, 'Dosage amount must be greater than 0'),
-  dosageUnit: z.string().min(1, 'Dosage unit is required'),
-  frequencyTimes: z.number().min(1, 'Frequency times must be at least 1'),
+  name: z.string()
+    .min(1, 'Medication name is required')
+    .max(100, 'Medication name must be less than 100 characters')
+    .regex(/^[a-zA-Z0-9\s\-\.\/\(\)]+$/, 'Medication name contains invalid characters'),
+  genericName: z.string()
+    .max(100, 'Generic name must be less than 100 characters')
+    .regex(/^[a-zA-Z0-9\s\-\.\/\(\)]*$/, 'Generic name contains invalid characters')
+    .optional(),
+  dosageAmount: z.number()
+    .min(0.001, 'Dosage amount must be greater than 0')
+    .max(10000, 'Dosage amount seems unusually high')
+    .refine((val) => {
+      const str = val.toString()
+      const decimalIndex = str.indexOf('.')
+      if (decimalIndex === -1) return true
+      return str.length - decimalIndex - 1 <= 3
+    }, 'Dosage amount can have at most 3 decimal places'),
+  dosageUnit: z.string()
+    .min(1, 'Dosage unit is required')
+    .max(20, 'Dosage unit must be less than 20 characters'),
+  frequencyTimes: z.number()
+    .int('Frequency times must be a whole number')
+    .min(1, 'Frequency must be at least 1 time')
+    .max(24, 'Frequency cannot exceed 24 times per day'),
   frequencyPeriod: z.enum(['daily', 'weekly', 'monthly'], {
     errorMap: () => ({ message: 'Please select a valid frequency period' })
   }),
   route: z.enum(['oral', 'IV', 'IM', 'topical', 'inhalation', 'sublingual', 'rectal', 'other'], {
     errorMap: () => ({ message: 'Please select a valid route of administration' })
   }),
-  startDate: z.string().min(1, 'Start date is required'),
-  durationAmount: z.number().optional(),
+  startDate: z.string()
+    .min(1, 'Start date is required')
+    .refine((date) => {
+      const selectedDate = new Date(date)
+      const today = new Date()
+      const oneYearAgo = new Date()
+      oneYearAgo.setFullYear(today.getFullYear() - 1)
+      const oneYearFromNow = new Date()
+      oneYearFromNow.setFullYear(today.getFullYear() + 1)
+      
+      return selectedDate >= oneYearAgo && selectedDate <= oneYearFromNow
+    }, 'Start date must be within one year of today'),
+  durationAmount: z.number()
+    .int('Duration amount must be a whole number')
+    .min(1, 'Duration amount must be at least 1')
+    .max(365, 'Duration amount cannot exceed 365')
+    .optional(),
   durationUnit: z.enum(['days', 'weeks', 'months']).optional(),
-  indication: z.string().optional(),
-  notes: z.string().optional(),
-  schedule: z.array(z.string()).optional()
+  indication: z.string()
+    .max(500, 'Indication must be less than 500 characters')
+    .optional(),
+  notes: z.string()
+    .max(1000, 'Notes must be less than 1000 characters')
+    .optional(),
+  schedule: z.array(z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format')).optional()
+}).refine((data) => {
+  if (data.durationAmount && !data.durationUnit) {
+    return false
+  }
+  if (!data.durationAmount && data.durationUnit) {
+    return false
+  }
+  return true
+}, {
+  message: 'Both duration amount and unit must be provided together',
+  path: ['durationUnit']
+}).refine((data) => {
+  if (data.schedule && data.schedule.length > data.frequencyTimes) {
+    return false
+  }
+  return true
+}, {
+  message: 'Number of scheduled times cannot exceed frequency times',
+  path: ['schedule']
+}).refine((data) => {
+  if (data.schedule && data.schedule.length > 1) {
+    const uniqueTimes = new Set(data.schedule.filter(time => time.trim() !== ''))
+    return uniqueTimes.size === data.schedule.filter(time => time.trim() !== '').length
+  }
+  return true
+}, {
+  message: 'Duplicate schedule times are not allowed',
+  path: ['schedule']
 })
 
 type MedicationFormData = z.infer<typeof medicationSchema>
