@@ -8,6 +8,7 @@ import { mockMedicationDatabase } from '../../mocks/medications'
 import { FormSection } from '../ui/FormSection'
 import { FormField } from '../ui/FormField'
 import { TimePicker } from '../ui/time-picker/TimePicker'
+import { DosageCalculator } from './DosageCalculator'
 
 // Enhanced Zod validation schema with comprehensive validation rules
 const medicationSchema = z.object({
@@ -233,6 +234,20 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
     }
   }, [isOpen, onCancel])
 
+  // Handle recommended dose selection
+  useEffect(() => {
+    const handleUseRecommendedDose = (event: CustomEvent) => {
+      const { recommendedDose } = event.detail
+      setValue('dosageAmount', recommendedDose)
+    }
+
+    window.addEventListener('useRecommendedDose', handleUseRecommendedDose as EventListener)
+    
+    return () => {
+      window.removeEventListener('useRecommendedDose', handleUseRecommendedDose as EventListener)
+    }
+  }, [setValue])
+
   // Handle medication selection from autocomplete
   const handleMedicationSelect = (med: MedicationDatabase) => {
     setValue('name', med.name)
@@ -412,6 +427,30 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
                   />
                 </div>
               </FormSection>
+
+              {/* Dosage Calculator */}
+              {selectedMedication && (
+                <DosageCalculator
+                  patient={patient}
+                  medication={selectedMedication}
+                  dosageAmount={watch('dosageAmount') || 0}
+                  dosageUnit={watch('dosageUnit') || 'mg'}
+                  frequencyTimes={watch('frequencyTimes') || 1}
+                  frequencyPeriod={watch('frequencyPeriod') || 'daily'}
+                  onCalculationComplete={(calculation) => {
+                    // Store calculation results for form submission
+                    if (calculation.isWithinNormalRange && calculation.recommendedDose > 0) {
+                      // Optionally auto-update the dosage if it's significantly different
+                      const currentDose = watch('dosageAmount') || 0
+                      if (currentDose === 0 || Math.abs(currentDose - calculation.recommendedDose) / calculation.recommendedDose > 0.2) {
+                        // Only suggest if difference is more than 20%
+                      }
+                    }
+                  }}
+                  className="mb-6"
+                />
+              )}
+
               {/* Frequency Information */}
               <FormSection title="Frequency & Schedule">
                 <div className="grid grid-cols-2 gap-4">

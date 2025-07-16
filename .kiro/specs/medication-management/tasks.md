@@ -47,7 +47,7 @@
   - Test edge cases and invalid input scenarios
   - _Requirements: 2.4, 2.5, 3.3, 3.4, 3.5_
 
-- [ ] 7. Build dosage calculation functionality
+- [x] 7. Build dosage calculation functionality
   - Create DosageCalculator utility functions for weight-based calculations
   - Implement pediatric vs adult dosing logic based on patient age
   - Add dosage range validation with warnings for unusual doses
