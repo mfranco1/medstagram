@@ -22,7 +22,7 @@
   - Include empty state when no medications exist
   - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-- [ ] 4. Enhance TherapeuticsTab with medication management
+- [x] 4. Enhance TherapeuticsTab with medication management
   - Replace placeholder TherapeuticsTab with comprehensive medication interface
   - Integrate MedicationList component
   - Add "Add Medication" button and basic layout structure
