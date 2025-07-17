@@ -11,12 +11,12 @@ interface MedicationListProps {
   onViewDetails?: (medication: Medication) => void
 }
 
-export function MedicationList({ 
-  medications, 
+export function MedicationList({
+  medications,
   showHistory = false,
   onEdit,
   onDiscontinue,
-  onViewDetails 
+  onViewDetails
 }: MedicationListProps) {
   const [showDiscontinueModal, setShowDiscontinueModal] = useState(false)
   const [medicationToDiscontinue, setMedicationToDiscontinue] = useState<Medication | null>(null)
@@ -42,8 +42,8 @@ export function MedicationList({
   }, [showActionsMenu])
 
   // Filter medications based on showHistory flag
-  const filteredMedications = showHistory 
-    ? medications 
+  const filteredMedications = showHistory
+    ? medications
     : medications.filter(med => med.status === 'active' || med.status === 'on-hold')
 
   // Helper function to format frequency
@@ -154,8 +154,8 @@ export function MedicationList({
             {showHistory ? 'No medication history found' : 'No current medications'}
           </p>
           <p className="text-xs text-gray-400">
-            {showHistory 
-              ? 'This patient has no recorded medications' 
+            {showHistory
+              ? 'This patient has no recorded medications'
               : 'Click "Add Medication" to start managing medications'
             }
           </p>
@@ -167,44 +167,44 @@ export function MedicationList({
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Desktop Table View */}
-      <div className="hidden md:block overflow-x-auto overflow-y-visible">
-        <table className="min-w-full divide-y divide-gray-200">
+      <div className="hidden md:block overflow-x-auto overflow-y-auto min-h-[280px] max-h-[600px]">
+        <table className="min-w-full divide-y divide-gray-200 h-full">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Medication
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Dosage
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Frequency
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Route
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Start Date
               </th>
               {showHistory && (
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   End Date
                 </th>
               )}
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Indication
               </th>
-              <th scope="col" className="relative px-6 py-3">
+              <th scope="col" className="relative px-6 py-4">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredMedications.map((medication) => (
-              <tr 
+              <tr
                 key={medication.id}
                 className="hover:bg-gray-50 cursor-pointer"
                 onClick={() => onViewDetails?.(medication)}
@@ -214,7 +214,7 @@ export function MedicationList({
                     {medication.name}
                   </div>
                   {medication.genericName && medication.genericName !== medication.name && (
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500 mt-1">
                       ({medication.genericName})
                     </div>
                   )}
@@ -229,7 +229,7 @@ export function MedicationList({
                   {formatRoute(medication.route)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(medication.status)}`}>
+                  <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(medication.status)}`}>
                     {formatStatus(medication.status)}
                   </span>
                 </td>
@@ -255,7 +255,7 @@ export function MedicationList({
                       >
                         <MoreVertical className="h-5 w-5" />
                       </button>
-                      
+
                       {showActionsMenu === medication.id && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
                           <div className="py-1">
@@ -288,7 +288,7 @@ export function MedicationList({
       {/* Mobile Card View */}
       <div className="md:hidden divide-y divide-gray-200">
         {filteredMedications.map((medication) => (
-          <div 
+          <div
             key={medication.id}
             className="p-4 hover:bg-gray-50 cursor-pointer"
             onClick={() => onViewDetails?.(medication)}
@@ -316,7 +316,7 @@ export function MedicationList({
                     >
                       <MoreVertical className="h-4 w-4" />
                     </button>
-                    
+
                     {showActionsMenu === medication.id && (
                       <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
                         <div className="py-1">
@@ -341,7 +341,7 @@ export function MedicationList({
                 )}
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-2">
               <div>
                 <span className="font-medium">Dosage:</span> {formatDosage(medication.dosage)}
@@ -361,7 +361,7 @@ export function MedicationList({
                 </div>
               )}
             </div>
-            
+
             {medication.indication && (
               <div className="text-xs text-gray-600">
                 <span className="font-medium">Indication:</span> {medication.indication}
@@ -378,7 +378,7 @@ export function MedicationList({
             <h3 className="text-lg font-medium text-gray-900 mb-4">
               Discontinue Medication
             </h3>
-            
+
             <div className="mb-4">
               <p className="text-sm text-gray-600 mb-2">
                 You are about to discontinue:
