@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import type { Medication } from '../../types/patient'
 import { Pill, Edit, StopCircle, MoreVertical, ChevronDown, X } from 'lucide-react'
 import { DISCONTINUATION_REASONS } from '../../services/medicationService'
+import { Select } from '../ui/Select'
 
 interface MedicationListProps {
   medications: Medication[]
@@ -527,22 +528,17 @@ export function MedicationList({
             </div>
 
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Reason for discontinuation <span className="text-red-500">*</span>
-              </label>
-              <select
+              <Select
+                label="Reason for discontinuation"
                 value={discontinuationReason}
-                onChange={(e) => setDiscontinuationReason(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                onChange={setDiscontinuationReason}
+                options={DISCONTINUATION_REASONS.map((reason) => ({
+                  value: reason,
+                  label: reason
+                }))}
+                placeholder="Select a reason..."
                 required
-              >
-                <option value="">Select a reason...</option>
-                {DISCONTINUATION_REASONS.map((reason) => (
-                  <option key={reason} value={reason}>
-                    {reason}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="flex justify-end space-x-3">
