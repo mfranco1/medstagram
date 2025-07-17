@@ -348,11 +348,12 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
               <FormSection title="Medication Information">
                 {/* Medication Name with Autocomplete */}
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="medication-name" className="block text-sm font-medium text-gray-700 mb-1">
                     Medication Name <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <input
+                      id="medication-name"
                       ref={searchRef}
                       type="text"
                       value={searchTerm || watchedName}

@@ -1,4 +1,4 @@
-import { type ChangeEvent } from 'react'
+import { type ChangeEvent, useId } from 'react'
 import { DatePicker } from './date-picker/DatePicker'
 import { Select } from './Select'
 
@@ -15,6 +15,7 @@ interface FormFieldProps {
   rows?: number
   options?: { value: string; label: string }[]
   maxDate?: string
+  id?: string
 }
 
 export function FormField({
@@ -29,8 +30,12 @@ export function FormField({
   className = '',
   rows,
   options,
-  maxDate
+  maxDate,
+  id: providedId
 }: FormFieldProps) {
+  const generatedId = useId()
+  const fieldId = providedId || generatedId
+  
   const baseInputClasses = `mt-1 block w-full rounded-md border ${
     error ? 'border-red-300' : 'border-gray-300'
   } px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 ${
@@ -54,6 +59,7 @@ export function FormField({
     if (type === 'textarea') {
       return (
         <textarea
+          id={fieldId}
           required={required}
           disabled={disabled}
           value={value}
@@ -68,6 +74,7 @@ export function FormField({
     if (options) {
       return (
         <Select
+          id={fieldId}
           value={value as string}
           onChange={onChange}
           options={options}
@@ -81,6 +88,7 @@ export function FormField({
 
     return (
       <input
+        id={fieldId}
         type={type}
         required={required}
         disabled={disabled}
@@ -94,7 +102,7 @@ export function FormField({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label htmlFor={fieldId} className="block text-sm font-medium text-gray-700">{label}</label>
       {renderInput()}
       {error && type !== 'date' && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>

@@ -55,7 +55,7 @@
   - Integrate calculator with medication form for real-time calculations
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 8. Implement medication CRUD operations
+- [x] 8. Implement medication CRUD operations
   - Add functionality to create new medications and update patient data
   - Implement medication editing with proper change tracking
   - Create medication discontinuation with reason selection

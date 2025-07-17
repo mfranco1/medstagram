@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import type { Patient, Medication } from '../../../types/patient'
 import { MedicationList } from '../MedicationList'
 import { MedicationForm } from '../MedicationForm'
+import { MedicationService, DISCONTINUATION_REASONS } from '../../../services/medicationService'
 import { Plus, Search, Filter } from 'lucide-react'
 
 interface TherapeuticsTabProps {
@@ -14,8 +15,20 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState<MedicationFilter>('active')
   const [showAddMedicationModal, setShowAddMedicationModal] = useState(false)
+  const [editingMedication, setEditingMedication] = useState<Medication | undefined>(undefined)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [medications, setMedications] = useState<Medication[]>(patient.medications || [])
 
-  const medications = patient.medications || []
+  // Sync local state with patient data when patient changes
+  useEffect(() => {
+    setMedications(patient.medications || [])
+  }, [patient.medications])
+
+  // Force refresh medications from the patient data
+  const refreshMedications = useCallback(() => {
+    setMedications([...(patient.medications || [])])
+  }, [patient.medications])
 
   // Filter and search medications
   const filteredMedications = useMemo(() => {
@@ -47,35 +60,69 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
     return filtered
   }, [medications, filter, searchTerm])
 
-  const handleViewDetails = (medication: Medication) => {
+  const handleViewDetails = useCallback((medication: Medication) => {
     console.log('View medication details:', medication)
     // TODO: Implement medication details modal
-  }
+  }, [])
 
-  const handleEdit = (medication: Medication) => {
-    console.log('Edit medication:', medication)
-    // TODO: Implement medication edit modal
-  }
-
-  const handleDiscontinue = (medicationId: string, reason: string) => {
-    console.log('Discontinue medication:', medicationId, reason)
-    // TODO: Implement medication discontinuation
-  }
-
-  const handleAddMedication = () => {
+  const handleEdit = useCallback((medication: Medication) => {
+    setEditingMedication(medication)
     setShowAddMedicationModal(true)
-  }
+  }, [])
 
-  const handleSaveMedication = (medicationData: Omit<Medication, 'id' | 'createdAt' | 'updatedAt'>) => {
-    console.log('Save medication:', medicationData)
-    // TODO: In a real app, this would call an API to save the medication
-    // For now, we'll just close the modal
-    setShowAddMedicationModal(false)
-  }
+  const handleDiscontinue = useCallback(async (medicationId: string, reason: string) => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await MedicationService.discontinueMedication(patient.id, medicationId, reason)
+      refreshMedications() // Force UI update
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to discontinue medication')
+      console.error('Error discontinuing medication:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [patient.id, refreshMedications])
 
-  const handleCancelMedication = () => {
+  const handleAddMedication = useCallback(() => {
+    setEditingMedication(undefined)
+    setShowAddMedicationModal(true)
+  }, [])
+
+  const handleSaveMedication = useCallback(async (medicationData: Omit<Medication, 'id' | 'createdAt' | 'updatedAt'>) => {
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      if (editingMedication) {
+        // Update existing medication
+        await MedicationService.updateMedication(
+          patient.id, 
+          editingMedication.id, 
+          medicationData
+        )
+      } else {
+        // Create new medication
+        await MedicationService.createMedication(patient.id, medicationData)
+      }
+      
+      refreshMedications() // Force UI update
+      setShowAddMedicationModal(false)
+      setEditingMedication(undefined)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save medication')
+      console.error('Error saving medication:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [patient.id, editingMedication, refreshMedications])
+
+  const handleCancelMedication = useCallback(() => {
     setShowAddMedicationModal(false)
-  }
+    setEditingMedication(undefined)
+    setError(null)
+  }, [])
 
   // Get medication counts for filter badges
   const activeMedicationsCount = medications.filter(med => med.status === 'active' || med.status === 'on-hold').length
@@ -247,9 +294,53 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
         )}
       </div>
 
+      {/* Error Display */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Error</h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{error}</p>
+              </div>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setError(null)}
+                  className="bg-red-50 px-2 py-1.5 rounded-md text-sm font-medium text-red-800 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-600"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-25 z-40 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <svg className="animate-spin h-5 w-5 text-violet-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span className="text-sm font-medium text-gray-900">
+              {editingMedication ? 'Updating medication...' : 'Saving medication...'}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Medication Form Modal */}
       <MedicationForm
         isOpen={showAddMedicationModal}
+        medication={editingMedication}
         patient={patient}
         onSave={handleSaveMedication}
         onCancel={handleCancelMedication}

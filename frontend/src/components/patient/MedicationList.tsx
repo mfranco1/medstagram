@@ -1,5 +1,7 @@
+import { useState, useEffect, useRef } from 'react'
 import type { Medication } from '../../types/patient'
-import { Pill } from 'lucide-react'
+import { Pill, Edit, StopCircle, MoreVertical } from 'lucide-react'
+import { DISCONTINUATION_REASONS } from '../../services/medicationService'
 
 interface MedicationListProps {
   medications: Medication[]
@@ -16,6 +18,29 @@ export function MedicationList({
   onDiscontinue,
   onViewDetails 
 }: MedicationListProps) {
+  const [showDiscontinueModal, setShowDiscontinueModal] = useState(false)
+  const [medicationToDiscontinue, setMedicationToDiscontinue] = useState<Medication | null>(null)
+  const [discontinuationReason, setDiscontinuationReason] = useState('')
+  const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null)
+  const actionsMenuRef = useRef<HTMLDivElement>(null)
+
+  // Close actions menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (actionsMenuRef.current && !actionsMenuRef.current.contains(event.target as Node)) {
+        setShowActionsMenu(null)
+      }
+    }
+
+    if (showActionsMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showActionsMenu])
+
   // Filter medications based on showHistory flag
   const filteredMedications = showHistory 
     ? medications 
@@ -80,6 +105,44 @@ export function MedicationList({
     })
   }
 
+  // Handle discontinue medication
+  const handleDiscontinueClick = (medication: Medication, event: React.MouseEvent) => {
+    event.stopPropagation()
+    setMedicationToDiscontinue(medication)
+    setShowDiscontinueModal(true)
+    setShowActionsMenu(null)
+  }
+
+  // Handle edit medication
+  const handleEditClick = (medication: Medication, event: React.MouseEvent) => {
+    event.stopPropagation()
+    onEdit?.(medication)
+    setShowActionsMenu(null)
+  }
+
+  // Handle discontinue confirmation
+  const handleDiscontinueConfirm = () => {
+    if (medicationToDiscontinue && discontinuationReason && onDiscontinue) {
+      onDiscontinue(medicationToDiscontinue.id, discontinuationReason)
+      setShowDiscontinueModal(false)
+      setMedicationToDiscontinue(null)
+      setDiscontinuationReason('')
+    }
+  }
+
+  // Handle discontinue cancel
+  const handleDiscontinueCancel = () => {
+    setShowDiscontinueModal(false)
+    setMedicationToDiscontinue(null)
+    setDiscontinuationReason('')
+  }
+
+  // Toggle actions menu
+  const toggleActionsMenu = (medicationId: string, event: React.MouseEvent) => {
+    event.stopPropagation()
+    setShowActionsMenu(showActionsMenu === medicationId ? null : medicationId)
+  }
+
   if (filteredMedications.length === 0) {
     return (
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -104,7 +167,7 @@ export function MedicationList({
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Desktop Table View */}
-      <div className="hidden md:block overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto overflow-y-visible">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -133,6 +196,9 @@ export function MedicationList({
               )}
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Indication
+              </th>
+              <th scope="col" className="relative px-6 py-3">
+                <span className="sr-only">Actions</span>
               </th>
             </tr>
           </thead>
@@ -180,6 +246,39 @@ export function MedicationList({
                     {medication.indication || '-'}
                   </div>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  {(medication.status === 'active' || medication.status === 'on-hold') && (
+                    <div className="relative" ref={showActionsMenu === medication.id ? actionsMenuRef : null}>
+                      <button
+                        onClick={(e) => toggleActionsMenu(medication.id, e)}
+                        className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
+                      >
+                        <MoreVertical className="h-5 w-5" />
+                      </button>
+                      
+                      {showActionsMenu === medication.id && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+                          <div className="py-1">
+                            <button
+                              onClick={(e) => handleEditClick(medication, e)}
+                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                            >
+                              <Edit className="h-4 w-4 mr-2" />
+                              Edit Medication
+                            </button>
+                            <button
+                              onClick={(e) => handleDiscontinueClick(medication, e)}
+                              className="flex items-center px-4 py-2 text-sm text-red-700 hover:bg-red-50 w-full text-left"
+                            >
+                              <StopCircle className="h-4 w-4 mr-2" />
+                              Discontinue
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -205,9 +304,42 @@ export function MedicationList({
                   </p>
                 )}
               </div>
-              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(medication.status)}`}>
-                {formatStatus(medication.status)}
-              </span>
+              <div className="flex items-center space-x-2">
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(medication.status)}`}>
+                  {formatStatus(medication.status)}
+                </span>
+                {(medication.status === 'active' || medication.status === 'on-hold') && (
+                  <div className="relative" ref={showActionsMenu === medication.id ? actionsMenuRef : null}>
+                    <button
+                      onClick={(e) => toggleActionsMenu(medication.id, e)}
+                      className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </button>
+                    
+                    {showActionsMenu === medication.id && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+                        <div className="py-1">
+                          <button
+                            onClick={(e) => handleEditClick(medication, e)}
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            Edit Medication
+                          </button>
+                          <button
+                            onClick={(e) => handleDiscontinueClick(medication, e)}
+                            className="flex items-center px-4 py-2 text-sm text-red-700 hover:bg-red-50 w-full text-left"
+                          >
+                            <StopCircle className="h-4 w-4 mr-2" />
+                            Discontinue
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
             
             <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-2">
@@ -238,6 +370,64 @@ export function MedicationList({
           </div>
         ))}
       </div>
+
+      {/* Discontinuation Modal */}
+      {showDiscontinueModal && medicationToDiscontinue && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              Discontinue Medication
+            </h3>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">
+                You are about to discontinue:
+              </p>
+              <div className="bg-gray-50 rounded-md p-3">
+                <p className="font-medium text-gray-900">{medicationToDiscontinue.name}</p>
+                <p className="text-sm text-gray-600">
+                  {formatDosage(medicationToDiscontinue.dosage)} - {formatFrequency(medicationToDiscontinue.frequency)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Reason for discontinuation <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={discontinuationReason}
+                onChange={(e) => setDiscontinuationReason(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+                required
+              >
+                <option value="">Select a reason...</option>
+                {DISCONTINUATION_REASONS.map((reason) => (
+                  <option key={reason} value={reason}>
+                    {reason}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={handleDiscontinueCancel}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDiscontinueConfirm}
+                disabled={!discontinuationReason}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Discontinue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

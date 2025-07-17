@@ -17,6 +17,7 @@ interface SelectProps {
   error?: string
   placeholder?: string
   className?: string
+  id?: string
 }
 
 export function Select({
@@ -28,7 +29,8 @@ export function Select({
   disabled = false,
   error,
   placeholder = 'Select an option',
-  className = ''
+  className = '',
+  id
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -116,7 +118,7 @@ export function Select({
   return (
     <div ref={containerRef} className="relative">
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -124,6 +126,7 @@ export function Select({
       
       <div className="relative">
         <button
+          id={id}
           type="button"
           className={`
             w-full px-3 py-2
