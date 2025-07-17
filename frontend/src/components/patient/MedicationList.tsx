@@ -10,6 +10,7 @@ interface MedicationListProps {
   onEdit?: (medication: Medication) => void
   onDiscontinue?: (medicationId: string, reason: string) => void
   onViewDetails?: (medication: Medication) => void
+  patient?: { name: string }
 }
 
 export function MedicationList({
@@ -17,7 +18,8 @@ export function MedicationList({
   showHistory = false,
   onEdit,
   onDiscontinue,
-  onViewDetails
+  onViewDetails,
+  patient
 }: MedicationListProps) {
   const [showDiscontinueModal, setShowDiscontinueModal] = useState(false)
   const [medicationToDiscontinue, setMedicationToDiscontinue] = useState<Medication | null>(null)
@@ -517,13 +519,20 @@ export function MedicationList({
 
             <div className="mb-4">
               <p className="text-sm text-gray-600 mb-2">
-                You are about to discontinue:
+                You are about to discontinue the following medication{patient ? ` for ${patient.name}` : ''}:
               </p>
               <div className="bg-gray-50 rounded-md p-3">
                 <p className="font-medium text-gray-900">{medicationToDiscontinue.name}</p>
                 <p className="text-sm text-gray-600">
                   {formatDosage(medicationToDiscontinue.dosage)} - {formatFrequency(medicationToDiscontinue.frequency)}
                 </p>
+                {patient && (
+                  <div className="mt-2 pt-2 border-t border-gray-200">
+                    <p className="text-xs text-gray-500">
+                      <span className="font-medium">Patient:</span> {patient.name}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 

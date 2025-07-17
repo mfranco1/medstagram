@@ -278,6 +278,7 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
             onViewDetails={handleViewDetails}
             onEdit={handleEdit}
             onDiscontinue={handleDiscontinue}
+            patient={{ name: patient.name }}
           />
         ) : medications.length === 0 ? (
           // Show MedicationList's empty state when patient has no medications at all
@@ -287,6 +288,7 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
             onViewDetails={handleViewDetails}
             onEdit={handleEdit}
             onDiscontinue={handleDiscontinue}
+            patient={{ name: patient.name }}
           />
         ) : (
           // Show custom empty state when search/filter returns no results
