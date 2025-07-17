@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Medication } from '../../types/patient'
-import { Pill, Edit, StopCircle, MoreVertical } from 'lucide-react'
+import { Pill, Edit, StopCircle, MoreVertical, ChevronDown } from 'lucide-react'
 import { DISCONTINUATION_REASONS } from '../../services/medicationService'
 
 interface MedicationListProps {
@@ -22,6 +22,8 @@ export function MedicationList({
   const [medicationToDiscontinue, setMedicationToDiscontinue] = useState<Medication | null>(null)
   const [discontinuationReason, setDiscontinuationReason] = useState('')
   const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null)
+  const [sortField, setSortField] = useState<keyof Medication>('name')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const actionsMenuRef = useRef<HTMLDivElement>(null)
 
   // Close actions menu when clicking outside
@@ -41,10 +43,44 @@ export function MedicationList({
     }
   }, [showActionsMenu])
 
+  // Handle sorting
+  const handleSort = (field: keyof Medication) => {
+    if (field === sortField) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortField(field)
+      setSortDirection('asc')
+    }
+  }
+
   // Filter medications based on showHistory flag
   const filteredMedications = showHistory
     ? medications
     : medications.filter(med => med.status === 'active' || med.status === 'on-hold')
+
+  // Sort medications
+  const sortedMedications = [...filteredMedications].sort((a, b) => {
+    let aValue: any = a[sortField]
+    let bValue: any = b[sortField]
+    const modifier = sortDirection === 'asc' ? 1 : -1
+
+    // Handle nested objects for sorting
+    if (sortField === 'dosage') {
+      aValue = a.dosage.amount
+      bValue = b.dosage.amount
+    } else if (sortField === 'frequency') {
+      aValue = a.frequency.times
+      bValue = b.frequency.times
+    }
+
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return aValue.localeCompare(bValue) * modifier
+    }
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return (aValue - bValue) * modifier
+    }
+    return 0
+  })
 
   // Helper function to format frequency
   const formatFrequency = (frequency: Medication['frequency']) => {
@@ -171,31 +207,103 @@ export function MedicationList({
         <table className="min-w-full divide-y divide-gray-200 h-full">
           <thead className="bg-gray-50 sticky top-0 z-10">
             <tr>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Medication
+              <th 
+                scope="col" 
+                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('name')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Medication</span>
+                  {sortField === 'name' && (
+                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                  )}
+                </div>
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Dosage
+              <th 
+                scope="col" 
+                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('dosage')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Dosage</span>
+                  {sortField === 'dosage' && (
+                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                  )}
+                </div>
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Frequency
+              <th 
+                scope="col" 
+                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('frequency')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Frequency</span>
+                  {sortField === 'frequency' && (
+                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                  )}
+                </div>
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Route
+              <th 
+                scope="col" 
+                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('route')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Route</span>
+                  {sortField === 'route' && (
+                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                  )}
+                </div>
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+              <th 
+                scope="col" 
+                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('status')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Status</span>
+                  {sortField === 'status' && (
+                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                  )}
+                </div>
               </th>
-              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Start Date
+              <th 
+                scope="col" 
+                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('startDate')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Start Date</span>
+                  {sortField === 'startDate' && (
+                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                  )}
+                </div>
               </th>
               {showHistory && (
-                <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  End Date
+                <th 
+                  scope="col" 
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleSort('endDate')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>End Date</span>
+                    {sortField === 'endDate' && (
+                      <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                    )}
+                  </div>
                 </th>
               )}
-              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Indication
+              <th 
+                scope="col" 
+                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('indication')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Indication</span>
+                  {sortField === 'indication' && (
+                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+                  )}
+                </div>
               </th>
               <th scope="col" className="relative px-6 py-4">
                 <span className="sr-only">Actions</span>
@@ -203,7 +311,7 @@ export function MedicationList({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredMedications.map((medication) => (
+            {sortedMedications.map((medication) => (
               <tr
                 key={medication.id}
                 className="hover:bg-gray-50 cursor-pointer"
@@ -287,7 +395,7 @@ export function MedicationList({
 
       {/* Mobile Card View */}
       <div className="md:hidden divide-y divide-gray-200">
-        {filteredMedications.map((medication) => (
+        {sortedMedications.map((medication) => (
           <div
             key={medication.id}
             className="p-4 hover:bg-gray-50 cursor-pointer"
