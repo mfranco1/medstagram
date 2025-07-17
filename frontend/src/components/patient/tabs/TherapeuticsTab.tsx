@@ -3,6 +3,7 @@ import type { Patient, Medication } from '../../../types/patient'
 import { MedicationList } from '../MedicationList'
 import { MedicationForm } from '../MedicationForm'
 import { MedicationService, DISCONTINUATION_REASONS } from '../../../services/medicationService'
+import { Toast, type ToastType } from '../../ui/Toast'
 import { Plus, Search, Filter } from 'lucide-react'
 
 interface TherapeuticsTabProps {
@@ -19,6 +20,7 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [medications, setMedications] = useState<Medication[]>(patient.medications || [])
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
 
   // Sync local state with patient data when patient changes
   useEffect(() => {
@@ -102,16 +104,31 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
           editingMedication.id, 
           medicationData
         )
+        setToast({
+          message: `${medicationData.name} has been updated successfully`,
+          type: 'success'
+        })
       } else {
         // Create new medication
         await MedicationService.createMedication(patient.id, medicationData)
+        setToast({
+          message: `${medicationData.name} has been added successfully`,
+          type: 'success'
+        })
       }
       
       refreshMedications() // Force UI update
       setShowAddMedicationModal(false)
       setEditingMedication(undefined)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save medication')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to save medication'
+      setError(errorMessage)
+      setToast({
+        message: editingMedication 
+          ? `Failed to update ${medicationData.name}: ${errorMessage}`
+          : `Failed to add ${medicationData.name}: ${errorMessage}`,
+        type: 'error'
+      })
       console.error('Error saving medication:', err)
     } finally {
       setIsLoading(false)
@@ -345,6 +362,15 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
         onSave={handleSaveMedication}
         onCancel={handleCancelMedication}
       />
+
+      {/* Toast Notifications */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   )
 } 
