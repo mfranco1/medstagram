@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import type { Medication } from '../../types/patient'
-import { Pill, Edit, StopCircle, MoreVertical, ChevronDown } from 'lucide-react'
+import { Pill, Edit, StopCircle, MoreVertical, ChevronDown, X } from 'lucide-react'
 import { DISCONTINUATION_REASONS } from '../../services/medicationService'
 
 interface MedicationListProps {
@@ -25,6 +25,7 @@ export function MedicationList({
   const [sortField, setSortField] = useState<keyof Medication>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const actionsMenuRef = useRef<HTMLDivElement>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
 
   // Close actions menu when clicking outside
   useEffect(() => {
@@ -42,6 +43,23 @@ export function MedicationList({
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [showActionsMenu])
+
+  // Close modal when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        handleDiscontinueCancel()
+      }
+    }
+
+    if (showDiscontinueModal) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showDiscontinueModal])
 
   // Handle sorting
   const handleSort = (field: keyof Medication) => {
@@ -482,10 +500,19 @@ export function MedicationList({
       {/* Discontinuation Modal */}
       {showDiscontinueModal && medicationToDiscontinue && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
-              Discontinue Medication
-            </h3>
+          <div ref={modalRef} className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                Discontinue Medication
+              </h3>
+              <button
+                type="button"
+                onClick={handleDiscontinueCancel}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             <div className="mb-4">
               <p className="text-sm text-gray-600 mb-2">
