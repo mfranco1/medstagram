@@ -217,6 +217,29 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
     setSelectedMedication(null)
   }, [medication, reset])
 
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      // Reset form to default values when modal closes
+      reset({
+        name: '',
+        genericName: '',
+        dosageAmount: 0,
+        dosageUnit: 'mg',
+        frequencyTimes: 1,
+        frequencyPeriod: 'daily',
+        route: 'oral',
+        startDate: new Date().toISOString().split('T')[0],
+        indication: '',
+        notes: ''
+      })
+      setScheduleItems([''])
+      setSearchTerm('')
+      setSelectedMedication(null)
+      setShowSuggestions(false)
+    }
+  }, [isOpen, reset])
+
   // Handle outside clicks
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
