@@ -55,7 +55,7 @@ export function DosageCalculator({
         // Calculate total daily dose
         const totalDailyDose = calculateTotalDailyDose(dosageAmount, frequencyTimes, frequencyPeriod)
         if (totalDailyDose !== dosageAmount) {
-          calc.warnings.push(`Total daily dose: ${totalDailyDose.toFixed(1)} ${dosageUnit}`)
+          calc.warnings.push(`Total daily dose: ${totalDailyDose} ${dosageUnit}`)
         }
         
         setCalculation(calc)
@@ -203,7 +203,7 @@ export function DosageCalculator({
                   {/* Additional calculation info */}
                   <div className="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-500">
                     <p>Frequency: {frequencyTimes} time{frequencyTimes !== 1 ? 's' : ''} {frequencyPeriod}</p>
-                    <p>Total daily dose: {calculateTotalDailyDose(dosageAmount, frequencyTimes, frequencyPeriod).toFixed(1)} {dosageUnit}</p>
+                    <p>Total daily dose: {calculateTotalDailyDose(dosageAmount, frequencyTimes, frequencyPeriod)} {dosageUnit}</p>
                   </div>
                 </div>
               )}

@@ -1,6 +1,14 @@
 import type { Patient, MedicationDatabase, DosageCalculation } from '../types/patient'
 
 /**
+ * Rounds down a number to the specified number of decimal places
+ */
+function roundDown(value: number, decimals: number = 3): number {
+  const multiplier = Math.pow(10, decimals)
+  return Math.floor(value * multiplier) / multiplier
+}
+
+/**
  * Age categories for dosing calculations
  */
 export const AGE_CATEGORIES = {
@@ -83,8 +91,8 @@ export function calculateWeightBasedDose(
     if (patientAge >= pediatricDosing.minAge && patientAge <= pediatricDosing.maxAge) {
       dosePerKg = pediatricDosing.dosePerKg
       maxDose = pediatricDosing.maxDose || Infinity
-      recommendedDose = Math.min(dosePerKg * patientWeight, maxDose)
-      formula = `${dosePerKg} mg/kg × ${patientWeight} kg = ${(dosePerKg * patientWeight).toFixed(1)} mg`
+      recommendedDose = roundDown(Math.min(dosePerKg * patientWeight, maxDose))
+      formula = `${dosePerKg} mg/kg × ${patientWeight} kg = ${roundDown(dosePerKg * patientWeight)} mg`
       
       if (pediatricDosing.maxDose && (dosePerKg * patientWeight) > pediatricDosing.maxDose) {
         formula += ` (capped at ${pediatricDosing.maxDose} mg maximum dose)`
@@ -106,8 +114,8 @@ export function calculateWeightBasedDose(
       if (medication.isWeightBased && patientWeight > 0) {
         // For weight-based adult medications, use a standard calculation
         dosePerKg = adultDosing.commonDose / 70 // Assume 70kg standard adult
-        recommendedDose = Math.min(Math.max(dosePerKg * patientWeight, minDose), maxDose)
-        formula = `${dosePerKg.toFixed(2)} mg/kg × ${patientWeight} kg = ${(dosePerKg * patientWeight).toFixed(1)} mg (range: ${minDose}-${maxDose} mg)`
+        recommendedDose = roundDown(Math.min(Math.max(dosePerKg * patientWeight, minDose), maxDose))
+        formula = `${roundDown(dosePerKg)} mg/kg × ${patientWeight} kg = ${roundDown(dosePerKg * patientWeight)} mg (range: ${minDose}-${maxDose} mg)`
       } else {
         formula = `Standard adult dose: ${recommendedDose} mg (range: ${minDose}-${maxDose} mg)`
       }
@@ -207,16 +215,21 @@ export function calculateTotalDailyDose(
   frequencyTimes: number,
   frequencyPeriod: 'daily' | 'weekly' | 'monthly'
 ): number {
+  let result: number
   switch (frequencyPeriod) {
     case 'daily':
-      return singleDose * frequencyTimes
+      result = singleDose * frequencyTimes
+      break
     case 'weekly':
-      return (singleDose * frequencyTimes) / 7
+      result = (singleDose * frequencyTimes) / 7
+      break
     case 'monthly':
-      return (singleDose * frequencyTimes) / 30
+      result = (singleDose * frequencyTimes) / 30
+      break
     default:
-      return singleDose * frequencyTimes
+      result = singleDose * frequencyTimes
   }
+  return roundDown(result)
 }
 
 /**
