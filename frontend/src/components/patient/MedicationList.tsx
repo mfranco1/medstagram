@@ -25,7 +25,7 @@ export function MedicationList({
   const [medicationToDiscontinue, setMedicationToDiscontinue] = useState<Medication | null>(null)
   const [discontinuationReason, setDiscontinuationReason] = useState('')
   const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null)
-  const [sortField, setSortField] = useState<keyof Medication>('name')
+  const [sortField, setSortField] = useState<keyof Medication | 'duration'>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const actionsMenuRef = useRef<HTMLDivElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
@@ -65,7 +65,7 @@ export function MedicationList({
   }, [showDiscontinueModal])
 
   // Handle sorting
-  const handleSort = (field: keyof Medication) => {
+  const handleSort = (field: keyof Medication | 'duration') => {
     if (field === sortField) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
@@ -92,6 +92,18 @@ export function MedicationList({
     } else if (sortField === 'frequency') {
       aValue = a.frequency.times
       bValue = b.frequency.times
+    } else if (sortField === 'prescribedBy') {
+      aValue = a.prescribedBy?.name || ''
+      bValue = b.prescribedBy?.name || ''
+    } else if (sortField === 'duration') {
+      // Calculate duration in days from start date
+      const aEndDate = a.endDate ? new Date(a.endDate) : new Date()
+      const bEndDate = b.endDate ? new Date(b.endDate) : new Date()
+      aValue = Math.ceil((aEndDate.getTime() - new Date(a.startDate).getTime()) / (1000 * 60 * 60 * 24))
+      bValue = Math.ceil((bEndDate.getTime() - new Date(b.startDate).getTime()) / (1000 * 60 * 60 * 24))
+    } else if (sortField === 'indication') {
+      aValue = a.indication || ''
+      bValue = b.indication || ''
     }
 
     if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -225,8 +237,8 @@ export function MedicationList({
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Sorting Controls for Desktop */}
       <div className="hidden md:block bg-gray-50 px-4 py-2 border-b border-gray-200">
-        <div className="flex items-center space-x-3 text-xs">
-          <span className="text-gray-500 font-medium">Sort by:</span>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="text-gray-500 font-medium mr-1">Sort by:</span>
           <button
             onClick={() => handleSort('name')}
             className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
@@ -257,6 +269,72 @@ export function MedicationList({
           >
             <span>Status</span>
             {sortField === 'status' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+          <button
+            onClick={() => handleSort('dosage')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'dosage' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Dosage</span>
+            {sortField === 'dosage' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+          <button
+            onClick={() => handleSort('frequency')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'frequency' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Frequency</span>
+            {sortField === 'frequency' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+          <button
+            onClick={() => handleSort('route')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'route' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Route</span>
+            {sortField === 'route' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+          <button
+            onClick={() => handleSort('prescribedBy')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'prescribedBy' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Prescriber</span>
+            {sortField === 'prescribedBy' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+          <button
+            onClick={() => handleSort('duration')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'duration' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Duration</span>
+            {sortField === 'duration' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+          <button
+            onClick={() => handleSort('indication')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'indication' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Indication</span>
+            {sortField === 'indication' && (
               <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
             )}
           </button>
