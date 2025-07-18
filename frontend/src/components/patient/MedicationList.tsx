@@ -355,9 +355,16 @@ export function MedicationList({
                   <h4 className="text-sm md:text-base font-medium text-gray-900 truncate">
                     {medication.name}
                   </h4>
-                  <span className={`px-1.5 py-0.5 inline-flex text-xs font-medium rounded ${getStatusBadgeClass(medication.status)}`}>
-                    {formatStatus(medication.status)}
-                  </span>
+                  <div className="flex items-center space-x-1">
+                    <span className={`px-1.5 py-0.5 inline-flex text-xs font-medium rounded ${getStatusBadgeClass(medication.status)}`}>
+                      {formatStatus(medication.status)}
+                    </span>
+                    {medication.status === 'discontinued' && medication.discontinuationReason && (
+                      <span className="px-1.5 py-0.5 text-xs text-gray-600 bg-gray-100 rounded">
+                        {medication.discontinuationReason}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 {medication.genericName && medication.genericName !== medication.name && (
                   <p className="text-xs text-gray-500">
