@@ -223,218 +223,67 @@ export function MedicationList({
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      {/* Desktop Table View */}
-      <div className="hidden md:block overflow-x-auto overflow-y-auto max-h-[600px]">
-        <table className="min-w-full divide-y divide-gray-200 h-full">
-          <thead className="bg-gray-50 sticky top-0 z-10">
-            <tr>
-              <th 
-                scope="col" 
-                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('name')}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Medication</span>
-                  {sortField === 'name' && (
-                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
-                  )}
-                </div>
-              </th>
-              <th 
-                scope="col" 
-                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('dosage')}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Dosage</span>
-                  {sortField === 'dosage' && (
-                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
-                  )}
-                </div>
-              </th>
-              <th 
-                scope="col" 
-                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('frequency')}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Frequency</span>
-                  {sortField === 'frequency' && (
-                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
-                  )}
-                </div>
-              </th>
-              <th 
-                scope="col" 
-                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('route')}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Route</span>
-                  {sortField === 'route' && (
-                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
-                  )}
-                </div>
-              </th>
-              <th 
-                scope="col" 
-                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('status')}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Status</span>
-                  {sortField === 'status' && (
-                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
-                  )}
-                </div>
-              </th>
-              <th 
-                scope="col" 
-                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('startDate')}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Start Date</span>
-                  {sortField === 'startDate' && (
-                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
-                  )}
-                </div>
-              </th>
-              {showHistory && (
-                <th 
-                  scope="col" 
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort('endDate')}
-                >
-                  <div className="flex items-center space-x-1">
-                    <span>End Date</span>
-                    {sortField === 'endDate' && (
-                      <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
-                    )}
-                  </div>
-                </th>
-              )}
-              <th 
-                scope="col" 
-                className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('indication')}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Indication</span>
-                  {sortField === 'indication' && (
-                    <ChevronDown className={`h-4 w-4 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
-                  )}
-                </div>
-              </th>
-              <th scope="col" className="relative px-6 py-4">
-                <span className="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {sortedMedications.map((medication) => (
-              <tr
-                key={medication.id}
-                className="hover:bg-gray-50 cursor-pointer"
-                onClick={() => onViewDetails?.(medication)}
-              >
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
-                    {medication.name}
-                  </div>
-                  {medication.genericName && medication.genericName !== medication.name && (
-                    <div className="text-xs text-gray-500 mt-1">
-                      ({medication.genericName})
-                    </div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDosage(medication.dosage)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatFrequency(medication.frequency)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatRoute(medication.route)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(medication.status)}`}>
-                    {formatStatus(medication.status)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatDate(medication.startDate)}
-                </td>
-                {showHistory && (
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {medication.endDate ? formatDate(medication.endDate) : '-'}
-                  </td>
-                )}
-                <td className="px-6 py-4 text-sm text-gray-500">
-                  <div className="max-w-xs truncate">
-                    {medication.indication || '-'}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  {(medication.status === 'active' || medication.status === 'on-hold') && (
-                    <div className="relative" ref={showActionsMenu === medication.id ? actionsMenuRef : null}>
-                      <button
-                        onClick={(e) => toggleActionsMenu(medication.id, e)}
-                        className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
-                      >
-                        <MoreVertical className="h-5 w-5" />
-                      </button>
-
-                      {showActionsMenu === medication.id && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
-                          <div className="py-1">
-                            <button
-                              onClick={(e) => handleEditClick(medication, e)}
-                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit Medication
-                            </button>
-                            <button
-                              onClick={(e) => handleDiscontinueClick(medication, e)}
-                              className="flex items-center px-4 py-2 text-sm text-red-700 hover:bg-red-50 w-full text-left"
-                            >
-                              <StopCircle className="h-4 w-4 mr-2" />
-                              Discontinue
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Sorting Controls for Desktop */}
+      <div className="hidden md:block bg-gray-50 px-6 py-3 border-b border-gray-200">
+        <div className="flex items-center space-x-4 text-xs">
+          <span className="text-gray-500 font-medium">Sort by:</span>
+          <button
+            onClick={() => handleSort('name')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'name' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Name</span>
+            {sortField === 'name' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+          <button
+            onClick={() => handleSort('startDate')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'startDate' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Date</span>
+            {sortField === 'startDate' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+          <button
+            onClick={() => handleSort('status')}
+            className={`flex items-center space-x-1 px-2 py-1 rounded hover:bg-gray-100 ${
+              sortField === 'status' ? 'text-violet-600 bg-violet-50' : 'text-gray-600'
+            }`}
+          >
+            <span>Status</span>
+            {sortField === 'status' && (
+              <ChevronDown className={`h-3 w-3 transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`} />
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Card View */}
-      <div className="md:hidden divide-y divide-gray-200">
+      {/* Card View for All Screen Sizes */}
+      <div className="divide-y divide-gray-200 max-h-[600px] overflow-y-auto">
         {sortedMedications.map((medication) => (
           <div
             key={medication.id}
-            className="p-4 hover:bg-gray-50 cursor-pointer"
+            className="p-4 md:p-6 hover:bg-gray-50 cursor-pointer"
             onClick={() => onViewDetails?.(medication)}
           >
-            <div className="flex items-start justify-between mb-2">
+            <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-gray-900">
+                <h4 className="text-sm md:text-base font-medium text-gray-900">
                   {medication.name}
                 </h4>
                 {medication.genericName && medication.genericName !== medication.name && (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs md:text-sm text-gray-500 mt-1">
                     ({medication.genericName})
                   </p>
                 )}
               </div>
               <div className="flex items-center space-x-2">
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(medication.status)}`}>
+                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(medication.status)}`}>
                   {formatStatus(medication.status)}
                 </span>
                 {(medication.status === 'active' || medication.status === 'on-hold') && (
@@ -443,7 +292,7 @@ export function MedicationList({
                       onClick={(e) => toggleActionsMenu(medication.id, e)}
                       className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
                     >
-                      <MoreVertical className="h-4 w-4" />
+                      <MoreVertical className="h-4 w-4 md:h-5 md:w-5" />
                     </button>
 
                     {showActionsMenu === medication.id && (
@@ -471,7 +320,34 @@ export function MedicationList({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-2">
+            {/* Desktop: More detailed grid layout */}
+            <div className="hidden md:grid md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
+              <div>
+                <span className="font-medium text-gray-700">Dosage:</span>
+                <div className="mt-1">{formatDosage(medication.dosage)}</div>
+              </div>
+              <div>
+                <span className="font-medium text-gray-700">Route:</span>
+                <div className="mt-1">{formatRoute(medication.route)}</div>
+              </div>
+              <div>
+                <span className="font-medium text-gray-700">Frequency:</span>
+                <div className="mt-1">{formatFrequency(medication.frequency)}</div>
+              </div>
+              <div>
+                <span className="font-medium text-gray-700">Started:</span>
+                <div className="mt-1">{formatDate(medication.startDate)}</div>
+              </div>
+              {showHistory && medication.endDate && (
+                <div>
+                  <span className="font-medium text-gray-700">Ended:</span>
+                  <div className="mt-1">{formatDate(medication.endDate)}</div>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile: Compact grid layout */}
+            <div className="md:hidden grid grid-cols-2 gap-2 text-xs text-gray-600 mb-2">
               <div>
                 <span className="font-medium">Dosage:</span> {formatDosage(medication.dosage)}
               </div>
@@ -492,8 +368,9 @@ export function MedicationList({
             </div>
 
             {medication.indication && (
-              <div className="text-xs text-gray-600">
-                <span className="font-medium">Indication:</span> {medication.indication}
+              <div className="text-xs md:text-sm text-gray-600 bg-gray-50 rounded-md p-2 md:p-3">
+                <span className="font-medium text-gray-700">Indication:</span>
+                <div className="mt-1">{medication.indication}</div>
               </div>
             )}
           </div>
