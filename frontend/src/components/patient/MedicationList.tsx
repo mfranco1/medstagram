@@ -224,8 +224,8 @@ export function MedicationList({
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Sorting Controls for Desktop */}
-      <div className="hidden md:block bg-gray-50 px-6 py-3 border-b border-gray-200">
-        <div className="flex items-center space-x-4 text-xs">
+      <div className="hidden md:block bg-gray-50 px-4 py-2 border-b border-gray-200">
+        <div className="flex items-center space-x-3 text-xs">
           <span className="text-gray-500 font-medium">Sort by:</span>
           <button
             onClick={() => handleSort('name')}
@@ -268,80 +268,93 @@ export function MedicationList({
         {sortedMedications.map((medication) => (
           <div
             key={medication.id}
-            className="p-4 md:p-6 hover:bg-gray-50 cursor-pointer"
+            className="p-3 md:p-4 hover:bg-gray-50 cursor-pointer"
             onClick={() => onViewDetails?.(medication)}
           >
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <h4 className="text-sm md:text-base font-medium text-gray-900">
-                  {medication.name}
-                </h4>
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-2 mb-1">
+                  <h4 className="text-sm md:text-base font-medium text-gray-900 truncate">
+                    {medication.name}
+                  </h4>
+                  <span className={`px-1.5 py-0.5 inline-flex text-xs font-medium rounded ${getStatusBadgeClass(medication.status)}`}>
+                    {formatStatus(medication.status)}
+                  </span>
+                </div>
                 {medication.genericName && medication.genericName !== medication.name && (
-                  <p className="text-xs md:text-sm text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500">
                     ({medication.genericName})
                   </p>
                 )}
               </div>
-              <div className="flex items-center space-x-2">
-                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(medication.status)}`}>
-                  {formatStatus(medication.status)}
-                </span>
-                {(medication.status === 'active' || medication.status === 'on-hold') && (
-                  <div className="relative" ref={showActionsMenu === medication.id ? actionsMenuRef : null}>
-                    <button
-                      onClick={(e) => toggleActionsMenu(medication.id, e)}
-                      className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
-                    >
-                      <MoreVertical className="h-4 w-4 md:h-5 md:w-5" />
-                    </button>
+              {(medication.status === 'active' || medication.status === 'on-hold') && (
+                <div className="relative ml-2 flex-shrink-0" ref={showActionsMenu === medication.id ? actionsMenuRef : null}>
+                  <button
+                    onClick={(e) => toggleActionsMenu(medication.id, e)}
+                    className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </button>
 
-                    {showActionsMenu === medication.id && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
-                        <div className="py-1">
-                          <button
-                            onClick={(e) => handleEditClick(medication, e)}
-                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                          >
-                            <Edit className="h-4 w-4 mr-2" />
-                            Edit Medication
-                          </button>
-                          <button
-                            onClick={(e) => handleDiscontinueClick(medication, e)}
-                            className="flex items-center px-4 py-2 text-sm text-red-700 hover:bg-red-50 w-full text-left"
-                          >
-                            <StopCircle className="h-4 w-4 mr-2" />
-                            Discontinue
-                          </button>
-                        </div>
+                  {showActionsMenu === medication.id && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+                      <div className="py-1">
+                        <button
+                          onClick={(e) => handleEditClick(medication, e)}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit Medication
+                        </button>
+                        <button
+                          onClick={(e) => handleDiscontinueClick(medication, e)}
+                          className="flex items-center px-4 py-2 text-sm text-red-700 hover:bg-red-50 w-full text-left"
+                        >
+                          <StopCircle className="h-4 w-4 mr-2" />
+                          Discontinue
+                        </button>
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* Desktop: More detailed grid layout */}
-            <div className="hidden md:grid md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
+            {/* Desktop: Compact grid layout with more information */}
+            <div className="hidden md:grid md:grid-cols-6 gap-3 text-xs text-gray-600 mb-2">
               <div>
-                <span className="font-medium text-gray-700">Dosage:</span>
-                <div className="mt-1">{formatDosage(medication.dosage)}</div>
+                <span className="font-medium text-gray-700 block">Dosage</span>
+                <span className="text-gray-900">{formatDosage(medication.dosage)}</span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Route:</span>
-                <div className="mt-1">{formatRoute(medication.route)}</div>
+                <span className="font-medium text-gray-700 block">Route</span>
+                <span className="text-gray-900">{formatRoute(medication.route)}</span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Frequency:</span>
-                <div className="mt-1">{formatFrequency(medication.frequency)}</div>
+                <span className="font-medium text-gray-700 block">Frequency</span>
+                <span className="text-gray-900">{formatFrequency(medication.frequency)}</span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Started:</span>
-                <div className="mt-1">{formatDate(medication.startDate)}</div>
+                <span className="font-medium text-gray-700 block">Started</span>
+                <span className="text-gray-900">{formatDate(medication.startDate)}</span>
               </div>
-              {showHistory && medication.endDate && (
+              {showHistory && medication.endDate ? (
                 <div>
-                  <span className="font-medium text-gray-700">Ended:</span>
-                  <div className="mt-1">{formatDate(medication.endDate)}</div>
+                  <span className="font-medium text-gray-700 block">Ended</span>
+                  <span className="text-gray-900">{formatDate(medication.endDate)}</span>
+                </div>
+              ) : (
+                <div>
+                  <span className="font-medium text-gray-700 block">Duration</span>
+                  <span className="text-gray-900">
+                    {Math.ceil((new Date().getTime() - new Date(medication.startDate).getTime()) / (1000 * 60 * 60 * 24))} days
+                  </span>
+                </div>
+              )}
+              {medication.prescribedBy && (
+                <div>
+                  <span className="font-medium text-gray-700 block">Prescriber</span>
+                  <span className="text-gray-900 truncate">{medication.prescribedBy.name}</span>
                 </div>
               )}
             </div>
@@ -349,28 +362,28 @@ export function MedicationList({
             {/* Mobile: Compact grid layout */}
             <div className="md:hidden grid grid-cols-2 gap-2 text-xs text-gray-600 mb-2">
               <div>
-                <span className="font-medium">Dosage:</span> {formatDosage(medication.dosage)}
+                <span className="font-medium">Dosage:</span> <span className="text-gray-900">{formatDosage(medication.dosage)}</span>
               </div>
               <div>
-                <span className="font-medium">Route:</span> {formatRoute(medication.route)}
+                <span className="font-medium">Route:</span> <span className="text-gray-900">{formatRoute(medication.route)}</span>
               </div>
               <div>
-                <span className="font-medium">Frequency:</span> {formatFrequency(medication.frequency)}
+                <span className="font-medium">Frequency:</span> <span className="text-gray-900">{formatFrequency(medication.frequency)}</span>
               </div>
               <div>
-                <span className="font-medium">Started:</span> {formatDate(medication.startDate)}
+                <span className="font-medium">Started:</span> <span className="text-gray-900">{formatDate(medication.startDate)}</span>
               </div>
               {showHistory && medication.endDate && (
                 <div className="col-span-2">
-                  <span className="font-medium">Ended:</span> {formatDate(medication.endDate)}
+                  <span className="font-medium">Ended:</span> <span className="text-gray-900">{formatDate(medication.endDate)}</span>
                 </div>
               )}
             </div>
 
             {medication.indication && (
-              <div className="text-xs md:text-sm text-gray-600 bg-gray-50 rounded-md p-2 md:p-3">
+              <div className="text-xs text-gray-600 bg-gray-50 rounded p-2">
                 <span className="font-medium text-gray-700">Indication:</span>
-                <div className="mt-1">{medication.indication}</div>
+                <span className="ml-1 text-gray-900">{medication.indication}</span>
               </div>
             )}
           </div>
