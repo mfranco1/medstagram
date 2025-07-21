@@ -1,3 +1,5 @@
+import React from 'react'
+
 interface FormSectionProps {
   title: string
   children: React.ReactNode

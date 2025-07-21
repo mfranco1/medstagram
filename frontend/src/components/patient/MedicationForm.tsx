@@ -345,18 +345,23 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
-          {/* Fixed Header */}
-          <div className="p-6 border-b flex-shrink-0">
+      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-6xl h-[85vh] flex overflow-hidden shadow-2xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1">
+          {/* Enhanced Header */}
+          <div className="px-6 py-4 border-b bg-gradient-to-r from-violet-50 to-purple-50 flex-shrink-0">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">
-                {medication ? 'Edit Medication' : 'Add New Medication'}
-              </h2>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-1">
+                  {medication ? 'Edit Medication' : 'Add New Medication'}
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {medication ? 'Update medication details and dosage information' : 'Enter medication details and configure dosage'}
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={onCancel}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-white rounded-lg"
                 disabled={isSubmitting}
               >
                 <X className="w-5 h-5" />
@@ -364,282 +369,379 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
             </div>
           </div>
 
-          {/* Scrollable Content */}
-          <div className="p-6 flex-1 overflow-y-auto">
-            <div className="space-y-6">
-              {/* Medication Information */}
-              <FormSection title="Medication Information">
-                {/* Medication Name with Autocomplete */}
-                <div className="relative">
-                  <label htmlFor="medication-name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Medication Name <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="medication-name"
-                      ref={searchRef}
-                      type="text"
-                      value={searchTerm || watchedName}
-                      onChange={(e) => {
-                        const value = e.target.value
-                        setSearchTerm(value)
-                        setValue('name', value)
-                        setShowSuggestions(value.length > 0)
-                      }}
-                      onFocus={() => setShowSuggestions(searchTerm.length > 0)}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 ${errors.name ? 'border-red-300' : 'border-gray-300'
-                        }`}
-                      placeholder="Search for medication..."
-                      disabled={isSubmitting}
-                    />
-                    <Search className="absolute right-3 top-2.5 w-4 h-4 text-gray-400" />
+          {/* Main Content Area */}
+          <div className="flex flex-1 overflow-hidden">
+            {/* Primary Form Content */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-6">
+                <div className="space-y-6">
+                  {/* Primary Medication Search - Hero Section */}
+                  <div className="bg-white rounded-lg border-2 border-violet-100 p-4 shadow-sm">
+                    <div className="mb-3">
+                      <h3 className="text-base font-semibold text-gray-900 mb-1">Find Medication</h3>
+                      <p className="text-sm text-gray-600">Search our database or enter a custom medication name</p>
+                    </div>
+                    
+                    {/* Enhanced Medication Search */}
+                    <div className="relative">
+                      <label htmlFor="medication-name" className="block text-sm font-medium text-gray-700 mb-1">
+                        Medication Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="medication-name"
+                          ref={searchRef}
+                          type="text"
+                          value={searchTerm || watchedName}
+                          onChange={(e) => {
+                            const value = e.target.value
+                            setSearchTerm(value)
+                            setValue('name', value)
+                            setShowSuggestions(value.length > 0)
+                          }}
+                          onFocus={() => setShowSuggestions(searchTerm.length > 0)}
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all ${errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300 focus:border-violet-400'
+                            }`}
+                          placeholder="Start typing medication name..."
+                          disabled={isSubmitting}
+                        />
+                        <Search className="absolute right-3 top-2.5 w-4 h-4 text-gray-400" />
+                      </div>
+
+                      {/* Enhanced Autocomplete Suggestions */}
+                      {showSuggestions && filteredMedications.length > 0 && (
+                        <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl max-h-64 overflow-y-auto">
+                          <div className="p-2">
+                            <div className="text-xs font-medium text-gray-500 mb-2 px-2">SUGGESTED MEDICATIONS</div>
+                            {filteredMedications.map((med) => (
+                              <button
+                                key={med.id}
+                                type="button"
+                                onClick={() => handleMedicationSelect(med)}
+                                className="w-full px-3 py-3 text-left hover:bg-violet-50 focus:bg-violet-50 focus:outline-none rounded-md transition-colors"
+                              >
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <div className="font-medium text-gray-900">{med.name}</div>
+                                    <div className="text-sm text-gray-500 mt-1">
+                                      {med.genericName} • {med.category}
+                                    </div>
+                                    {med.commonDosages.length > 0 && (
+                                      <div className="text-xs text-violet-600 mt-1">
+                                        Common: {med.commonDosages[0].amount}{med.commonDosages[0].unit}
+                                      </div>
+                                    )}
+                                  </div>
+                                  {med.isWeightBased && (
+                                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                                      Weight-based
+                                    </span>
+                                  )}
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {errors.name && <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-xs">!</span>
+                        {errors.name.message}
+                      </p>}
+                    </div>
+
+                    {/* Generic Name - Inline when medication selected */}
+                    {(selectedMedication || watchedName) && (
+                      <div className="mt-3 pt-3 border-t border-gray-100">
+                        <FormField
+                          label="Generic Name"
+                          value={watch('genericName') || ''}
+                          onChange={(value) => setValue('genericName', value)}
+                          placeholder="Generic name (optional)"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                    )}
                   </div>
 
-                  {/* Autocomplete Suggestions */}
-                  {showSuggestions && filteredMedications.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                      {filteredMedications.map((med) => (
-                        <button
-                          key={med.id}
-                          type="button"
-                          onClick={() => handleMedicationSelect(med)}
-                          className="w-full px-3 py-2 text-left hover:bg-violet-50 focus:bg-violet-50 focus:outline-none"
-                        >
-                          <div className="font-medium text-gray-900">{med.name}</div>
-                          <div className="text-sm text-gray-500">
-                            {med.genericName} • {med.category}
-                          </div>
-                        </button>
-                      ))}
+                  {/* Dosage & Administration Card */}
+                  <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <div className="p-4 border-b border-gray-100">
+                      <h3 className="text-base font-semibold text-gray-900 mb-1">Dosage & Administration</h3>
+                      <p className="text-sm text-gray-600">Configure dose amount, frequency, and route</p>
                     </div>
-                  )}
-                  {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
-                </div>
-
-                {/* Generic Name */}
-                <FormField
-                  label="Generic Name"
-                  value={watch('genericName') || ''}
-                  onChange={(value) => setValue('genericName', value)}
-                  placeholder="Generic name (optional)"
-                  disabled={isSubmitting}
-                />
-              </FormSection>
-
-              {/* Dosage Information */}
-              <FormSection title="Dosage Information">
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    label="Dosage Amount"
-                    type="number"
-                    value={watch('dosageAmount') || 0}
-                    onChange={(value) => setValue('dosageAmount', parseFloat(value) || 0)}
-                    required
-                    placeholder="0.00"
-                    disabled={isSubmitting}
-                    error={errors.dosageAmount?.message}
-                  />
-
-                  <FormField
-                    label="Unit"
-                    value={watch('dosageUnit') || 'mg'}
-                    onChange={(value) => setValue('dosageUnit', value)}
-                    required
-                    options={DOSAGE_UNITS}
-                    disabled={isSubmitting}
-                    error={errors.dosageUnit?.message}
-                  />
-                </div>
-              </FormSection>
-
-              {/* Dosage Calculator */}
-              {selectedMedication && (
-                <DosageCalculator
-                  patient={patient}
-                  medication={selectedMedication}
-                  dosageAmount={watch('dosageAmount') || 0}
-                  dosageUnit={watch('dosageUnit') || 'mg'}
-                  frequencyTimes={watch('frequencyTimes') || 1}
-                  frequencyPeriod={watch('frequencyPeriod') || 'daily'}
-                  onCalculationComplete={(calculation) => {
-                    // Store calculation results for form submission
-                    if (calculation.isWithinNormalRange && calculation.recommendedDose > 0) {
-                      // Optionally auto-update the dosage if it's significantly different
-                      const currentDose = watch('dosageAmount') || 0
-                      if (currentDose === 0 || Math.abs(currentDose - calculation.recommendedDose) / calculation.recommendedDose > 0.2) {
-                        // Only suggest if difference is more than 20%
-                      }
-                    }
-                  }}
-                  className="mb-6"
-                />
-              )}
-
-              {/* Frequency Information */}
-              <FormSection title="Frequency & Schedule">
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    label="Times per Period"
-                    type="number"
-                    value={watch('frequencyTimes') || 1}
-                    onChange={(value) => setValue('frequencyTimes', parseInt(value) || 1)}
-                    required
-                    placeholder="1"
-                    disabled={isSubmitting}
-                    error={errors.frequencyTimes?.message}
-                  />
-
-                  <FormField
-                    label="Period"
-                    value={watch('frequencyPeriod') || 'daily'}
-                    onChange={(value) => setValue('frequencyPeriod', value as 'daily' | 'weekly' | 'monthly')}
-                    required
-                    options={FREQUENCY_PERIODS}
-                    disabled={isSubmitting}
-                    error={errors.frequencyPeriod?.message}
-                  />
-                </div>
-
-                {/* Schedule Builder */}
-                {watchedFrequencyTimes > 1 && watchedFrequencyPeriod === 'daily' && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Specific Times (Optional)
-                    </label>
-                    <div className="space-y-2">
-                      {scheduleItems.map((time, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <TimePicker
-                            value={time}
-                            onChange={(value) => handleScheduleChange(index, value)}
+                    
+                    <div className="p-4 space-y-4">
+                      {/* Dosage Amount & Unit */}
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <h4 className="text-sm font-medium text-gray-900 mb-2">Dose Configuration</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            label="Amount"
+                            type="number"
+                            value={watch('dosageAmount') || 0}
+                            onChange={(value) => setValue('dosageAmount', parseFloat(value) || 0)}
+                            required
+                            placeholder="0.00"
                             disabled={isSubmitting}
-                            format24={true}
+                            error={errors.dosageAmount?.message}
                           />
-                          {scheduleItems.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeScheduleItem(index)}
-                              className="p-1 text-red-500 hover:text-red-700"
-                              disabled={isSubmitting}
-                            >
-                              <Minus className="w-4 h-4" />
-                            </button>
-                          )}
+
+                          <FormField
+                            label="Unit"
+                            value={watch('dosageUnit') || 'mg'}
+                            onChange={(value) => setValue('dosageUnit', value)}
+                            required
+                            options={DOSAGE_UNITS}
+                            disabled={isSubmitting}
+                            error={errors.dosageUnit?.message}
+                          />
                         </div>
-                      ))}
-                      {scheduleItems.length < watchedFrequencyTimes && (
-                        <button
-                          type="button"
-                          onClick={addScheduleItem}
-                          className="flex items-center gap-1 text-violet-600 hover:text-violet-700 text-sm"
+                      </div>
+
+                      {/* Route of Administration */}
+                      <div>
+                        <FormField
+                          label="Route of Administration"
+                          value={watch('route') || 'oral'}
+                          onChange={(value) => setValue('route', value as any)}
+                          required
+                          options={ROUTES}
                           disabled={isSubmitting}
-                        >
-                          <Plus className="w-4 h-4" />
-                          Add Time
-                        </button>
+                          error={errors.route?.message}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Frequency & Schedule Card */}
+                  <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <div className="p-4 border-b border-gray-100">
+                      <h3 className="text-base font-semibold text-gray-900 mb-1">Frequency & Schedule</h3>
+                      <p className="text-sm text-gray-600">Set how often and when to take the medication</p>
+                    </div>
+                    
+                    <div className="p-4 space-y-4">
+                      {/* Basic Frequency */}
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <h4 className="text-sm font-medium text-gray-900 mb-2">Basic Frequency</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            label="Times per Period"
+                            type="number"
+                            value={watch('frequencyTimes') || 1}
+                            onChange={(value) => setValue('frequencyTimes', parseInt(value) || 1)}
+                            required
+                            placeholder="1"
+                            disabled={isSubmitting}
+                            error={errors.frequencyTimes?.message}
+                          />
+
+                          <FormField
+                            label="Period"
+                            value={watch('frequencyPeriod') || 'daily'}
+                            onChange={(value) => setValue('frequencyPeriod', value as 'daily' | 'weekly' | 'monthly')}
+                            required
+                            options={FREQUENCY_PERIODS}
+                            disabled={isSubmitting}
+                            error={errors.frequencyPeriod?.message}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Schedule Builder */}
+                      {watchedFrequencyTimes > 1 && watchedFrequencyPeriod === 'daily' && (
+                        <div className="border border-violet-200 rounded-lg p-3 bg-violet-50">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-sm font-medium text-violet-900">Specific Times</h4>
+                            <span className="text-xs text-violet-600 bg-violet-100 px-2 py-1 rounded">Optional</span>
+                          </div>
+                          <p className="text-xs text-violet-700 mb-3">Set specific times for each daily dose</p>
+                          
+                          <div className="space-y-3">
+                            {scheduleItems.map((time, index) => (
+                              <div key={index} className="flex items-center gap-3">
+                                <div className="flex-shrink-0 w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center">
+                                  <span className="text-sm font-medium text-violet-700">{index + 1}</span>
+                                </div>
+                                <div className="flex-1">
+                                  <TimePicker
+                                    value={time}
+                                    onChange={(value) => handleScheduleChange(index, value)}
+                                    disabled={isSubmitting}
+                                    format24={true}
+                                  />
+                                </div>
+                                {scheduleItems.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => removeScheduleItem(index)}
+                                    className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                                    disabled={isSubmitting}
+                                  >
+                                    <Minus className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+                            ))}
+                            {scheduleItems.length < watchedFrequencyTimes && (
+                              <button
+                                type="button"
+                                onClick={addScheduleItem}
+                                className="flex items-center gap-2 text-violet-600 hover:text-violet-700 text-sm font-medium py-2 px-3 hover:bg-violet-100 rounded-lg transition-colors"
+                                disabled={isSubmitting}
+                              >
+                                <Plus className="w-4 h-4" />
+                                Add Time Slot
+                              </button>
+                            )}
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
-                )}
-              </FormSection>
 
-              {/* Administration Information */}
-              <FormSection title="Administration">
-                <FormField
-                  label="Route of Administration"
-                  value={watch('route') || 'oral'}
-                  onChange={(value) => setValue('route', value as any)}
-                  required
-                  options={ROUTES}
-                  disabled={isSubmitting}
-                  error={errors.route?.message}
-                />
-              </FormSection>
+                  {/* Duration & Timeline Card */}
+                  <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <div className="p-4 border-b border-gray-100">
+                      <h3 className="text-base font-semibold text-gray-900 mb-1">Duration & Timeline</h3>
+                      <p className="text-sm text-gray-600">Set start date and treatment duration</p>
+                    </div>
+                    
+                    <div className="p-4 space-y-4">
+                      {/* Start Date */}
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <FormField
+                          label="Start Date"
+                          type="date"
+                          value={watch('startDate') || ''}
+                          onChange={(value) => setValue('startDate', value)}
+                          required
+                          disabled={isSubmitting}
+                          error={errors.startDate?.message}
+                        />
+                      </div>
 
-              {/* Duration Information */}
-              <FormSection title="Duration & Dates">
-                <FormField
-                  label="Start Date"
-                  type="date"
-                  value={watch('startDate') || ''}
-                  onChange={(value) => setValue('startDate', value)}
-                  required
-                  disabled={isSubmitting}
-                  error={errors.startDate?.message}
-                />
+                      {/* Duration */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="text-sm font-medium text-gray-900">Treatment Duration</h4>
+                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Optional</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            label="Amount"
+                            type="number"
+                            value={watch('durationAmount') || ''}
+                            onChange={(value) => setValue('durationAmount', value ? parseInt(value) : undefined)}
+                            placeholder="e.g., 7"
+                            disabled={isSubmitting}
+                          />
 
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    label="Duration Amount"
-                    type="number"
-                    value={watch('durationAmount') || ''}
-                    onChange={(value) => setValue('durationAmount', value ? parseInt(value) : undefined)}
-                    placeholder="Optional"
+                          <FormField
+                            label="Unit"
+                            value={watch('durationUnit') || ''}
+                            onChange={(value) => setValue('durationUnit', value as 'days' | 'weeks' | 'months' | undefined)}
+                            options={[{ value: '', label: 'Select unit' }, ...DURATION_UNITS]}
+                            disabled={isSubmitting}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional Information Card */}
+                  <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                    <div className="p-4 border-b border-gray-100">
+                      <h3 className="text-base font-semibold text-gray-900 mb-1">Additional Information</h3>
+                      <p className="text-sm text-gray-600">Add indication, notes, and special instructions</p>
+                    </div>
+                    
+                    <div className="p-4 space-y-4">
+                      <FormField
+                        label="Indication"
+                        value={watch('indication') || ''}
+                        onChange={(value) => setValue('indication', value)}
+                        placeholder="Reason for prescribing (e.g., hypertension, pain management)"
+                        disabled={isSubmitting}
+                      />
+
+                      <FormField
+                        label="Notes & Instructions"
+                        type="textarea"
+                        value={watch('notes') || ''}
+                        onChange={(value) => setValue('notes', value)}
+                        placeholder="Additional notes, special instructions, or warnings"
+                        rows={4}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fixed Footer */}
+              <div className="px-6 py-4 border-t bg-gray-50 flex-shrink-0">
+                <div className="flex justify-end space-x-3">
+                  <button
+                    type="button"
+                    onClick={onCancel}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     disabled={isSubmitting}
-                  />
-
-                  <FormField
-                    label="Duration Unit"
-                    value={watch('durationUnit') || ''}
-                    onChange={(value) => setValue('durationUnit', value as 'days' | 'weeks' | 'months' | undefined)}
-                    options={[{ value: '', label: 'Select unit' }, ...DURATION_UNITS]}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 text-sm font-medium text-white bg-violet-600 border border-transparent rounded-lg hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors shadow-sm"
                     disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </>
+                    ) : (
+                      medication ? 'Update Medication' : 'Add Medication'
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar Dosage Calculator */}
+            {selectedMedication && (
+              <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col">
+                <div className="p-4 border-b border-gray-200 bg-white">
+                  <h3 className="text-base font-semibold text-gray-900 mb-1">Dosage Calculator</h3>
+                  <p className="text-sm text-gray-600">Real-time dosage validation and recommendations</p>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-4">
+                  <DosageCalculator
+                    patient={patient}
+                    medication={selectedMedication}
+                    dosageAmount={watch('dosageAmount') || 0}
+                    dosageUnit={watch('dosageUnit') || 'mg'}
+                    frequencyTimes={watch('frequencyTimes') || 1}
+                    frequencyPeriod={watch('frequencyPeriod') || 'daily'}
+                    onCalculationComplete={(calculation) => {
+                      // Store calculation results for form submission
+                      if (calculation.isWithinNormalRange && calculation.recommendedDose > 0) {
+                        // Optionally auto-update the dosage if it's significantly different
+                        const currentDose = watch('dosageAmount') || 0
+                        if (currentDose === 0 || Math.abs(currentDose - calculation.recommendedDose) / calculation.recommendedDose > 0.2) {
+                          // Only suggest if difference is more than 20%
+                        }
+                      }
+                    }}
+                    className="bg-white rounded-lg shadow-sm"
                   />
                 </div>
-              </FormSection>
-
-              {/* Additional Information */}
-              <FormSection title="Additional Information">
-                <FormField
-                  label="Indication"
-                  value={watch('indication') || ''}
-                  onChange={(value) => setValue('indication', value)}
-                  placeholder="Reason for prescribing (optional)"
-                  disabled={isSubmitting}
-                />
-
-                <FormField
-                  label="Notes"
-                  type="textarea"
-                  value={watch('notes') || ''}
-                  onChange={(value) => setValue('notes', value)}
-                  placeholder="Additional notes or instructions (optional)"
-                  rows={3}
-                  disabled={isSubmitting}
-                />
-              </FormSection>
-            </div>
-          </div>
-
-          {/* Fixed Footer */}
-          <div className="p-6 border-t bg-white flex-shrink-0">
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={isSubmitting}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-violet-600 border border-transparent rounded-md hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Saving...
-                  </>
-                ) : (
-                  medication ? 'Update Medication' : 'Add Medication'
-                )}
-              </button>
-            </div>
+              </div>
+            )}
           </div>
         </form>
       </div>

@@ -36,10 +36,10 @@ export function FormField({
   const generatedId = useId()
   const fieldId = providedId || generatedId
   
-  const baseInputClasses = `mt-1 block w-full rounded-md border ${
-    error ? 'border-red-300' : 'border-gray-300'
-  } px-3 py-2 text-sm focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 ${
-    disabled ? 'bg-gray-50 text-gray-500' : ''
+  const baseInputClasses = `mt-1 block w-full rounded-lg border transition-colors ${
+    error ? 'border-red-300 bg-red-50 focus:border-red-400' : 'border-gray-300 focus:border-violet-400'
+  } px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-opacity-20 ${
+    disabled ? 'bg-gray-50 text-gray-500' : 'bg-white'
   } ${className}`
 
   const renderInput = () => {
@@ -102,9 +102,17 @@ export function FormField({
 
   return (
     <div>
-      <label htmlFor={fieldId} className="block text-sm font-medium text-gray-700">{label}</label>
+      <label htmlFor={fieldId} className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
       {renderInput()}
-      {error && type !== 'date' && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {error && type !== 'date' && (
+        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+          <span className="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-xs">!</span>
+          {error}
+        </p>
+      )}
     </div>
   )
 } 
