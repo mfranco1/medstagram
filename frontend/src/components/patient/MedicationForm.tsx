@@ -198,6 +198,46 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
         notes: medication.notes || ''
       })
       setScheduleItems(medication.frequency.schedule || [''])
+      setSearchTerm(medication.name)
+      
+      // Find the medication in the database to show dosage calculator
+      const foundMedication = mockMedicationDatabase.find(med => 
+        med.name.toLowerCase() === medication.name.toLowerCase() ||
+        med.genericName.toLowerCase() === (medication.genericName || '').toLowerCase() ||
+        med.brandNames.some(brand => brand.toLowerCase() === medication.name.toLowerCase())
+      )
+      
+      if (foundMedication) {
+        setSelectedMedication(foundMedication)
+      } else {
+        // Create a basic medication object for the calculator if not found in database
+        setSelectedMedication({
+          id: 'custom-' + medication.name.toLowerCase().replace(/\s+/g, '-'),
+          name: medication.name,
+          genericName: medication.genericName || medication.name,
+          category: 'Custom',
+          brandNames: [medication.name],
+          commonDosages: [{
+            amount: medication.dosage.amount,
+            unit: medication.dosage.unit,
+            indication: medication.indication || 'General'
+          }],
+          isWeightBased: medication.isWeightBased || false,
+          pediatricDosing: medication.dosePerKg ? {
+            dosePerKg: medication.dosePerKg,
+            maxDose: medication.dosage.amount * 2,
+            minAge: 0
+          } : undefined,
+          adultDosing: {
+            commonDose: medication.dosage.amount,
+            maxDose: medication.dosage.amount * 2,
+            minDose: medication.dosage.amount * 0.5
+          },
+          contraindications: [],
+          interactions: [],
+          sideEffects: []
+        })
+      }
     } else {
       reset({
         name: '',
@@ -212,9 +252,9 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
         notes: ''
       })
       setScheduleItems([''])
+      setSearchTerm('')
+      setSelectedMedication(null)
     }
-    setSearchTerm('')
-    setSelectedMedication(null)
   }, [medication, reset])
 
   // Reset form when modal closes
