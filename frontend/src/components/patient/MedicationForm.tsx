@@ -372,8 +372,8 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
           {/* Main Content Area */}
           <div className="flex flex-1 overflow-hidden">
             {/* Primary Form Content */}
-            <div className="flex-1 overflow-y-auto">
-              <div className="p-6">
+            <div className="flex-1 flex flex-col">
+              <div className="flex-1 overflow-y-auto p-6">
                 <div className="space-y-6">
                   {/* Primary Medication Search - Hero Section */}
                   <div className="bg-white rounded-lg border-2 border-violet-100 p-4 shadow-sm">
