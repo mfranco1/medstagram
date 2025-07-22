@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { AlertTriangle, AlertCircle, Info } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { AlertTriangle, AlertCircle, Info, ChevronDown, ChevronUp } from 'lucide-react'
 import type { Patient, Medication } from '../../types/patient'
 import type { MedicationAlert, AlertSeverity } from './MedicationAlerts'
 import { 
@@ -26,6 +26,7 @@ export function MedicationCardAlerts({
   onAlertAcknowledge,
   acknowledgedAlerts = new Set()
 }: MedicationCardAlertsProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
   
   // Generate alerts specific to this medication
   const alerts = useMemo(() => {
@@ -192,9 +193,17 @@ export function MedicationCardAlerts({
     }
   }
 
+  const displayedAlerts = isExpanded ? alerts : alerts.slice(0, 2)
+  const hasMoreAlerts = alerts.length > 2
+
+  const handleToggleExpanded = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsExpanded(!isExpanded)
+  }
+
   return (
     <div className="mt-2 space-y-1">
-      {alerts.slice(0, 2).map(alert => {
+      {displayedAlerts.map(alert => {
         const config = getSeverityConfig(alert.severity)
         const Icon = config.icon
 
@@ -237,10 +246,23 @@ export function MedicationCardAlerts({
           </div>
         )
       })}
-      {alerts.length > 2 && (
-        <div className="text-xs text-gray-500 text-center py-1">
-          +{alerts.length - 2} more alert{alerts.length - 2 > 1 ? 's' : ''}
-        </div>
+      {hasMoreAlerts && (
+        <button
+          onClick={handleToggleExpanded}
+          className="w-full text-xs text-violet-600 hover:text-violet-800 hover:bg-violet-50 rounded-md py-2 px-2 transition-colors flex items-center justify-center space-x-1 border border-transparent hover:border-violet-200"
+        >
+          {isExpanded ? (
+            <>
+              <ChevronUp className="h-3 w-3" />
+              <span>Show fewer alerts</span>
+            </>
+          ) : (
+            <>
+              <ChevronDown className="h-3 w-3" />
+              <span>+{alerts.length - 2} more alert{alerts.length - 2 > 1 ? 's' : ''}</span>
+            </>
+          )}
+        </button>
       )}
     </div>
   )
