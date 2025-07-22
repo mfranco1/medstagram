@@ -236,6 +236,7 @@ export const DISCONTINUATION_REASONS = [
   'Contraindication developed',
   'Switched to alternative',
   'No longer indicated',
+  'Duplicate',
   'Other'
 ] as const
 
