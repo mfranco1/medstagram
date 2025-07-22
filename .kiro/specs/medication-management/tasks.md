@@ -63,7 +63,7 @@
   - Ensure all changes update the mock patient data consistently
   - _Requirements: 2.1, 2.5, 3.1, 3.2, 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 9. Create medication safety alert system
+- [x] 9. Create medication safety alert system
   - Build MedicationAlerts component for displaying safety warnings
   - Implement allergy checking against patient allergy list
   - Add basic drug interaction detection using mock interaction data
@@ -71,6 +71,14 @@
   - Add dosage warning system for unusual or high doses
   - Implement alert acknowledgment functionality
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+
+- [x] 9.1. Exclude discontinued medications from safety alerts
+  - Modify alert system to exclude discontinued medications from duplicate checks
+  - Update drug interaction detection to ignore discontinued medications
+  - Ensure discontinued medications don't trigger any safety alerts
+  - Add comprehensive tests for discontinued medication exclusion
+  - Update both MedicationAlerts and MedicationCardAlerts components
+  - _Requirements: 7.1, 7.2, 7.3_
 
 - [ ] 10. Implement medication history and audit trail
   - Add medication change tracking with timestamps and user information

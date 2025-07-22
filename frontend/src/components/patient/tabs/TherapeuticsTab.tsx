@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react'
 import type { Patient, Medication } from '../../../types/patient'
 import { MedicationList } from '../MedicationList'
 import { MedicationForm } from '../MedicationForm'
+
 import { MedicationService, DISCONTINUATION_REASONS } from '../../../services/medicationService'
 import { Toast, type ToastType } from '../../ui/Toast'
 import { Plus, Search, Filter } from 'lucide-react'
@@ -141,6 +142,13 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
     setError(null)
   }, [])
 
+  // Handle alert acknowledgment
+  const handleAlertAcknowledge = useCallback((alertId: string) => {
+    console.log('Alert acknowledged:', alertId)
+    // In a real application, this would be sent to the backend
+    // For now, we just log it
+  }, [])
+
   // Get medication counts for filter badges
   const activeMedicationsCount = medications.filter(med => med.status === 'active' || med.status === 'on-hold').length
   const inactiveMedicationsCount = medications.filter(med => med.status === 'discontinued' || med.status === 'completed').length
@@ -269,6 +277,8 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
         </div>
       )}
 
+
+
       {/* Medications List or Empty States */}
       <div>
         {filteredMedications.length > 0 ? (
@@ -278,7 +288,8 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
             onViewDetails={handleViewDetails}
             onEdit={handleEdit}
             onDiscontinue={handleDiscontinue}
-            patient={{ name: patient.name }}
+            patient={patient}
+            onAlertAcknowledge={handleAlertAcknowledge}
           />
         ) : medications.length === 0 ? (
           // Show MedicationList's empty state when patient has no medications at all
@@ -288,7 +299,8 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
             onViewDetails={handleViewDetails}
             onEdit={handleEdit}
             onDiscontinue={handleDiscontinue}
-            patient={{ name: patient.name }}
+            patient={patient}
+            onAlertAcknowledge={handleAlertAcknowledge}
           />
         ) : (
           // Show custom empty state when search/filter returns no results

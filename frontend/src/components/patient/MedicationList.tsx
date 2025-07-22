@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import type { Medication } from '../../types/patient'
+import type { Medication, Patient } from '../../types/patient'
 import { Pill, Edit, StopCircle, MoreVertical, ChevronDown, X } from 'lucide-react'
 import { DISCONTINUATION_REASONS } from '../../services/medicationService'
 import { Select } from '../ui/Select'
+import { MedicationCardAlerts } from './MedicationCardAlerts'
 
 interface MedicationListProps {
   medications: Medication[]
@@ -10,7 +11,8 @@ interface MedicationListProps {
   onEdit?: (medication: Medication) => void
   onDiscontinue?: (medicationId: string, reason: string) => void
   onViewDetails?: (medication: Medication) => void
-  patient?: { name: string }
+  patient?: Patient
+  onAlertAcknowledge?: (alertId: string) => void
 }
 
 export function MedicationList({
@@ -19,7 +21,8 @@ export function MedicationList({
   onEdit,
   onDiscontinue,
   onViewDetails,
-  patient
+  patient,
+  onAlertAcknowledge
 }: MedicationListProps) {
   const [showDiscontinueModal, setShowDiscontinueModal] = useState(false)
   const [medicationToDiscontinue, setMedicationToDiscontinue] = useState<Medication | null>(null)
@@ -27,6 +30,7 @@ export function MedicationList({
   const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null)
   const [sortField, setSortField] = useState<keyof Medication | 'duration'>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const [acknowledgedAlerts, setAcknowledgedAlerts] = useState<Set<string>>(new Set())
   const actionsMenuRef = useRef<HTMLDivElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -210,6 +214,12 @@ export function MedicationList({
   const toggleActionsMenu = (medicationId: string, event: React.MouseEvent) => {
     event.stopPropagation()
     setShowActionsMenu(showActionsMenu === medicationId ? null : medicationId)
+  }
+
+  // Handle alert acknowledgment
+  const handleAlertAcknowledge = (alertId: string) => {
+    setAcknowledgedAlerts(prev => new Set([...prev, alertId]))
+    onAlertAcknowledge?.(alertId)
   }
 
   if (filteredMedications.length === 0) {
@@ -470,6 +480,17 @@ export function MedicationList({
                 <span className="font-medium text-gray-700">Indication:</span>
                 <span className="ml-1 text-gray-900">{medication.indication}</span>
               </div>
+            )}
+
+            {/* Medication-specific alerts */}
+            {patient && (
+              <MedicationCardAlerts
+                medication={medication}
+                patient={patient}
+                allMedications={medications}
+                onAlertAcknowledge={handleAlertAcknowledge}
+                acknowledgedAlerts={acknowledgedAlerts}
+              />
             )}
           </div>
         ))}

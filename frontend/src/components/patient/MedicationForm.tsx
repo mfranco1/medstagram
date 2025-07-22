@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -9,6 +9,7 @@ import { FormSection } from '../ui/FormSection'
 import { FormField } from '../ui/FormField'
 import { TimePicker } from '../ui/time-picker/TimePicker'
 import { DosageCalculator } from './DosageCalculator'
+import { MedicationAlerts } from './MedicationAlerts'
 
 // Enhanced Zod validation schema with comprehensive validation rules
 const medicationSchema = z.object({
@@ -144,6 +145,7 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [selectedMedication, setSelectedMedication] = useState<MedicationDatabase | null>(null)
   const [scheduleItems, setScheduleItems] = useState<string[]>([''])
+  const [acknowledgedAlerts, setAcknowledgedAlerts] = useState<Set<string>>(new Set())
   const modalRef = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
 
@@ -344,6 +346,50 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
       setScheduleItems(newSchedule)
     }
   }
+
+  // Handle alert acknowledgment
+  const handleAlertAcknowledge = (alertId: string) => {
+    setAcknowledgedAlerts(prev => new Set([...prev, alertId]))
+  }
+
+  // Create preview medication for alerts
+  const previewMedication = useMemo(() => {
+    const formData = watch()
+    if (!formData.name || !formData.dosageAmount) return undefined
+
+    return {
+      id: 'preview-medication',
+      patientId: patient.id,
+      name: formData.name,
+      genericName: formData.genericName || undefined,
+      dosage: {
+        amount: formData.dosageAmount,
+        unit: formData.dosageUnit
+      },
+      frequency: {
+        times: formData.frequencyTimes,
+        period: formData.frequencyPeriod,
+        schedule: scheduleItems.filter(item => item.trim() !== '')
+      },
+      route: formData.route,
+      startDate: formData.startDate,
+      duration: formData.durationAmount && formData.durationUnit ? {
+        amount: formData.durationAmount,
+        unit: formData.durationUnit
+      } : undefined,
+      status: 'active' as const,
+      prescribedBy: {
+        id: 'current-user',
+        name: 'Current User'
+      },
+      indication: formData.indication || undefined,
+      notes: formData.notes || undefined,
+      isWeightBased: selectedMedication?.isWeightBased,
+      dosePerKg: selectedMedication?.pediatricDosing?.dosePerKg || selectedMedication?.adultDosing?.commonDose,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  }, [watch(), patient.id, scheduleItems, selectedMedication])
 
   // Form submission
   const onSubmit = (data: MedicationFormData) => {
@@ -751,34 +797,55 @@ export function MedicationForm({ isOpen, medication, patient, onSave, onCancel }
               </div>
             </div>
 
-            {/* Sidebar Dosage Calculator */}
-            {selectedMedication && (
+            {/* Sidebar - Dosage Calculator and Safety Alerts */}
+            {(selectedMedication || previewMedication) && (
               <div className="w-80 border-l border-gray-200 bg-gray-50 flex flex-col">
                 <div className="p-4 border-b border-gray-200 bg-white">
-                  <h3 className="text-base font-semibold text-gray-900 mb-1">Dosage Calculator</h3>
-                  <p className="text-sm text-gray-600">Real-time dosage validation and recommendations</p>
+                  <h3 className="text-base font-semibold text-gray-900 mb-1">Safety & Dosage</h3>
+                  <p className="text-sm text-gray-600">Real-time validation and safety alerts</p>
                 </div>
                 
-                <div className="flex-1 overflow-y-auto p-4">
-                  <DosageCalculator
-                    patient={patient}
-                    medication={selectedMedication}
-                    dosageAmount={watch('dosageAmount') || 0}
-                    dosageUnit={watch('dosageUnit') || 'mg'}
-                    frequencyTimes={watch('frequencyTimes') || 1}
-                    frequencyPeriod={watch('frequencyPeriod') || 'daily'}
-                    onCalculationComplete={(calculation) => {
-                      // Store calculation results for form submission
-                      if (calculation.isWithinNormalRange && calculation.recommendedDose > 0) {
-                        // Optionally auto-update the dosage if it's significantly different
-                        const currentDose = watch('dosageAmount') || 0
-                        if (currentDose === 0 || Math.abs(currentDose - calculation.recommendedDose) / calculation.recommendedDose > 0.2) {
-                          // Only suggest if difference is more than 20%
-                        }
-                      }
-                    }}
-                    className="bg-white rounded-lg shadow-sm"
-                  />
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  {/* Safety Alerts */}
+                  {previewMedication && (
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 mb-2">Safety Alerts</h4>
+                      <MedicationAlerts
+                        patient={patient}
+                        currentMedications={patient.medications || []}
+                        newMedication={previewMedication}
+                        onAlertAcknowledge={handleAlertAcknowledge}
+                        className="space-y-2"
+                        focusedMedicationOnly={true}
+                      />
+                    </div>
+                  )}
+
+                  {/* Dosage Calculator */}
+                  {selectedMedication && (
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 mb-2">Dosage Calculator</h4>
+                      <DosageCalculator
+                        patient={patient}
+                        medication={selectedMedication}
+                        dosageAmount={watch('dosageAmount') || 0}
+                        dosageUnit={watch('dosageUnit') || 'mg'}
+                        frequencyTimes={watch('frequencyTimes') || 1}
+                        frequencyPeriod={watch('frequencyPeriod') || 'daily'}
+                        onCalculationComplete={(calculation) => {
+                          // Store calculation results for form submission
+                          if (calculation.isWithinNormalRange && calculation.recommendedDose > 0) {
+                            // Optionally auto-update the dosage if it's significantly different
+                            const currentDose = watch('dosageAmount') || 0
+                            if (currentDose === 0 || Math.abs(currentDose - calculation.recommendedDose) / calculation.recommendedDose > 0.2) {
+                              // Only suggest if difference is more than 20%
+                            }
+                          }
+                        }}
+                        className="bg-white rounded-lg shadow-sm"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             )}
