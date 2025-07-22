@@ -78,15 +78,32 @@ export function TherapeuticsTab({ patient }: TherapeuticsTabProps) {
     setError(null)
     
     try {
+      // Find the medication name for the toast message
+      const medication = medications.find(med => med.id === medicationId)
+      const medicationName = medication?.name || 'Medication'
+      
       await MedicationService.discontinueMedication(patient.id, medicationId, reason)
       refreshMedications() // Force UI update
+      
+      setToast({
+        message: `${medicationName} has been discontinued successfully`,
+        type: 'success'
+      })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to discontinue medication')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to discontinue medication'
+      const medication = medications.find(med => med.id === medicationId)
+      const medicationName = medication?.name || 'medication'
+      
+      setError(errorMessage)
+      setToast({
+        message: `Failed to discontinue ${medicationName}: ${errorMessage}`,
+        type: 'error'
+      })
       console.error('Error discontinuing medication:', err)
     } finally {
       setIsLoading(false)
     }
-  }, [patient.id, refreshMedications])
+  }, [patient.id, refreshMedications, medications])
 
   const handleAddMedication = useCallback(() => {
     setEditingMedication(undefined)
