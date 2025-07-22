@@ -5,7 +5,7 @@ import type { ChartEntry } from '../../types/patient'
 interface NewChartEntryModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy'>) => Promise<void>
+  onSave: (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy' | 'type' | 'templateVersion' | 'metadata'>) => Promise<void>
 }
 
 export function NewChartEntryModal({ isOpen, onClose, onSave }: NewChartEntryModalProps) {

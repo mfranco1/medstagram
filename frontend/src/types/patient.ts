@@ -94,11 +94,137 @@ export interface PatientAllergy {
   severity: 'mild' | 'moderate' | 'severe'
 }
 
+// Chart Entry Type Definitions
+export type ChartEntryType = 
+  | 'progress_note' 
+  | 'admission_note' 
+  | 'procedure_note' 
+  | 'discharge_summary' 
+  | 'consultation_note' 
+  | 'emergency_note' 
+  | 'quick_note'
+
+// Template-specific data interfaces
+export interface AdmissionNoteData {
+  historyOfPresentIllness: string
+  pastMedicalHistory: string
+  socialHistory: string
+  familyHistory: string
+  reviewOfSystems: {
+    [system: string]: string
+  }
+  physicalExamination: {
+    [system: string]: string
+  }
+  admissionDiagnoses: string[]
+  initialOrders: string[]
+}
+
+export interface ProcedureNoteData {
+  indication: string
+  procedureName: string
+  procedureDescription: string
+  findings: string
+  complications: string
+  postProcedurePlan: string
+  informedConsent: boolean
+  timeStarted: string
+  timeCompleted: string
+  assistants: string[]
+  suggestedCptCodes: string[]
+}
+
+export interface DischargeSummaryData {
+  hospitalCourse: string
+  dischargeDiagnoses: string[]
+  dischargeMedications: {
+    continued: string[]
+    newlyStarted: string[]
+    discontinued: string[]
+  }
+  followUpInstructions: string
+  patientEducation: string[]
+  dischargeDisposition: string
+  functionalStatus: string
+}
+
+export interface ConsultationNoteData {
+  reasonForConsultation: string
+  referringPhysician: {
+    id: string
+    name: string
+    department: string
+  }
+  focusedHistory: string
+  focusedExamination: string
+  impression: string
+  recommendations: {
+    text: string
+    urgency: 'routine' | 'urgent' | 'stat'
+    followUpRequired: boolean
+  }[]
+  notificationSent: boolean
+}
+
+export interface EmergencyNoteData {
+  eventType: string
+  personnelInvolved: string[]
+  interventions: {
+    time: string
+    intervention: string
+    response: string
+  }[]
+  medications: {
+    time: string
+    medication: string
+    dose: string
+    route: string
+  }[]
+  outcome: string
+  addendums: {
+    timestamp: string
+    author: string
+    content: string
+  }[]
+}
+
+// Validation rule interfaces
+export interface ValidationRule {
+  field: string
+  type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'custom'
+  value?: any
+  message: string
+  severity: 'error' | 'warning' | 'info'
+}
+
+// Auto-population interfaces
+export interface AutoPopulationSource {
+  field: string
+  source: 'vitals' | 'labs' | 'medications' | 'allergies' | 'previous_notes'
+  transform?: (data: any) => string
+  conditions?: string[]
+}
+
+// Chart Entry Type Configuration
+export interface ChartEntryTypeConfig {
+  type: ChartEntryType
+  displayName: string
+  description: string
+  icon: string
+  color: string
+  requiredFields: string[]
+  optionalFields: string[]
+  validationRules: ValidationRule[]
+  autoPopulationSources: AutoPopulationSource[]
+}
+
+// Enhanced ChartEntry interface
 export interface ChartEntry {
   id: string
   timestamp: string
-  type: 'soap' | 'quick_note'
-  chiefComplaint: string
+  type: ChartEntryType
+  templateVersion: string
+  chiefComplaint?: string
   subjective: string
   objective: string
   assessment: string
@@ -106,6 +232,21 @@ export interface ChartEntry {
   createdBy: {
     name: string
     role: string
+    id: string
+  }
+  // Type-specific structured data
+  structuredData?: {
+    admissionNote?: AdmissionNoteData
+    procedureNote?: ProcedureNoteData
+    dischargeNote?: DischargeSummaryData
+    consultationNote?: ConsultationNoteData
+    emergencyNote?: EmergencyNoteData
+  }
+  metadata: {
+    requiredFieldsCompleted: boolean
+    lastModified: string
+    wordCount: number
+    estimatedReadTime: number
   }
 }
 

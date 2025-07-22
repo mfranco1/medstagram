@@ -18,16 +18,24 @@ export function ChartTab({ patient }: ChartTabProps) {
     setChartEntries(patient.chartEntries || [])
   }, [patient.chartEntries])
 
-  const handleSaveEntry = async (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy' | 'type'>) => {
+  const handleSaveEntry = async (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy' | 'type' | 'templateVersion' | 'metadata'>) => {
     // Create a new chart entry with required fields
     const newEntry: ChartEntry = {
       ...entry,
-      type: 'soap',
+      type: 'progress_note',
+      templateVersion: '1.0',
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
       createdBy: {
         name: 'Dr. Marty Franco', // TODO: Get from auth context
-        role: 'Doctor' // TODO: Get from auth context
+        role: 'Doctor', // TODO: Get from auth context
+        id: 'dr-marty-franco' // TODO: Get from auth context
+      },
+      metadata: {
+        requiredFieldsCompleted: true,
+        lastModified: new Date().toISOString(),
+        wordCount: Object.values(entry).join(' ').split(' ').length,
+        estimatedReadTime: Math.ceil(Object.values(entry).join(' ').split(' ').length / 200) // Assuming 200 words per minute
       }
     }
 
@@ -54,6 +62,7 @@ export function ChartTab({ patient }: ChartTabProps) {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
       type: 'quick_note',
+      templateVersion: '1.0',
       chiefComplaint: '',
       subjective: note,
       objective: '',
@@ -61,7 +70,14 @@ export function ChartTab({ patient }: ChartTabProps) {
       plan: '',
       createdBy: {
         name: 'Dr. Marty Franco', // TODO: Get from auth context
-        role: 'Doctor' // TODO: Get from auth context
+        role: 'Doctor', // TODO: Get from auth context
+        id: 'dr-marty-franco' // TODO: Get from auth context
+      },
+      metadata: {
+        requiredFieldsCompleted: true,
+        lastModified: new Date().toISOString(),
+        wordCount: note.split(' ').length,
+        estimatedReadTime: Math.ceil(note.split(' ').length / 200) // Assuming 200 words per minute
       }
     }
 
