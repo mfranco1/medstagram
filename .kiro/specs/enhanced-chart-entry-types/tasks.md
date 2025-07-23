@@ -21,7 +21,7 @@
   - Create responsive layout for different screen sizes
   - _Requirements: 1.1, 1.4_
 
-- [ ] 4. Refactor existing ChartEntryModal to support templates
+- [x] 4. Refactor existing ChartEntryModal to support templates
 - [x] 4.1 Extract common modal functionality into base component
   - Create BaseChartEntryModal component with shared modal structure
   - Move common props and state management to base component
@@ -42,7 +42,7 @@
   - Test validation works correctly for different template types
   - _Requirements: 1.2_
 
-- [ ] 4.4 Add template version tracking and metadata
+- [x] 4.4 Add template version tracking and metadata
   - Add template version and metadata fields to ChartEntry interface
   - Implement metadata tracking in modal component
   - Create metadata display in modal header
@@ -50,7 +50,7 @@
   - _Requirements: 8.4_
 
 - [ ] 5. Create ProgressNoteTemplate component
-- [ ] 5.1 Build basic ProgressNoteTemplate structure
+- [x] 5.1 Build basic ProgressNoteTemplate structure
   - Create ProgressNoteTemplate component with SOAP sections
   - Implement basic form layout with Subjective, Objective, Assessment, Plan sections
   - Add proper TypeScript interfaces and props
