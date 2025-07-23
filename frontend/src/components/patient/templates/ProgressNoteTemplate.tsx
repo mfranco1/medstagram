@@ -1,7 +1,9 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import type { TemplateComponentProps } from '../BaseChartEntryModal'
-import type { ChartEntry } from '../../../types/patient'
+import { useValidation } from '../contexts/ValidationContext'
+import { InlineValidation } from '../../ui/ValidationDisplay'
+import { getValidationRules, validateRequiredFieldsCompletion } from '../../../config/validationRules'
 
 export function ProgressNoteTemplate({
   initialData,
@@ -9,7 +11,8 @@ export function ProgressNoteTemplate({
   onSave,
   onCancel,
   isEditing = false,
-  onDataChange
+  onDataChange,
+  onValidationChange
 }: TemplateComponentProps) {
   const [formData, setFormData] = useState({
     type: 'progress_note' as const,
@@ -30,13 +33,28 @@ export function ProgressNoteTemplate({
     plan: false
   })
 
-  // Track if form has unsaved changes
+  // Use validation context
+  const { validateForm, validationState, clearValidation } = useValidation()
+
+  // Get validation rules for progress notes
+  const validationRules = getValidationRules('progress_note')
+
+  // Track if form has unsaved changes and validate
   useEffect(() => {
     const hasData = Object.values(formData).some(value => 
       typeof value === 'string' ? value.trim() : Boolean(value)
     )
     onDataChange?.(hasData)
-  }, [formData, onDataChange])
+
+    // Validate form if there's data
+    if (hasData) {
+      const validation = validateForm(formData, validationRules)
+      onValidationChange?.(validation.isValid, validation.hasWarnings)
+    } else {
+      clearValidation()
+      onValidationChange?.(true, false)
+    }
+  }, [formData, onDataChange, onValidationChange, validateForm, validationRules, clearValidation])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -53,7 +71,28 @@ export function ProgressNoteTemplate({
   }
 
   const handleSave = async () => {
-    await onSave(formData)
+    // Update metadata with validation status
+    const entryData = {
+      ...formData,
+      metadata: {
+        requiredFieldsCompleted: validateRequiredFieldsCompletion(formData, 'progress_note'),
+        lastModified: new Date().toISOString(),
+        wordCount: Object.values(formData)
+          .filter(value => typeof value === 'string')
+          .join(' ')
+          .split(/\s+/)
+          .filter(word => word.length > 0).length,
+        estimatedReadTime: Math.max(1, Math.ceil(
+          Object.values(formData)
+            .filter(value => typeof value === 'string')
+            .join(' ')
+            .split(/\s+/)
+            .filter(word => word.length > 0).length / 200
+        ))
+      }
+    }
+    
+    await onSave(entryData)
   }
 
   return (
@@ -83,13 +122,21 @@ export function ProgressNoteTemplate({
           {collapsedSections.chiefComplaint ? <ChevronRight className="w-5 h-5 text-gray-500" /> : <ChevronDown className="w-5 h-5 text-gray-500" />}
         </button>
         {!collapsedSections.chiefComplaint && (
-          <textarea
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
-            rows={3}
-            placeholder="Enter chief complaint..."
-            value={formData.chiefComplaint}
-            onChange={e => handleInputChange('chiefComplaint', e.target.value)}
-          />
+          <div>
+            <textarea
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
+              rows={3}
+              placeholder="Enter chief complaint..."
+              value={formData.chiefComplaint}
+              onChange={e => handleInputChange('chiefComplaint', e.target.value)}
+            />
+            <InlineValidation
+              field="chiefComplaint"
+              errors={validationState.errors}
+              warnings={validationState.warnings}
+              infos={validationState.infos}
+            />
+          </div>
         )}
       </div>
 
@@ -106,11 +153,23 @@ export function ProgressNoteTemplate({
           <div>
             <p className="text-xs text-gray-500 mb-2">Patient's symptoms, concerns, and subjective experience</p>
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
+              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y ${
+                validationState.errors.some(e => e.field === 'subjective') 
+                  ? 'border-red-300 bg-red-50' 
+                  : validationState.warnings.some(w => w.field === 'subjective')
+                  ? 'border-yellow-300 bg-yellow-50'
+                  : 'border-gray-300'
+              }`}
               rows={4}
               placeholder="Enter subjective findings..."
               value={formData.subjective}
               onChange={e => handleInputChange('subjective', e.target.value)}
+            />
+            <InlineValidation
+              field="subjective"
+              errors={validationState.errors}
+              warnings={validationState.warnings}
+              infos={validationState.infos}
             />
           </div>
         )}
@@ -129,11 +188,23 @@ export function ProgressNoteTemplate({
           <div>
             <p className="text-xs text-gray-500 mb-2">Measurable findings, vital signs, physical exam, lab results</p>
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
+              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y ${
+                validationState.errors.some(e => e.field === 'objective') 
+                  ? 'border-red-300 bg-red-50' 
+                  : validationState.warnings.some(w => w.field === 'objective')
+                  ? 'border-yellow-300 bg-yellow-50'
+                  : 'border-gray-300'
+              }`}
               rows={4}
               placeholder="Enter objective findings..."
               value={formData.objective}
               onChange={e => handleInputChange('objective', e.target.value)}
+            />
+            <InlineValidation
+              field="objective"
+              errors={validationState.errors}
+              warnings={validationState.warnings}
+              infos={validationState.infos}
             />
           </div>
         )}
@@ -152,11 +223,23 @@ export function ProgressNoteTemplate({
           <div>
             <p className="text-xs text-gray-500 mb-2">Clinical impression, diagnosis, and analysis</p>
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
+              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y ${
+                validationState.errors.some(e => e.field === 'assessment') 
+                  ? 'border-red-300 bg-red-50' 
+                  : validationState.warnings.some(w => w.field === 'assessment')
+                  ? 'border-yellow-300 bg-yellow-50'
+                  : 'border-gray-300'
+              }`}
               rows={4}
               placeholder="Enter assessment..."
               value={formData.assessment}
               onChange={e => handleInputChange('assessment', e.target.value)}
+            />
+            <InlineValidation
+              field="assessment"
+              errors={validationState.errors}
+              warnings={validationState.warnings}
+              infos={validationState.infos}
             />
           </div>
         )}
@@ -175,11 +258,23 @@ export function ProgressNoteTemplate({
           <div>
             <p className="text-xs text-gray-500 mb-2">Treatment plan, medications, procedures, follow-up</p>
             <textarea
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y"
+              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 resize-y ${
+                validationState.errors.some(e => e.field === 'plan') 
+                  ? 'border-red-300 bg-red-50' 
+                  : validationState.warnings.some(w => w.field === 'plan')
+                  ? 'border-yellow-300 bg-yellow-50'
+                  : 'border-gray-300'
+              }`}
               rows={4}
               placeholder="Enter plan..."
               value={formData.plan}
               onChange={e => handleInputChange('plan', e.target.value)}
+            />
+            <InlineValidation
+              field="plan"
+              errors={validationState.errors}
+              warnings={validationState.warnings}
+              infos={validationState.infos}
             />
           </div>
         )}
@@ -197,10 +292,27 @@ export function ProgressNoteTemplate({
         <button
           type="button"
           onClick={handleSave}
-          className="px-4 py-2 text-sm font-medium text-white bg-violet-600 border border-transparent rounded-md hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isFormEmpty()}
+          className={`px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+            !validationState.isValid && validationState.errors.length > 0
+              ? 'text-white bg-red-600 hover:bg-red-700'
+              : validationState.hasWarnings
+              ? 'text-white bg-yellow-600 hover:bg-yellow-700'
+              : 'text-white bg-violet-600 hover:bg-violet-700'
+          }`}
+          disabled={isFormEmpty() || (!validationState.isValid && validationState.errors.length > 0)}
+          title={
+            !validationState.isValid && validationState.errors.length > 0
+              ? 'Please fix validation errors before saving'
+              : validationState.hasWarnings
+              ? 'There are validation warnings - you can still save'
+              : undefined
+          }
         >
-          Save Progress Note
+          {!validationState.isValid && validationState.errors.length > 0
+            ? 'Fix Errors to Save'
+            : validationState.hasWarnings
+            ? 'Save with Warnings'
+            : 'Save Progress Note'}
         </button>
       </div>
     </div>

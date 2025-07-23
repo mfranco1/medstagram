@@ -2,6 +2,9 @@ import { X, Save, Loader2 } from 'lucide-react'
 import { useState, useRef, useEffect, lazy, Suspense } from 'react'
 import type { ReactNode, ComponentType } from 'react'
 import type { ChartEntryType, Patient, ChartEntry } from '../../types/patient'
+import { ValidationProvider, useValidation } from './contexts/ValidationContext'
+import { ValidationSummary } from '../ui/ValidationDisplay'
+import { getValidationRules, validateRequiredFieldsCompletion } from '../../config/validationRules'
 
 // Template component interface
 export interface TemplateComponentProps {
@@ -12,6 +15,7 @@ export interface TemplateComponentProps {
   isEditing?: boolean
   readOnly?: boolean
   onDataChange?: (hasUnsavedData: boolean) => void
+  onValidationChange?: (isValid: boolean, hasWarnings: boolean) => void
 }
 
 export interface BaseChartEntryModalProps {
@@ -49,7 +53,8 @@ const TEMPLATE_COMPONENTS: Record<ChartEntryType, ComponentType<TemplateComponen
   quick_note: null // Uses default children content
 }
 
-export function BaseChartEntryModal({
+// Internal modal component with validation
+function BaseChartEntryModalInternal({
   isOpen,
   onClose,
   onSave,
@@ -67,6 +72,12 @@ export function BaseChartEntryModal({
   const [isSaving, setIsSaving] = useState(false)
   const [hasUnsavedData, setHasUnsavedData] = useState(false)
   const [templateError, setTemplateError] = useState<string | null>(null)
+  const [validationEnabled, setValidationEnabled] = useState(false)
+  const [formIsValid, setFormIsValid] = useState(true)
+  const [formHasWarnings, setFormHasWarnings] = useState(false)
+  
+  // Use validation context
+  const { validationState, validateForm, clearValidation } = useValidation()
 
   // Handle modal close with unsaved data warning
   const handleClose = () => {
@@ -127,13 +138,48 @@ export function BaseChartEntryModal({
     setHasUnsavedData(hasData)
   }
 
+  // Handle validation change from template components
+  const handleValidationChange = (isValid: boolean, hasWarnings: boolean) => {
+    setFormIsValid(isValid)
+    setFormHasWarnings(hasWarnings)
+  }
+
+  // Enable validation when user starts interacting
+  useEffect(() => {
+    if (hasUnsavedData && !validationEnabled) {
+      setValidationEnabled(true)
+    }
+  }, [hasUnsavedData, validationEnabled])
+
+  // Clear validation when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      clearValidation()
+      setValidationEnabled(false)
+      setFormIsValid(true)
+      setFormHasWarnings(false)
+    }
+  }, [isOpen, clearValidation])
+
   const handleSubmit = async () => {
     if (isSaveDisabled || isSaving) return
+
+    // Enable validation if not already enabled
+    if (!validationEnabled) {
+      setValidationEnabled(true)
+    }
+
+    // Check validation state - only block on errors, not warnings
+    if (!formIsValid && validationState.errors.length > 0) {
+      // Show validation errors but don't prevent saving if only warnings
+      return
+    }
 
     try {
       setIsSaving(true)
       await onSave()
       setHasUnsavedData(false)
+      clearValidation()
       onClose()
     } catch (error) {
       console.error('Failed to save chart entry:', error)
@@ -170,6 +216,7 @@ export function BaseChartEntryModal({
           onCancel={handleClose}
           isEditing={isEditing}
           onDataChange={handleDataChange}
+          onValidationChange={handleValidationChange}
         />
       </Suspense>
     )
@@ -227,6 +274,19 @@ export function BaseChartEntryModal({
               </div>
             </div>
           )}
+          
+          {/* Validation Summary */}
+          {validationEnabled && (validationState.errors.length > 0 || validationState.warnings.length > 0) && (
+            <div className="mb-4">
+              <ValidationSummary
+                errors={validationState.errors}
+                warnings={validationState.warnings}
+                infos={validationState.infos}
+                showCounts={true}
+              />
+            </div>
+          )}
+          
           {renderTemplateWithErrorBoundary()}
         </div>
 
@@ -244,8 +304,21 @@ export function BaseChartEntryModal({
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-4 py-2 text-sm font-medium text-white bg-violet-600 border border-transparent rounded-md hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed ${
+                validationEnabled && !formIsValid && validationState.errors.length > 0
+                  ? 'text-white bg-red-600 hover:bg-red-700'
+                  : formHasWarnings
+                  ? 'text-white bg-yellow-600 hover:bg-yellow-700'
+                  : 'text-white bg-violet-600 hover:bg-violet-700'
+              }`}
               disabled={isSaving || isSaveDisabled}
+              title={
+                validationEnabled && !formIsValid && validationState.errors.length > 0
+                  ? 'Please fix validation errors before saving'
+                  : formHasWarnings
+                  ? 'There are validation warnings - you can still save'
+                  : undefined
+              }
             >
               {isSaving ? (
                 <>
@@ -255,7 +328,11 @@ export function BaseChartEntryModal({
               ) : (
                 <>
                   <Save className="w-4 h-4 mr-2" />
-                  {saveButtonText}
+                  {validationEnabled && !formIsValid && validationState.errors.length > 0
+                    ? 'Fix Errors to Save'
+                    : formHasWarnings
+                    ? 'Save with Warnings'
+                    : saveButtonText}
                 </>
               )}
             </button>
@@ -263,5 +340,14 @@ export function BaseChartEntryModal({
         </div>
       </div>
     </div>
+  )
+}
+
+// Main component with validation provider
+export function BaseChartEntryModal(props: BaseChartEntryModalProps) {
+  return (
+    <ValidationProvider templateType={props.templateType}>
+      <BaseChartEntryModalInternal {...props} />
+    </ValidationProvider>
   )
 }
