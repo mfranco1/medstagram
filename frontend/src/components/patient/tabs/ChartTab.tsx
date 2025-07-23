@@ -18,24 +18,32 @@ export function ChartTab({ patient }: ChartTabProps) {
     setChartEntries(patient.chartEntries || [])
   }, [patient.chartEntries])
 
-  const handleSaveEntry = async (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy' | 'type' | 'templateVersion' | 'metadata'>) => {
+  const handleSaveEntry = async (entry: Omit<ChartEntry, 'id' | 'timestamp' | 'createdBy' | 'type' | 'templateVersion' | 'metadata'> & { templateVersion?: string, metadata?: any }) => {
     // Create a new chart entry with required fields
+    const now = new Date().toISOString();
+    const templateVersion = entry.templateVersion || '1.0';
+    const baseMetadata = entry.metadata || {};
+    // Compute word count and read time if missing
+    const wordCount = baseMetadata.wordCount ?? Object.values(entry).join(' ').split(/\s+/).filter(Boolean).length;
+    const estimatedReadTime = baseMetadata.estimatedReadTime ?? Math.ceil(wordCount / 200);
+    const lastModified = baseMetadata.lastModified || now;
+    const requiredFieldsCompleted = baseMetadata.requiredFieldsCompleted ?? true;
     const newEntry: ChartEntry = {
       ...entry,
-      type: 'progress_note',
-      templateVersion: '1.0',
+      type: 'progress_note', // TODO: Use selected type if/when multi-type is supported
+      templateVersion,
       id: crypto.randomUUID(),
-      timestamp: new Date().toISOString(),
+      timestamp: now,
       createdBy: {
         name: 'Dr. Marty Franco', // TODO: Get from auth context
         role: 'Doctor', // TODO: Get from auth context
         id: 'dr-marty-franco' // TODO: Get from auth context
       },
       metadata: {
-        requiredFieldsCompleted: true,
-        lastModified: new Date().toISOString(),
-        wordCount: Object.values(entry).join(' ').split(' ').length,
-        estimatedReadTime: Math.ceil(Object.values(entry).join(' ').split(' ').length / 200) // Assuming 200 words per minute
+        requiredFieldsCompleted,
+        lastModified,
+        wordCount,
+        estimatedReadTime
       }
     }
 
@@ -58,9 +66,12 @@ export function ChartTab({ patient }: ChartTabProps) {
 
   const handleSaveQuickNote = async (note: string) => {
     // Create a new chart entry with just the note in the subjective field
+    const now = new Date().toISOString();
+    const wordCount = note.split(/\s+/).filter(Boolean).length;
+    const estimatedReadTime = Math.ceil(wordCount / 200);
     const newEntry: ChartEntry = {
       id: crypto.randomUUID(),
-      timestamp: new Date().toISOString(),
+      timestamp: now,
       type: 'quick_note',
       templateVersion: '1.0',
       chiefComplaint: '',
@@ -75,9 +86,9 @@ export function ChartTab({ patient }: ChartTabProps) {
       },
       metadata: {
         requiredFieldsCompleted: true,
-        lastModified: new Date().toISOString(),
-        wordCount: note.split(' ').length,
-        estimatedReadTime: Math.ceil(note.split(' ').length / 200) // Assuming 200 words per minute
+        lastModified: now,
+        wordCount,
+        estimatedReadTime
       }
     }
 

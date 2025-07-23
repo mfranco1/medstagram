@@ -43,7 +43,26 @@ export function ProcedureNoteTemplate({
   }, [formData, onDataChange])
 
   const handleSave = async () => {
-    await onSave(formData)
+    const entryData = {
+      ...formData,
+      metadata: {
+        requiredFieldsCompleted: true, // TODO: Use validateRequiredFieldsCompletion(formData, 'procedure_note') when implemented
+        lastModified: new Date().toISOString(),
+        wordCount: Object.values(formData)
+          .filter(value => typeof value === 'string')
+          .join(' ')
+          .split(/\s+/)
+          .filter(word => word.length > 0).length,
+        estimatedReadTime: Math.max(1, Math.ceil(
+          Object.values(formData)
+            .filter(value => typeof value === 'string')
+            .join(' ')
+            .split(/\s+/)
+            .filter(word => word.length > 0).length / 200
+        ))
+      }
+    }
+    await onSave(entryData)
   }
 
   return (

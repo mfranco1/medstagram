@@ -256,6 +256,57 @@ function BaseChartEntryModalInternal({
               <X className="w-5 h-5" />
             </button>
           </div>
+          {/* Metadata and Template Version Display */}
+          {(() => {
+            // Fallbacks for missing initialData, templateVersion, or metadata
+            const data = initialData || {};
+            const templateVersion = data.templateVersion || '1.0';
+            const metadata = data.metadata || {};
+            // Compute word count and read time if missing
+            const wordCount = metadata.wordCount ?? (() => {
+              const fields = [data.chiefComplaint, data.subjective, data.objective, data.assessment, data.plan];
+              return fields.filter(Boolean).join(' ').split(/\s+/).filter(Boolean).length;
+            })();
+            const estimatedReadTime = metadata.estimatedReadTime ?? Math.ceil(wordCount / 200);
+            const lastModified = metadata.lastModified || data.timestamp || 'Unknown';
+            const requiredFieldsCompleted = metadata.requiredFieldsCompleted ?? false;
+            // Format last modified as relative time if possible
+            let lastModifiedDisplay = 'Unknown';
+            if (lastModified && lastModified !== 'Unknown') {
+              const date = new Date(lastModified);
+              if (!isNaN(date.getTime())) {
+                const now = new Date();
+                const diffMs = now.getTime() - date.getTime();
+                const diffMins = Math.floor(diffMs / 60000);
+                if (diffMins < 1) lastModifiedDisplay = 'Just now';
+                else if (diffMins < 60) lastModifiedDisplay = `${diffMins} min${diffMins === 1 ? '' : 's'} ago`;
+                else {
+                  const diffHours = Math.floor(diffMins / 60);
+                  if (diffHours < 24) lastModifiedDisplay = `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`;
+                  else lastModifiedDisplay = date.toLocaleString();
+                }
+              }
+            }
+            return (
+              <div className="mt-2 flex flex-wrap gap-4 items-center text-xs text-gray-600" aria-label="Chart entry metadata">
+                <span className="inline-flex items-center px-2 py-0.5 rounded bg-violet-100 text-violet-800 font-medium" title="Template Version">
+                  Template v{templateVersion}
+                </span>
+                <span className={`inline-flex items-center px-2 py-0.5 rounded font-medium ${requiredFieldsCompleted ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`} title="Completion Status">
+                  {requiredFieldsCompleted ? 'All required fields complete' : 'Incomplete'}
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-700" title="Last Modified">
+                  Last edited: {lastModifiedDisplay}
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-700" title="Word Count">
+                  {wordCount} words
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-700" title="Estimated Read Time">
+                  ~{estimatedReadTime} min read
+                </span>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Modal Content */}

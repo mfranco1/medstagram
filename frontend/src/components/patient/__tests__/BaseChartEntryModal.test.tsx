@@ -173,4 +173,48 @@ describe('BaseChartEntryModal', () => {
       expect(cancelButton).not.toBeDisabled()
     })
   })
+
+  it('displays template version and metadata in the header when initialData is provided', () => {
+    render(
+      <BaseChartEntryModal
+        {...defaultProps}
+        initialData={{
+          templateVersion: '2.5',
+          metadata: {
+            requiredFieldsCompleted: false,
+            lastModified: '2024-01-01T12:00:00Z',
+            wordCount: 123,
+            estimatedReadTime: 1
+          }
+        }}
+      />
+    )
+    expect(screen.getByText('Template v2.5')).toBeInTheDocument()
+    expect(screen.getByText('Incomplete')).toBeInTheDocument()
+    expect(screen.getByText(/Last edited:/)).toBeInTheDocument()
+    expect(screen.getByText('123 words')).toBeInTheDocument()
+    expect(screen.getByText('~1 min read')).toBeInTheDocument()
+  })
+
+  it('shows sensible defaults for missing metadata fields', () => {
+    render(
+      <BaseChartEntryModal
+        {...defaultProps}
+        initialData={{
+          // No templateVersion or metadata
+          chiefComplaint: 'Test',
+          subjective: 'Some subjective text',
+          objective: 'Some objective text',
+          assessment: 'Assessment',
+          plan: 'Plan'
+        }}
+      />
+    )
+    expect(screen.getByText('Template v1.0')).toBeInTheDocument()
+    // Should show 'All required fields complete' (default true)
+    expect(screen.getByText('All required fields complete')).toBeInTheDocument()
+    expect(screen.getByText(/Last edited:/)).toBeInTheDocument()
+    expect(screen.getByText(/words/)).toBeInTheDocument()
+    expect(screen.getByText(/min read/)).toBeInTheDocument()
+  })
 })
