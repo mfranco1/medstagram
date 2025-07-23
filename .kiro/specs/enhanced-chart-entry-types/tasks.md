@@ -22,7 +22,7 @@
   - _Requirements: 1.1, 1.4_
 
 - [ ] 4. Refactor existing ChartEntryModal to support templates
-- [ ] 4.1 Extract common modal functionality into base component
+- [x] 4.1 Extract common modal functionality into base component
   - Create BaseChartEntryModal component with shared modal structure
   - Move common props and state management to base component
   - Test base modal renders correctly with existing functionality
